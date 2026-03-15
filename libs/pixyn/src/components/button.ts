@@ -44,9 +44,6 @@ export class Button extends InteractiveComponent<ButtonOptions, Container> {
     this.addChild(this.background);
     this.addChild(this.label);
 
-    this.displayObject.eventMode = options.disabled ? 'none' : 'static';
-    this.displayObject.cursor = options.disabled ? 'default' : 'pointer';
-
     this.bindInteraction({
       onHoverChange: (hovered) => {
         this.displayObject.alpha = hovered && !this.props.disabled ? 0.9 : 1;
@@ -63,6 +60,9 @@ export class Button extends InteractiveComponent<ButtonOptions, Container> {
     });
 
     this.setDisabled(options.disabled ?? false);
+
+    this.displayObject.eventMode = options.disabled ? 'none' : 'static';
+    this.displayObject.cursor = options.disabled ? 'default' : 'pointer';
   }
 
   protected override onPropsChanged(): void {
@@ -77,5 +77,8 @@ export class Button extends InteractiveComponent<ButtonOptions, Container> {
 
     this.label.displayObject.x = (this.props.width ?? 120) / 2;
     this.label.displayObject.y = (this.props.height ?? 48) / 2;
+
+    this.displayObject.eventMode = this.props.disabled ? 'none' : 'static';
+    this.displayObject.cursor = this.props.disabled ? 'default' : 'pointer';
   }
 }

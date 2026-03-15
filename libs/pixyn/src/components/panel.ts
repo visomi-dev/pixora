@@ -37,6 +37,16 @@ export class Panel extends BaseComponent<PanelOptions, Container> {
       }
 
       this.background.fill(backgroundColor);
+      this.displayObject.width = width;
+      this.displayObject.height = height;
+    } else {
+      if (this.props.width !== undefined) {
+        this.displayObject.width = this.props.width;
+      }
+      
+      if (this.props.height !== undefined) {
+        this.displayObject.height = this.props.height;
+      }
     }
   }
 }

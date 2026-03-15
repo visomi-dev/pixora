@@ -18,6 +18,7 @@ export class InteractiveComponent<
   setDisabled(disabled: boolean): this {
     this.props = { ...this.props, disabled };
     this.displayObject.eventMode = disabled ? 'none' : 'static';
+    this.displayObject.cursor = disabled ? 'default' : 'pointer';
     this.displayObject.alpha = disabled ? 0.5 : 1;
 
     return this;

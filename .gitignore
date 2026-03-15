@@ -8,5 +8,6 @@ vitest.config.*.timestamp*
 
 node_modules/
 dist/
+coverage/
 
 pnpm-workspace.yaml
