@@ -64,11 +64,7 @@ function applyFixed(node: BaseNode, spec: Extract<LayoutSpec, { type: 'fixed' }>
   }
 }
 
-function applyAnchor(
-  node: BaseNode,
-  spec: Extract<LayoutSpec, { type: 'anchor' }>,
-  parentBounds: Bounds,
-): void {
+function applyAnchor(node: BaseNode, spec: Extract<LayoutSpec, { type: 'anchor' }>, parentBounds: Bounds): void {
   const width = spec.relativeWidth !== undefined ? parentBounds.width * spec.relativeWidth : node.displayObject.width;
   const height =
     spec.relativeHeight !== undefined ? parentBounds.height * spec.relativeHeight : node.displayObject.height;

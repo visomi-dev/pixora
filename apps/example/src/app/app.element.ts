@@ -1,5 +1,3 @@
-
-
 import { GameplayScene } from './scenes/gameplay/gameplay.scene';
 import { MainMenuScene } from './scenes/main-menu/main-menu.scene';
 import { PauseOverlay } from './scenes/pause-overlay/pause-overlay.scene';
