@@ -1,0 +1,12 @@
+.nx/installation
+.nx/cache
+.nx/workspace-data
+.nx/polygraph
+
+vite.config.*.timestamp*
+vitest.config.*.timestamp*
+
+node_modules/
+dist/
+
+pnpm-workspace.yaml

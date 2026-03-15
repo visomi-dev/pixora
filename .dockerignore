@@ -1,0 +1,11 @@
+.git
+.github
+.idea
+.nx
+.vscode
+coverage
+dist
+node_modules
+tmp
+
+*.log

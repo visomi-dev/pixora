@@ -1,0 +1,8 @@
+{
+  "servers": {
+    "primeng": {
+      "command": "pnpm",
+      "args": ["exec", "-y", "@primeng/mcp"]
+    }
+  }
+}

@@ -1,0 +1,3 @@
+# pnpm affected -t lint
+# pnpm affected -t test
+# pnpm affected -t build

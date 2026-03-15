@@ -1,0 +1,29 @@
+{
+  "recommendations": [
+    "angular.ng-template",
+    "dbaeumer.vscode-eslint",
+    "editorconfig.editorconfig",
+    "bradlc.vscode-tailwindcss",
+    "eamodio.gitlens",
+    "csstools.postcss",
+    "redhat.vscode-xml",
+    "redhat.vscode-yaml",
+    "jock.svg",
+    "mikestead.dotenv",
+    "streetsidesoftware.code-spell-checker",
+    "streetsidesoftware.code-spell-checker-spanish",
+    "bierner.color-info",
+    "stylelint.vscode-stylelint",
+    "github.vscode-github-actions",
+    "oven.bun-vscode",
+    "unifiedjs.vscode-mdx",
+    "PKief.material-icon-theme",
+    "Prisma.prisma",
+    "nrwl.angular-console",
+    "firsttris.vscode-jest-runner",
+    "ms-playwright.playwright",
+    "esbenp.prettier-vscode",
+    "slevesque.shader",
+    "xaver.clang-format"
+  ]
+}

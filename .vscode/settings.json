@@ -1,0 +1,80 @@
+{
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "always",
+    "source.fixAll.stylelint": "always"
+  },
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma"
+  },
+  "[xml]": {
+    "editor.defaultFormatter": "redhat.vscode-xml"
+  },
+  "[svg]": {
+    "editor.defaultFormatter": "jock.svg"
+  },
+  "[yaml]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml"
+  },
+  "material-icon-theme.activeIconPack": "angular",
+  "emmet.preferences": {
+    "output.selfClosingStyle": "html"
+  },
+  "tailwindCSS.classAttributes": [
+    "class",
+    "className",
+    "ngClass",
+    "routerLinkActive",
+    "class.*",
+    "labelClass",
+    "inputClass",
+    "selectClass",
+    "fieldsetClass"
+  ],
+  "tailwindCSS.experimental.classRegex": ["/\\*\\s*tw\\s*\\*/\\s*'([^']*)'", "/\\*\\s*tw\\s*\\*/\\s*\"([^\"]*)\""],
+  "cSpell.language": "en,es,en-US,en-GB,es-ES,es-419,es-LA",
+  "cSpell.words": [
+    "american",
+    "branchlint",
+    "brocli",
+    "bullmq",
+    "commitlint",
+    "cooldown",
+    "creze",
+    "datasource",
+    "deepl",
+    "dexie",
+    "dtos",
+    "guira",
+    "hono",
+    "kavak",
+    "linkedin",
+    "luxon",
+    "mailgun",
+    "mapbox",
+    "msgpackr",
+    "nestjs",
+    "nestlab",
+    "ngsw",
+    "openai",
+    "postgres",
+    "postgresql",
+    "prerender",
+    "primeicons",
+    "qwik",
+    "recalc",
+    "recaptcha",
+    "Sotelo",
+    "supabase",
+    "tailwindcss",
+    "treeify",
+    "tseslint",
+    "tubelight",
+    "visomi",
+    "wakatime"
+  ],
+  "[glsl]": {
+    "editor.defaultFormatter": "xaver.clang-format"
+  }
+}
