@@ -36,6 +36,20 @@
       "options": {
         "targetName": "lint"
       }
+    },
+    {
+      "plugin": "@nx/playwright/plugin",
+      "options": {
+        "targetName": "e2e"
+      }
     }
-  ]
+  ],
+  "generators": {
+    "@nx/web:application": {
+      "style": "css",
+      "linter": "eslint",
+      "unitTestRunner": "vitest",
+      "e2eTestRunner": "playwright"
+    }
+  }
 }
