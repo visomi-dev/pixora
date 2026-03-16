@@ -1,6 +1,6 @@
 # Module Boundaries
 
-This document defines what each major Pixyn module owns and what it must not own.
+This document defines what each major pixora module owns and what it must not own.
 
 ## App core
 
@@ -150,10 +150,10 @@ Must not own:
 
 ## Example app boundary
 
-`apps/example` is allowed to depend on the public API of `pixyn` only.
+`apps/example` is allowed to depend on the public API of `pixora` only.
 
 It must not depend on:
 
-- deep imports from `libs/pixyn/src/...`;
+- deep imports from `libs/pixora/src/...`;
 - private implementation details of framework modules;
 - temporary file structure assumptions inside the library.

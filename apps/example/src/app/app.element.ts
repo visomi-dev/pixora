@@ -2,8 +2,8 @@ import { GameplayScene } from './scenes/gameplay/gameplay.scene';
 import { MainMenuScene } from './scenes/main-menu/main-menu.scene';
 import { PauseOverlay } from './scenes/pause-overlay/pause-overlay.scene';
 
-import type { Disposable, PixynApp, Viewport } from 'pixyn';
-import { createPixynApp } from 'pixyn';
+import type { Disposable, pixoraApp, Viewport } from 'pixora';
+import { createpixoraApp } from 'pixora';
 
 import './app.element.css';
 
@@ -14,7 +14,7 @@ type SceneChangePayload = {
 
 export class AppElement extends HTMLElement {
   private readonly sceneSubscriptions = new Set<Disposable>();
-  private runtime?: PixynApp;
+  private runtime?: pixoraApp;
 
   connectedCallback() {
     if (!this.hasChildNodes()) {
@@ -51,7 +51,7 @@ export class AppElement extends HTMLElement {
       return;
     }
 
-    this.runtime = await createPixynApp({
+    this.runtime = await createpixoraApp({
       autoStart: false,
       backgroundColor: 0x172033,
       initialScene: 'main-menu',
@@ -120,10 +120,10 @@ export class AppElement extends HTMLElement {
       <main class="shell">
         <section class="panel hero">
           <div>
-            <p class="eyebrow">Pixyn example app</p>
+            <p class="eyebrow">pixora example app</p>
             <h1>Phase 8 example app MVP.</h1>
             <p class="lede">
-              The app now builds a real menu, gameplay scene, and pause overlay using Pixyn primitives.
+              The app now builds a real menu, gameplay scene, and pause overlay using pixora primitives.
             </p>
           </div>
           <div class="status-grid">
@@ -141,7 +141,7 @@ export class AppElement extends HTMLElement {
             </article>
             <article class="status-card">
               <span class="status-label">Runtime</span>
-              <strong>Pixi + Pixyn MVP</strong>
+              <strong>Pixi + pixora MVP</strong>
             </article>
           </div>
         </section>
@@ -150,7 +150,7 @@ export class AppElement extends HTMLElement {
           <div>
             <div class="section-heading">
               <p class="eyebrow">Canvas stage</p>
-              <h2>Pixyn MVP integration</h2>
+              <h2>pixora MVP integration</h2>
             </div>
             <p class="copy-block">
               Interact with the canvas to test the scene navigation, buttons, and responsive layout.

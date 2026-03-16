@@ -1,7 +1,0 @@
-name = "Pixyn Docs"
-license = "MIT"
-licenselink = "https://github.com/visomi/pixyn"
-description = "Custom documentation theme for Pixyn Framework"
-homepage = "https://pixyn.dev"
-tags = ["documentation", "theme"]
-author = "Visomi"

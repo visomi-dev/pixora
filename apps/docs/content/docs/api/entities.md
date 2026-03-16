@@ -7,7 +7,7 @@ The Entities module provides the entity system for organizing game objects.
 
 ## Overview
 
-Entities are the core objects in Pixyn's ECS architecture:
+Entities are the core objects in Pixora's ECS architecture:
 
 - Lightweight objects that hold components
 - Identified by name or ID
@@ -16,7 +16,7 @@ Entities are the core objects in Pixyn's ECS architecture:
 ## Creating Entities
 
 ```typescript
-import { Entity } from 'pixyn';
+import { Entity } from 'pixora';
 
 const player = new Entity('player');
 ```
@@ -45,7 +45,7 @@ player.onDestroy = () => {
 Find entities by components:
 
 ```typescript
-import { World } from 'pixyn';
+import { World } from 'pixora';
 
 const enemies = World.query(EnemyComponent, TransformComponent);
 

@@ -1,19 +1,19 @@
 # Packaging and Build
 
-This document defines the packaging expectations for `libs/pixyn`.
+This document defines the packaging expectations for `libs/pixora`.
 
 ## Packaging goals
 
-- publish Pixyn as an ESM-first package;
+- publish pixora as an ESM-first package;
 - generate `.d.ts` types;
 - keep the public API surface small and explicit;
 - keep the example app consuming the same package entry used by future consumers.
 
 ## Current workspace facts
 
-- `libs/pixyn` already uses Vite library mode.
-- Nx builds the library into `dist/libs/pixyn`.
-- the root workspace maps `pixyn` to `libs/pixyn/src/index.ts` during local development.
+- `libs/pixora` already uses Vite library mode.
+- Nx builds the library into `dist/libs/pixora`.
+- the root workspace maps `pixora` to `libs/pixora/src/index.ts` during local development.
 
 ## Packaging rules for v0
 
@@ -24,20 +24,20 @@ This document defines the packaging expectations for `libs/pixyn`.
 
 ## Build expectations
 
-- `pnpm nx build pixyn` produces a consumable distribution.
-- `pnpm nx typecheck pixyn` validates the library contract.
-- `pnpm nx test pixyn` covers module-level behavior.
-- `pnpm nx lint pixyn` enforces code quality and import boundaries.
+- `pnpm nx build pixora` produces a consumable distribution.
+- `pnpm nx typecheck pixora` validates the library contract.
+- `pnpm nx test pixora` covers module-level behavior.
+- `pnpm nx lint pixora` enforces code quality and import boundaries.
 
 ## Dependency policy
 
-- PixiJS will be a runtime dependency of `pixyn`.
+- PixiJS will be a runtime dependency of `pixora`.
 - utility dependencies must be added only when they clearly reduce complexity.
 - avoid introducing heavyweight dependencies for concerns that can be solved with small internal modules in MVP.
 
 ## Example app consumption
 
-The example app must import from `pixyn` rather than from source internals.
+The example app must import from `pixora` rather than from source internals.
 
 That keeps the demo aligned with the public API and prevents accidental dependency on private details.
 

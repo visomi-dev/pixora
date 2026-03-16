@@ -1,10 +1,10 @@
 # Public API Surface
 
-This document defines the intended public API shape for Pixyn v0.
+This document defines the intended public API shape for pixora v0.
 
 ## Packaging rule
 
-Consumers import only from `pixyn`.
+Consumers import only from `pixora`.
 
 Deep imports into private source files are not supported.
 
@@ -14,9 +14,9 @@ The root package should expose named exports grouped by module domain.
 
 ### App
 
-- `createPixynApp`
-- `type PixynApp`
-- `type PixynAppOptions`
+- `createpixoraApp`
+- `type pixoraApp`
+- `type pixoraAppOptions`
 - `type Viewport`
 
 ### Scenes

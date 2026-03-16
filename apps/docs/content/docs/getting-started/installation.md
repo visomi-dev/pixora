@@ -1,30 +1,30 @@
 ---
 title: Installation
-description: How to install Pixyn in your project
+description: How to install Pixora in your project
 ---
 
 ## Prerequisites
 
-Before installing Pixyn, ensure you have:
+Before installing Pixora, ensure you have:
 
 - Node.js 18+
 - npm, yarn, or pnpm
 
-## Install Pixyn
+## Install Pixora
 
-Install Pixyn and its dependencies using your preferred package manager:
+Install Pixora and its dependencies using your preferred package manager:
 
 ```bash
-npm install pixyn
+npm install pixora
 # or
-yarn add pixyn
+yarn add pixora
 # or
-pnpm add pixyn
+pnpm add pixora
 ```
 
 ## Peer Dependencies
 
-Pixyn requires pixi.js as a peer dependency:
+Pixora requires pixi.js as a peer dependency:
 
 ```bash
 npm install pixi.js
@@ -53,9 +53,9 @@ Ensure your `tsconfig.json` has the following settings:
 Create a simple test file to verify the installation:
 
 ```typescript
-import { PixynApp } from 'pixyn';
+import { PixoraApp } from 'pixora';
 
-const app = new PixynApp({
+const app = new PixoraApp({
   width: 800,
   height: 600,
   backgroundColor: 0x1099bb,
@@ -64,7 +64,7 @@ const app = new PixynApp({
 app.start();
 ```
 
-If the application starts without errors, Pixyn is installed correctly.
+If the application starts without errors, Pixora is installed correctly.
 
 ## Next Steps
 

@@ -3,11 +3,11 @@ title: App Module
 description: Core application and game loop
 ---
 
-The App module is the core of every Pixyn application, managing the game loop, rendering, and application lifecycle.
+The App module is the core of every Pixora application, managing the game loop, rendering, and application lifecycle.
 
 ## Overview
 
-The `PixynApp` class is the entry point for creating Pixyn applications. It handles:
+The `PixoraApp` class is the entry point for creating Pixora applications. It handles:
 
 - Canvas creation and management
 - Game loop (ticker)
@@ -17,9 +17,9 @@ The `PixynApp` class is the entry point for creating Pixyn applications. It hand
 ## Creating an Application
 
 ```typescript
-import { PixynApp } from 'pixyn';
+import { PixoraApp } from 'pixora';
 
-const app = new PixynApp({
+const app = new PixoraApp({
   width: 800,
   height: 600,
   backgroundColor: 0x1099bb,

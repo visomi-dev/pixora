@@ -45,4 +45,4 @@ The MVP is ready when:
 - a reactive store updates UI without manual polling;
 - events can be emitted and handled with TypeScript safety;
 - scene cleanup removes listeners and bindings;
-- the example app is built only with the public API of `pixyn`.
+- the example app is built only with the public API of `pixora`.

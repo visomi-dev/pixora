@@ -10,7 +10,7 @@ Gameplay support is part of the roadmap, but a full entity-component-system woul
 
 ## Decision
 
-Pixyn will not implement a full ECS for MVP.
+pixora will not implement a full ECS for MVP.
 
 Instead it will provide a lightweight `Entity` abstraction that combines:
 

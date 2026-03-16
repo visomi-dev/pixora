@@ -20,20 +20,20 @@ Exit criteria:
 Outputs:
 
 - `pixi.js` added to the library package;
-- internal folder structure created in `libs/pixyn/src/`;
+- internal folder structure created in `libs/pixora/src/`;
 - root public API scaffolded;
 - placeholder Nx scaffold code removed.
 
 Exit criteria:
 
 - the library builds with the new structure;
-- the example app can import from `pixyn`.
+- the example app can import from `pixora`.
 
 ## Phase 2 - App Core
 
 Outputs:
 
-- `createPixynApp`;
+- `createpixoraApp`;
 - application context;
 - viewport manager;
 - service registry;

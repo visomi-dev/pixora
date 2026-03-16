@@ -6,7 +6,7 @@ Provide lightweight reactive primitives for application, scene, and component st
 
 ## Core primitives
 
-Pixyn MVP includes:
+pixora MVP includes:
 
 - `signal<T>(initialValue)`
 - `computed<T>(read)`
@@ -56,7 +56,7 @@ type Store<State> = {
 
 ## Factory direction
 
-`signal`, `computed`, `effect`, and `createStore` are exported as top-level factories from `pixyn`.
+`signal`, `computed`, `effect`, and `createStore` are exported as top-level factories from `pixora`.
 
 ## Scope rules
 

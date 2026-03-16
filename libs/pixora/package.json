@@ -1,0 +1,16 @@
+{
+  "name": "pixora",
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.js"
+    }
+  },
+  "main": "./index.js",
+  "types": "./index.d.ts",
+  "dependencies": {
+    "pixi.js": "^8.17.0"
+  }
+}

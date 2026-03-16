@@ -18,7 +18,7 @@ Components are reusable pieces of data and behavior that can be attached to enti
 ## Built-in Components
 
 ```typescript
-import { Entity, SpriteComponent, TransformComponent } from 'pixyn';
+import { Entity, SpriteComponent, TransformComponent } from 'pixora';
 
 const entity = new Entity('player');
 entity.addComponent(TransformComponent, { x: 100, y: 100 });
@@ -30,7 +30,7 @@ entity.addComponent(SpriteComponent, { texture: 'player.png' });
 Create custom components:
 
 ```typescript
-import { Component } from 'pixyn';
+import { Component } from 'pixora';
 
 class HealthComponent extends Component {
   health = 100;

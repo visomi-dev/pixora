@@ -7,7 +7,7 @@ The Layout module provides layout managers for arranging UI elements.
 
 ## Overview
 
-Pixyn's layout system includes:
+Pixora's layout system includes:
 
 - Anchor positioning
 - Grid layouts
@@ -19,7 +19,7 @@ Pixyn's layout system includes:
 Position elements relative to their parent:
 
 ```typescript
-import { Anchor } from 'pixyn';
+import { Anchor } from 'pixora';
 
 sprite.anchor = {
   x: Anchor.Center,
@@ -32,7 +32,7 @@ sprite.anchor = {
 Use layout containers to arrange children:
 
 ```typescript
-import { Container, GridLayout, FlexLayout } from 'pixyn';
+import { Container, GridLayout, FlexLayout } from 'pixora';
 
 const container = new Container();
 container.layout = new FlexLayout({
@@ -47,7 +47,7 @@ container.layout = new FlexLayout({
 Create responsive UI that adapts to screen size:
 
 ```typescript
-import { ResponsiveLayout } from 'pixyn';
+import { ResponsiveLayout } from 'pixora';
 
 const layout = new ResponsiveLayout({
   mobile: { direction: 'column' },

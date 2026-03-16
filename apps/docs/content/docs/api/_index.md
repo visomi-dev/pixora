@@ -1,10 +1,10 @@
 ---
 title: API Reference
-description: Complete API documentation for Pixyn Framework
+description: Complete API documentation for Pixora Framework
 weight: 10
 ---
 
-This section provides detailed API documentation for all Pixyn modules.
+This section provides detailed API documentation for all Pixora modules.
 
 ## Modules
 

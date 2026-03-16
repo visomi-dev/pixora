@@ -8,8 +8,8 @@ import {
   Panel,
   Scene,
   TextNode,
-} from 'pixyn';
-import type { KeyboardState, Viewport } from 'pixyn';
+} from 'pixora';
+import type { KeyboardState, Viewport } from 'pixora';
 
 type GameObject = {
   x: number;

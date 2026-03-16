@@ -1,11 +1,11 @@
 ---
-title: Welcome to Pixyn
+title: Welcome to Pixora
 description: A modern 2D/3D game framework built with TypeScript and Pixi.js
 ---
 
-Welcome to the Pixyn Framework documentation. Pixyn is a powerful, flexible game development framework designed for building 2D and 3D games using TypeScript and Pixi.js.
+Welcome to the Pixora Framework documentation. Pixora is a powerful, flexible game development framework designed for building 2D and 3D games using TypeScript and Pixi.js.
 
-## Why Pixyn?
+## Why Pixora?
 
 - **TypeScript First**: Full type safety and modern JavaScript features
 - **Entity Component System**: Flexible architecture for game objects

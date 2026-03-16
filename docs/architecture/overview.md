@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Pixyn is an intermediate layer between PixiJS and a game domain.
+pixora is an intermediate layer between PixiJS and a game domain.
 
 It exists to provide the structure that PixiJS intentionally does not solve on its own:
 
@@ -16,7 +16,7 @@ It exists to provide the structure that PixiJS intentionally does not solve on i
 
 ## Workspace mapping
 
-- `libs/pixyn` contains the framework runtime and its public API.
+- `libs/pixora` contains the framework runtime and its public API.
 - `apps/example` is the integration app that proves the framework can build the MVP flows.
 - `docs/` contains the definition set that must be implemented before the framework is considered stable.
 
@@ -28,7 +28,7 @@ PixiJS is responsible for drawing display objects, textures, text, and low-level
 
 ### Layer 2 - Framework Core
 
-Pixyn is responsible for:
+pixora is responsible for:
 
 - application boot;
 - scene lifecycle;
@@ -42,7 +42,7 @@ Pixyn is responsible for:
 
 ### Layer 3 - Game Domain
 
-The game or demo built on top of Pixyn is responsible for:
+The game or demo built on top of pixora is responsible for:
 
 - game rules;
 - domain entities;
@@ -57,7 +57,7 @@ Art, textures, spritesheets, sounds, and copy live outside the framework rules b
 
 ## Proposed internal module map
 
-The initial implementation inside `libs/pixyn/src/` should grow toward this structure:
+The initial implementation inside `libs/pixora/src/` should grow toward this structure:
 
 ```txt
 src/

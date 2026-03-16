@@ -6,11 +6,11 @@ Accepted
 
 ## Context
 
-Pixyn needs a predictable way to initialize, mount, activate, deactivate, resize, update, and destroy scenes. The scene system must also support overlays.
+pixora needs a predictable way to initialize, mount, activate, deactivate, resize, update, and destroy scenes. The scene system must also support overlays.
 
 ## Decision
 
-Pixyn will use a class-based scene model.
+pixora will use a class-based scene model.
 
 Each scene extends `Scene` and participates in a fixed lifecycle:
 

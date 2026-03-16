@@ -3,7 +3,7 @@ title: Utils Module
 description: Utility functions and helpers
 ---
 
-The Utils module provides common utility functions used throughout Pixyn.
+The Utils module provides common utility functions used throughout Pixora.
 
 ## Overview
 
@@ -17,7 +17,7 @@ Utility functions include:
 ## Math Utilities
 
 ```typescript
-import { MathUtils, Vec2, Color } from 'pixyn';
+import { MathUtils, Vec2, Color } from 'pixora';
 
 // Clamp values
 const clamped = MathUtils.clamp(150, 0, 100); // 100
@@ -32,7 +32,7 @@ const random = MathUtils.randomRange(1, 10);
 ## Color Utilities
 
 ```typescript
-import { Color } from 'pixyn';
+import { Color } from 'pixora';
 
 const color = new Color(0xff5500);
 
@@ -50,7 +50,7 @@ color.setAlpha(0.5);
 ## Vector Utilities
 
 ```typescript
-import { Vec2 } from 'pixyn';
+import { Vec2 } from 'pixora';
 
 const pos = new Vec2(100, 100);
 pos.add(new Vec2(50, 50)); // { x: 150, y: 150 }

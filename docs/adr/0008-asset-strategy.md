@@ -10,7 +10,7 @@ The framework needs centralized asset access, but the first phase does not need 
 
 ## Decision
 
-Pixyn will provide a key-based asset registry with a small loading facade.
+pixora will provide a key-based asset registry with a small loading facade.
 
 The registry will:
 
@@ -19,7 +19,7 @@ The registry will:
 - expose load state;
 - return textures or spritesheet data through typed lookup methods.
 
-Under the hood, Pixyn may use PixiJS asset utilities once PixiJS is installed, but the framework API must remain framework-owned.
+Under the hood, pixora may use PixiJS asset utilities once PixiJS is installed, but the framework API must remain framework-owned.
 
 ## Consequences
 

@@ -2,14 +2,14 @@
 
 ## Goal
 
-Use `apps/example` as the first real consumer of Pixyn.
+Use `apps/example` as the first real consumer of pixora.
 
 The example app is not marketing-only. It is the integration harness that proves the framework can build the intended MVP flows.
 
 ## Rules
 
-- import from `pixyn` only;
-- do not deep-import `libs/pixyn/src/...`;
+- import from `pixora` only;
+- do not deep-import `libs/pixora/src/...`;
 - exercise scenes, overlays, layout, state, events, assets, and basic animation;
 - remain small enough to iterate quickly.
 
@@ -56,7 +56,7 @@ apps/example/src/
 
 ## Success criteria
 
-The example app proves that Pixyn can:
+The example app proves that pixora can:
 
 - start an initial scene;
 - navigate between scenes;

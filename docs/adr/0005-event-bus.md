@@ -10,7 +10,7 @@ The framework needs decoupled communication between scenes, UI, and gameplay mod
 
 ## Decision
 
-Pixyn will provide a typed event bus based on an `EventMap` generic.
+pixora will provide a typed event bus based on an `EventMap` generic.
 
 The bus will support:
 

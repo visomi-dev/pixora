@@ -1,5 +1,6 @@
-#!/bin/bash
-. "$(dirname -- "$0")/_/husky.sh"
+pnpm affected -t lint
+# pnpm affected -t test
+# pnpm affected -t build
 
 # Run version bump if library files were modified
 pnpm run version:bump

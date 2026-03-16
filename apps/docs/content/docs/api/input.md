@@ -7,7 +7,7 @@ The Input module provides unified input handling for keyboard, mouse, and gamepa
 
 ## Overview
 
-Pixyn's input system:
+Pixora's input system:
 
 - Keyboard state tracking
 - Mouse position and button handling
@@ -17,7 +17,7 @@ Pixyn's input system:
 ## Keyboard Input
 
 ```typescript
-import { Input, Keyboard } from 'pixyn';
+import { Input, Keyboard } from 'pixora';
 
 // Check key state
 if (Input.keyboard.isDown(Keyboard.Space)) {
@@ -48,7 +48,7 @@ if (Input.mouse.isDown(Mouse.LeftButton)) {
 ## Gamepad Input
 
 ```typescript
-import { Input, Gamepad } from 'pixyn';
+import { Input, Gamepad } from 'pixora';
 
 // Get gamepad
 const gamepad = Input.gamepads[0];

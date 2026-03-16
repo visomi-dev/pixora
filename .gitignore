@@ -13,3 +13,7 @@ coverage/
 pnpm-workspace.yaml
 
 coverage/
+
+apps/docs/static/examples/game/
+apps/docs/content/docs/api/generated/
+apps/docs/public/

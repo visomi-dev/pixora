@@ -1,5 +1,5 @@
-import { applyLayout, Button, layout, Panel, Scene, TextNode } from 'pixyn';
-import type { Viewport } from 'pixyn';
+import { applyLayout, Button, layout, Panel, Scene, TextNode } from 'pixora';
+import type { Viewport } from 'pixora';
 
 export class PauseOverlay extends Scene {
   readonly key = 'pause-overlay';

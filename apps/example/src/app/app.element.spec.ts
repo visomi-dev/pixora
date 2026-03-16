@@ -1,7 +1,7 @@
 import { vi } from 'vitest';
 
 const goTo = vi.fn(async () => undefined);
-const createPixynApp = vi.fn(async () => ({
+const createpixoraApp = vi.fn(async () => ({
   app: {},
   context: {
     events: {
@@ -28,12 +28,12 @@ const createPixynApp = vi.fn(async () => ({
   start: vi.fn(async () => undefined),
 }));
 
-vi.mock('pixyn', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('pixyn')>();
+vi.mock('pixora', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('pixora')>();
 
   return {
     ...actual,
-    createPixynApp,
+    createpixoraApp,
   };
 });
 
@@ -47,7 +47,7 @@ describe('AppElement', () => {
   });
 
   beforeEach(() => {
-    createPixynApp.mockClear();
+    createpixoraApp.mockClear();
     goTo.mockClear();
     app = new AppElementCtor();
   });
@@ -56,14 +56,14 @@ describe('AppElement', () => {
     expect(app).toBeTruthy();
   });
 
-  it('renders the Pixyn phase 8 heading and boots the runtime', async () => {
+  it('renders the pixora phase 8 heading and boots the runtime', async () => {
     app.connectedCallback();
     await Promise.resolve();
 
     expect(app.querySelector('h1')?.textContent).toContain('Phase 8 example app MVP.');
     expect(app.textContent).toContain('Canvas stage');
-    expect(createPixynApp).toHaveBeenCalledTimes(1);
-    expect(createPixynApp).toHaveBeenCalledWith(
+    expect(createpixoraApp).toHaveBeenCalledTimes(1);
+    expect(createpixoraApp).toHaveBeenCalledWith(
       expect.objectContaining({
         initialScene: 'main-menu',
       }),

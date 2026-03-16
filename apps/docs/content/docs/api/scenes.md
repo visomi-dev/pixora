@@ -17,7 +17,7 @@ Scenes organize your game into logical parts:
 ## Creating Scenes
 
 ```typescript
-import { Scene } from 'pixyn';
+import { Scene } from 'pixora';
 
 class GameScene extends Scene {
   name = 'game';
@@ -43,7 +43,7 @@ class GameScene extends Scene {
 ## Scene Manager
 
 ```typescript
-import { SceneManager } from 'pixyn';
+import { SceneManager } from 'pixora';
 
 const sceneManager = new SceneManager(app);
 

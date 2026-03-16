@@ -16,7 +16,7 @@ Services allow you to:
 ## Registering Services
 
 ```typescript
-import { Services } from 'pixyn';
+import { Services } from 'pixora';
 
 // Register a service
 Services.register(AudioService, {
@@ -28,7 +28,7 @@ Services.register(AudioService, {
 ## Using Services
 
 ```typescript
-import { Services } from 'pixyn';
+import { Services } from 'pixora';
 
 // Get a service
 const audio = Services.get(AudioService);

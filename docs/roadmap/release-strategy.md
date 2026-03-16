@@ -2,11 +2,11 @@
 
 ## Goal
 
-Define how Pixyn moves from internal scaffold to publishable package.
+Define how pixora moves from internal scaffold to publishable package.
 
 ## Versioning
 
-- treat Pixyn as pre-1.0 until the public API stabilizes;
+- treat pixora as pre-1.0 until the public API stabilizes;
 - use semver semantics even during internal development;
 - avoid promising deep import paths or unstable APIs.
 
@@ -15,7 +15,7 @@ Define how Pixyn moves from internal scaffold to publishable package.
 1. finish MVP implementation;
 2. validate lint, test, typecheck, and build for library and example app;
 3. verify package metadata and type declarations;
-4. publish from `dist/libs/pixyn` through the existing Nx release flow when ready.
+4. publish from `dist/libs/pixora` through the existing Nx release flow when ready.
 
 ## Publish readiness checklist
 

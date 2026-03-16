@@ -4,7 +4,7 @@ description: Working examples and code samples
 weight: 6
 ---
 
-This section contains working examples demonstrating various Pixyn features.
+This section contains working examples demonstrating various Pixora features.
 
 ## Available Examples
 

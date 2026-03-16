@@ -1,9 +1,9 @@
 ---
 title: Space Invaders Game
-description: A complete Space Invaders-style shooter game built with Pixyn
+description: A complete Space Invaders-style shooter game built with Pixora
 ---
 
-This example demonstrates a complete Space Invaders-style game built using Pixyn's scene system, entity components, input handling, and UI elements.
+This example demonstrates a complete Space Invaders-style game built using Pixora's scene system, entity components, input handling, and UI elements.
 
 ## Play the Game
 
@@ -28,9 +28,9 @@ The game is organized into three scenes:
 ### Main Application Setup
 
 ```typescript
-import { createPixynApp } from 'pixyn';
+import { createPixoraApp } from 'pixora';
 
-const app = await createPixynApp({
+const app = await createPixoraApp({
   autoStart: false,
   backgroundColor: 0x172033,
   initialScene: 'main-menu',
@@ -65,7 +65,7 @@ export class GameplayScene extends Scene {
 }
 ```
 
-## Key Pixyn Features Used
+## Key Pixora Features Used
 
 | Feature               | Usage                               |
 | --------------------- | ----------------------------------- |

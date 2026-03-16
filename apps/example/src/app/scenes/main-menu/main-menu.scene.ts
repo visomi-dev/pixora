@@ -1,5 +1,5 @@
-import { applyLayout, Button, layout, Panel, Scene, TextNode } from 'pixyn';
-import type { Viewport } from 'pixyn';
+import { applyLayout, Button, layout, Panel, Scene, TextNode } from 'pixora';
+import type { Viewport } from 'pixora';
 
 export class MainMenuScene extends Scene {
   readonly key = 'main-menu';
@@ -13,7 +13,7 @@ export class MainMenuScene extends Scene {
       fontSize: 64,
       fontWeight: '600',
     },
-    text: 'Pixyn Demo',
+    text: 'pixora Demo',
   });
   private readonly playButton = new Button({
     backgroundColor: 0xef8d5e,

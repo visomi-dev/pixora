@@ -1,8 +1,8 @@
-# Pixyn — Conversation Context Summary
+# pixora — Conversation Context Summary
 
 ## Project Overview
 
-**Pixyn** is a lightweight reactive framework built on top of **PixiJS** to simplify the development of 2D web games.
+**pixora** is a lightweight reactive framework built on top of **PixiJS** to simplify the development of 2D web games.
 
 It was created to solve the architectural gaps of PixiJS when building full applications such as:
 
@@ -14,7 +14,7 @@ It was created to solve the architectural gaps of PixiJS when building full appl
 * event-driven gameplay
 * simple animation orchestration
 
-Pixyn is **not a game engine replacement** and **does not attempt to compete with Unity, Godot, or Phaser**.
+pixora is **not a game engine replacement** and **does not attempt to compete with Unity, Godot, or Phaser**.
 
 Instead, it acts as a **structured runtime layer on top of PixiJS**.
 
@@ -28,10 +28,10 @@ However the framework is intentionally **game-agnostic**.
 
 # Core Philosophy
 
-Pixyn follows these architectural principles:
+pixora follows these architectural principles:
 
 1. **PixiJS handles rendering**
-2. **Pixyn handles application structure**
+2. **pixora handles application structure**
 3. **Reactive state drives rendering**
 4. **Scenes organize gameplay**
 5. **Components compose UI**
@@ -50,7 +50,7 @@ Design goals:
 
 # High Level Architecture
 
-Pixyn architecture is divided into layers:
+pixora architecture is divided into layers:
 
 ### Layer 1 — Rendering
 
@@ -65,7 +65,7 @@ Responsibilities:
 
 ---
 
-### Layer 2 — Pixyn Core Runtime
+### Layer 2 — pixora Core Runtime
 
 Responsibilities:
 
@@ -109,7 +109,7 @@ Sprites, sounds, UI graphics, backgrounds.
 Bootstrapped through:
 
 ```
-createPixynApp()
+createpixoraApp()
 ```
 
 Responsibilities:
@@ -131,7 +131,7 @@ Core modules:
 
 # Scene System
 
-Pixyn uses a **Scene Manager architecture**.
+pixora uses a **Scene Manager architecture**.
 
 Scenes represent major game states such as:
 
@@ -167,7 +167,7 @@ Overlays allow UI layers like pause menus to run above scenes.
 
 # Reactive Core
 
-Pixyn uses a **reactive architecture** for state updates.
+pixora uses a **reactive architecture** for state updates.
 
 Main primitives:
 
@@ -191,7 +191,7 @@ This avoids manual update propagation.
 
 # Event System
 
-Pixyn includes a **typed event bus** used for decoupled communication.
+pixora includes a **typed event bus** used for decoupled communication.
 
 Examples:
 
@@ -209,7 +209,7 @@ This allows gameplay systems, UI, and scenes to communicate without tight coupli
 
 # UI Component System
 
-Pixyn provides a **component-based UI layer** on top of Pixi.
+pixora provides a **component-based UI layer** on top of Pixi.
 
 Base primitives include:
 
@@ -231,7 +231,7 @@ Features:
 
 # Layout Engine
 
-Pixyn includes a **custom layout system** to solve responsive positioning.
+pixora includes a **custom layout system** to solve responsive positioning.
 
 Layouts supported:
 
@@ -256,7 +256,7 @@ Example use cases:
 
 # Input System
 
-Pixyn abstracts pointer interaction:
+pixora abstracts pointer interaction:
 
 * click / tap
 * hover
@@ -269,7 +269,7 @@ Input integrates directly with UI components.
 
 # Asset System
 
-Pixyn provides a minimal asset registry.
+pixora provides a minimal asset registry.
 
 Responsibilities:
 
@@ -284,7 +284,7 @@ This avoids scattering asset loading logic.
 
 # Animation Helpers
 
-Pixyn includes lightweight tween utilities.
+pixora includes lightweight tween utilities.
 
 Use cases:
 
@@ -299,7 +299,7 @@ Not intended to be a full animation engine.
 
 # Entity Support
 
-Pixyn includes a **minimal entity abstraction** for gameplay.
+pixora includes a **minimal entity abstraction** for gameplay.
 
 Entities are lightweight objects representing:
 
@@ -324,7 +324,7 @@ instead of a full ECS implementation.
 
 # Development Architecture
 
-Pixyn is structured as a modular framework.
+pixora is structured as a modular framework.
 
 Example repository structure:
 
@@ -388,7 +388,7 @@ Library infrastructure:
 
 Core runtime creation:
 
-* `createPixynApp`
+* `createpixoraApp`
 * application context
 * viewport manager
 * service registry
@@ -482,7 +482,7 @@ Stability improvements:
 
 # Current Status
 
-Pixyn has reached **Phase 9 (Hardening)**.
+pixora has reached **Phase 9 (Hardening)**.
 
 This means the framework currently includes:
 
@@ -495,7 +495,7 @@ This means the framework currently includes:
 * example application
 * documentation and tests
 
-Pixyn is now ready for:
+pixora is now ready for:
 
 * integration into the Catfé Express game
 * iterative feature development
@@ -505,7 +505,7 @@ Pixyn is now ready for:
 
 # Intended Use
 
-Pixyn is designed to enable fast development of games like:
+pixora is designed to enable fast development of games like:
 
 * diner dash style games
 * management games

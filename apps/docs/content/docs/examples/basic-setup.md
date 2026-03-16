@@ -1,16 +1,16 @@
 ---
 title: Basic Setup Example
-description: A minimal Pixyn application
+description: A minimal Pixora application
 ---
 
-This example demonstrates the minimum code needed to create a Pixyn application.
+This example demonstrates the minimum code needed to create a Pixora application.
 
 ## Complete Example
 
 ```typescript
-import { PixynApp } from 'pixyn';
+import { PixoraApp } from 'pixora';
 
-const app = new PixynApp({
+const app = new PixoraApp({
   width: 800,
   height: 600,
   backgroundColor: 0x1099bb,

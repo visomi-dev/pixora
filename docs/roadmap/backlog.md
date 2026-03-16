@@ -2,7 +2,7 @@
 
 ## P0 - Must have before demo completion
 
-- add PixiJS to `libs/pixyn`;
+- add PixiJS to `libs/pixora`;
 - replace scaffold exports with real module structure;
 - implement app bootstrap;
 - implement viewport and resize manager;
@@ -14,7 +14,7 @@
 - implement interaction binding;
 - implement tween helpers;
 - implement asset registry;
-- rebuild `apps/example` against public Pixyn APIs.
+- rebuild `apps/example` against public pixora APIs.
 
 ## P1 - Important after the first working loop
 

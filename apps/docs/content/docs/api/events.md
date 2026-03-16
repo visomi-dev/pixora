@@ -7,7 +7,7 @@ The Events module provides a flexible event system for communication between gam
 
 ## Overview
 
-Pixyn's event system supports:
+Pixora's event system supports:
 
 - Custom events
 - Event bubbling
@@ -17,7 +17,7 @@ Pixyn's event system supports:
 ## Creating and Dispatching Events
 
 ```typescript
-import { EventDispatcher, GameEvent } from 'pixyn';
+import { EventDispatcher, GameEvent } from 'pixora';
 
 const dispatcher = new EventDispatcher();
 
@@ -52,7 +52,7 @@ dispatcher.off('event', handler);
 Use the global event bus for application-wide events:
 
 ```typescript
-import { Events } from 'pixyn';
+import { Events } from 'pixora';
 
 Events.on('game:start', () => {
   console.log('Game started!');

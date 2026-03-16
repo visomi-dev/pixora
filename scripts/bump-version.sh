@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Script to automatically bump version when libs/pixyn is modified
+# Script to automatically bump version when libs/pixora is modified
 
 # Exit if not in a git repo
 git rev-parse --is-inside-work-tree > /dev/null 2>&1 || exit 0
@@ -8,8 +8,8 @@ git rev-parse --is-inside-work-tree > /dev/null 2>&1 || exit 0
 # Get list of changed files (staged + unstaged)
 CHANGED_FILES=$(git diff --name-only HEAD)
 
-# Check if any file in libs/pixyn was changed
-if echo "$CHANGED_FILES" | grep -q "^libs/pixyn/"; then
+# Check if any file in libs/pixora was changed
+if echo "$CHANGED_FILES" | grep -q "^libs/pixora/"; then
   echo "Library files modified, checking version bump..."
 
   # Check if version bump is needed (commit message should contain bump directive)
@@ -29,10 +29,10 @@ if echo "$CHANGED_FILES" | grep -q "^libs/pixyn/"; then
     BUMP_TYPE="minor"
   fi
 
-  echo "Bumping $BUMP_TYPE version for libs/pixyn..."
+  echo "Bumping $BUMP_TYPE version for libs/pixora..."
   
   # Read current version
-  CURRENT_VERSION=$(node -p "require('./libs/pixyn/package.json').version")
+  CURRENT_VERSION=$(node -p "require('./libs/pixora/package.json').version")
   echo "Current version: $CURRENT_VERSION"
   
   # Bump version using standard semver
@@ -62,13 +62,13 @@ if echo "$CHANGED_FILES" | grep -q "^libs/pixyn/"; then
   # Update version in package.json
   node -e "
     const fs = require('fs');
-    const pkg = require('./libs/pixyn/package.json');
+    const pkg = require('./libs/pixora/package.json');
     pkg.version = '$NEW_VERSION';
-    fs.writeFileSync('./libs/pixyn/package.json', JSON.stringify(pkg, null, 2) + '\n');
+    fs.writeFileSync('./libs/pixora/package.json', JSON.stringify(pkg, null, 2) + '\n');
   "
 
   # Stage the changes
-  git add libs/pixyn/package.json
+  git add libs/pixora/package.json
   
   echo "Version bumped to $NEW_VERSION and staged for commit"
 fi

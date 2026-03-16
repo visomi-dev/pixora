@@ -24,7 +24,7 @@ Provide the bootstrap layer that creates the Pixi application, shared runtime co
 ## Conceptual API
 
 ```ts
-type PixynAppOptions = {
+type pixoraAppOptions = {
   mount: HTMLElement;
   width?: number;
   height?: number;
@@ -43,13 +43,13 @@ type Viewport = {
   orientation: 'portrait' | 'landscape';
 };
 
-type PixynApp = {
+type pixoraApp = {
   context: ApplicationContext;
   start(): Promise<void>;
   destroy(): Promise<void>;
 };
 
-declare function createPixynApp(options: PixynAppOptions): Promise<PixynApp>;
+declare function createpixoraApp(options: pixoraAppOptions): Promise<pixoraApp>;
 ```
 
 ## Application context

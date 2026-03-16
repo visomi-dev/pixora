@@ -15,7 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "pixyn": ["libs/pixyn/src/index.ts"]
+      "pixora": ["libs/pixora/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

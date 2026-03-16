@@ -7,7 +7,7 @@ The Assets module provides efficient loading and caching of game assets includin
 
 ## Overview
 
-Pixyn's asset system handles:
+Pixora's asset system handles:
 
 - Texture loading (PNG, JPG, WebP, etc.)
 - Sprite sheet loading
@@ -18,7 +18,7 @@ Pixyn's asset system handles:
 ## Loading Assets
 
 ```typescript
-import { Assets } from 'pixyn';
+import { Assets } from 'pixora';
 
 // Load a single texture
 const texture = await Assets.loadTexture('player.png');
@@ -30,7 +30,7 @@ const assets = await Assets.load(['player.png', 'enemy.png', 'background.jpg']);
 ## Loading Sprite Sheets
 
 ```typescript
-import { Assets, Spritesheet } from 'pixyn';
+import { Assets, Spritesheet } from 'pixora';
 
 const spritesheet = await Assets.loadSpritesheet('character.json');
 ```

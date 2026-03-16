@@ -1,8 +1,8 @@
-# Pixyn Docs
+# pixora Docs
 
-This directory contains the phase 0 definition set for Pixyn.
+This directory contains the phase 0 definition set for pixora.
 
-The goal of phase 0 is to remove the biggest technical unknowns before framework code is written in `libs/pixyn` and before the demo is rebuilt in `apps/example`.
+The goal of phase 0 is to remove the biggest technical unknowns before framework code is written in `libs/pixora` and before the demo is rebuilt in `apps/example`.
 
 ## Source of truth
 
@@ -17,7 +17,7 @@ Read the documents in this order:
 
 ## Current workspace status
 
-- `libs/pixyn` exists as a publishable Vite library but still contains scaffold code.
+- `libs/pixora` exists as a publishable Vite library but still contains scaffold code.
 - `apps/example` exists as a Vite app but still contains the default Nx starter screen.
 - `docs/prd.md` defines the product direction, but the technical definition set was missing.
 

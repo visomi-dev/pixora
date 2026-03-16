@@ -7,7 +7,7 @@ The State module provides reactive state management using signals.
 
 ## Overview
 
-Pixyn's state system:
+Pixora's state system:
 
 - Reactive signals
 - Computed values
@@ -17,7 +17,7 @@ Pixyn's state system:
 ## Creating State
 
 ```typescript
-import { signal, computed } from 'pixyn';
+import { signal, computed } from 'pixora';
 
 // Create a signal
 const score = signal(0);
@@ -35,7 +35,7 @@ score.update((s) => s + 10);
 Run code when state changes:
 
 ```typescript
-import { effect } from 'pixyn';
+import { effect } from 'pixora';
 
 effect(() => {
   console.log('Score:', score());
@@ -47,7 +47,7 @@ effect(() => {
 Persist state to storage:
 
 ```typescript
-import { persist, StorageAdapter } from 'pixyn';
+import { persist, StorageAdapter } from 'pixora';
 
 const settings = persist(
   'settings',

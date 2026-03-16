@@ -10,7 +10,7 @@ The PRD requires reusable UI elements without introducing React or another full 
 
 ## Decision
 
-Pixyn will use lightweight class-based visual wrappers built on top of Pixi display objects.
+pixora will use lightweight class-based visual wrappers built on top of Pixi display objects.
 
 The MVP hierarchy is:
 
@@ -30,7 +30,7 @@ Positive:
 
 Negative:
 
-- Pixyn must define its own composition and prop conventions;
+- pixora must define its own composition and prop conventions;
 - component APIs must remain small to avoid framework bloat.
 
 ## Follow-up rules

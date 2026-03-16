@@ -7,7 +7,7 @@ The Animation module provides powerful animation capabilities including tweens a
 
 ## Overview
 
-Pixyn's animation system is built around two main concepts:
+Pixora's animation system is built around two main concepts:
 
 - **Tweens**: Interpolate values over time with easing functions
 - **Sprite Animations**: Play sprite sheet animations with frame control
@@ -17,7 +17,7 @@ Pixyn's animation system is built around two main concepts:
 Create smooth animations using the Tween class:
 
 ```typescript
-import { Tween, Easing } from 'pixyn';
+import { Tween, Easing } from 'pixora';
 
 const tween = new Tween(entity.position)
   .to({ x: 400, y: 300 }, 1000, Easing.Quadratic.Out)
@@ -42,7 +42,7 @@ Available easing functions:
 Play sprite sheet animations:
 
 ```typescript
-import { SpriteAnimation } from 'pixyn';
+import { SpriteAnimation } from 'pixora';
 
 const animation = new SpriteAnimation(sprite, {
   frames: 10,

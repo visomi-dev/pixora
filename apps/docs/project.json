@@ -15,7 +15,7 @@
     "build-example": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "pnpm nx build example --skip-nx-cache && cp -r ../../dist/apps/example/* static/examples/game/ && rm -rf ../../dist/apps/example",
+        "command": "pnpm nx build example --skip-nx-cache && cp -r ../../dist/apps/example/* static/examples/game/ && rm -rf ../../dist/apps/example && sed -i 's|/assets/|assets/|g' static/examples/game/index.html",
         "cwd": "apps/docs"
       }
     },
@@ -26,7 +26,7 @@
         "cwd": "apps/docs",
         "port": 1313
       },
-      "dependsOn": ["api"]
+      "dependsOn": ["api", "build-example"]
     },
     "preview": {
       "executor": "nx:run-commands",

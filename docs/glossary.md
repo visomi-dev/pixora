@@ -1,10 +1,10 @@
 # Glossary
 
-This glossary defines the terms used by Pixyn documents and later by the public API.
+This glossary defines the terms used by pixora documents and later by the public API.
 
 ## Core runtime terms
 
-- App: the top-level Pixyn runtime created by `createPixynApp`.
+- App: the top-level pixora runtime created by `createpixoraApp`.
 - Application Context: the shared runtime object passed to scenes, services, and framework modules.
 - Viewport: the current logical width, height, aspect ratio, orientation, and scale information.
 - Ticker: the per-frame update source used to drive scene updates, tweens, and time-based logic.
@@ -63,5 +63,5 @@ This glossary defines the terms used by Pixyn documents and later by the public 
 ## Scope language
 
 - MVP: the minimum feature set required to build the example menu, gameplay scene, pause overlay, and HUD.
-- Framework Core: code inside `libs/pixyn` that stays game-agnostic.
+- Framework Core: code inside `libs/pixora` that stays game-agnostic.
 - Example App: code inside `apps/example` used to validate the framework with a realistic integration.

@@ -12,11 +12,11 @@ The PRD left the reactive model open between three options:
 - signals-first;
 - a hybrid model.
 
-Pixyn needs predictable local and global state, lightweight derived values, and clear cleanup. The framework does not need a stream-heavy public API for MVP.
+pixora needs predictable local and global state, lightweight derived values, and clear cleanup. The framework does not need a stream-heavy public API for MVP.
 
 ## Decision
 
-Pixyn will use a minimal internal signals-and-store reactive core as the primary state model.
+pixora will use a minimal internal signals-and-store reactive core as the primary state model.
 
 RxJS is not the foundation of the public API.
 
@@ -33,7 +33,7 @@ Positive:
 
 Negative:
 
-- Pixyn must implement a small reactive runtime instead of reusing an existing stream library;
+- pixora must implement a small reactive runtime instead of reusing an existing stream library;
 - advanced stream composition is not part of MVP.
 
 ## Follow-up rules

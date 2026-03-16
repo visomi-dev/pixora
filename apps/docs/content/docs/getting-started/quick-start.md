@@ -1,18 +1,18 @@
 ---
 title: Quick Start
-description: Build your first Pixyn game in minutes
+description: Build your first Pixora game in minutes
 ---
 
-This tutorial will guide you through creating a simple game using Pixyn.
+This tutorial will guide you through creating a simple game using Pixora.
 
 ## Create Your Application
 
-Every Pixyn game starts with creating an application instance:
+Every Pixora game starts with creating an application instance:
 
 ```typescript
-import { PixynApp } from 'pixyn';
+import { PixoraApp } from 'pixora';
 
-const app = new PixynApp({
+const app = new PixoraApp({
   width: 800,
   height: 600,
   backgroundColor: 0x1099bb,
@@ -30,7 +30,7 @@ app.start();
 Create game objects using the Entity system:
 
 ```typescript
-import { Entity, SpriteComponent } from 'pixyn';
+import { Entity, SpriteComponent } from 'pixora';
 
 const player = new Entity('player');
 
@@ -50,7 +50,7 @@ app.stage.addChild(player);
 Use the animation system to bring your game to life:
 
 ```typescript
-import { Tween, Easing } from 'pixyn';
+import { Tween, Easing } from 'pixora';
 
 // Move player with tween
 const tween = new Tween(player.position).to({ x: 400 }, 1000, Easing.Quadratic.Out).start();
@@ -62,10 +62,10 @@ app.ticker.add(() => {
 
 ## Handle Input
 
-Pixyn provides a unified input system:
+Pixora provides a unified input system:
 
 ```typescript
-import { Input, Keyboard } from 'pixyn';
+import { Input, Keyboard } from 'pixora';
 
 // Listen for keyboard events
 Input.keyboard.on('keydown', (event) => {
@@ -80,9 +80,9 @@ Input.keyboard.on('keydown', (event) => {
 Here's a complete example putting it all together:
 
 ```typescript
-import { PixynApp, Entity, SpriteComponent, Tween, Easing, Input, Keyboard } from 'pixyn';
+import { PixoraApp, Entity, SpriteComponent, Tween, Easing, Input, Keyboard } from 'pixora';
 
-const app = new PixynApp({
+const app = new PixoraApp({
   width: 800,
   height: 600,
   backgroundColor: 0x1099bb,

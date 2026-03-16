@@ -6,11 +6,11 @@ Accepted
 
 ## Context
 
-Pixyn needs transitions and interaction feedback, but the PRD explicitly avoids a complex animation system in MVP.
+pixora needs transitions and interaction feedback, but the PRD explicitly avoids a complex animation system in MVP.
 
 ## Decision
 
-Pixyn will ship a small internal tween and transition layer for MVP.
+pixora will ship a small internal tween and transition layer for MVP.
 
 The animation layer will support:
 
@@ -33,7 +33,7 @@ Positive:
 Negative:
 
 - advanced choreography is deferred;
-- Pixyn must implement and test its own tween runner.
+- pixora must implement and test its own tween runner.
 
 ## Follow-up rules
 

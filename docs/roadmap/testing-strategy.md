@@ -33,16 +33,16 @@ Focus on runtime behavior across modules:
 
 Use the example app to verify:
 
-- real imports from `pixyn`;
+- real imports from `pixora`;
 - scene and overlay composition;
 - layout behavior on multiple viewport sizes.
 
 ## Commands
 
-- `pnpm nx lint pixyn`
-- `pnpm nx test pixyn`
-- `pnpm nx typecheck pixyn`
-- `pnpm nx build pixyn`
+- `pnpm nx lint pixora`
+- `pnpm nx test pixora`
+- `pnpm nx typecheck pixora`
+- `pnpm nx build pixora`
 - `pnpm nx lint example`
 - `pnpm nx test example`
 - `pnpm nx typecheck example`
