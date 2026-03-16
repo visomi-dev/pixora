@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Getting Started on Pixyn Framework</title>
+    <link>http://localhost:1313/docs/getting-started/</link>
+    <description>Recent content in Getting Started on Pixyn Framework</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <atom:link href="http://localhost:1313/docs/getting-started/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Installation</title>
+      <link>http://localhost:1313/docs/getting-started/installation/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/docs/getting-started/installation/</guid>
+      <description>Prerequisites Before installing Pixyn, ensure you have:&#xA;Node.js 18+ npm, yarn, or pnpm Install Pixyn Install Pixyn and its dependencies using your preferred package manager:&#xA;npm install pixyn # or yarn add pixyn # or pnpm add pixyn Peer Dependencies Pixyn requires the following peer dependencies:&#xA;npm install pixi.js luxon # or yarn add pixi.js luxon # or pnpm add pixi.js luxon TypeScript Configuration Ensure your tsconfig.json has the following settings:</description>
+    </item>
+    <item>
+      <title>Quick Start</title>
+      <link>http://localhost:1313/docs/getting-started/quick-start/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/docs/getting-started/quick-start/</guid>
+      <description>This tutorial will guide you through creating a simple game using Pixyn.&#xA;Create Your Application Every Pixyn game starts with creating an application instance:&#xA;import { PixynApp } from &amp;#39;pixyn&amp;#39;; const app = new PixynApp({ width: 800, height: 600, backgroundColor: 0x1099bb, resolution: window.devicePixelRatio || 1, autoDensity: true, }); document.body.appendChild(app.view); app.start(); Add Game Objects Create game objects using the Entity system:&#xA;import { Entity, SpriteComponent } from &amp;#39;pixyn&amp;#39;; const player = new Entity(&amp;#39;player&amp;#39;); // Add a sprite component const sprite = player.</description>
+    </item>
+  </channel>
+</rss>

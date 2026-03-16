@@ -1,0 +1,52 @@
+{{ define "main" }}
+<div class="home">
+  <section class="hero">
+    <h1>{{ .Site.Title }}</h1>
+    <p class="tagline">A modern 2D/3D game framework built with TypeScript and Pixi.js</p>
+    <div class="cta">
+      <a href="{{ "docs/getting-started/installation" | relURL }}" class="button primary">Get Started</a>
+      <a href="{{ "docs/api" | relURL }}" class="button secondary">API Reference</a>
+    </div>
+  </section>
+
+  <section class="features">
+    <h2>Features</h2>
+    <div class="feature-grid">
+      <div class="feature">
+        <h3>Entity Component System</h3>
+        <p>Built-in ECS architecture for flexible game object management</p>
+      </div>
+      <div class="feature">
+        <h3>State Management</h3>
+        <p>Reactive state management with signals and computed values</p>
+      </div>
+      <div class="feature">
+        <h3>Input System</h3>
+        <p>Unified input handling for keyboard, mouse, and gamepads</p>
+      </div>
+      <div class="feature">
+        <h3>Animation Engine</h3>
+        <p>Powerful tween and sprite sheet animation system</p>
+      </div>
+      <div class="feature">
+        <h3>Scene Management</h3>
+        <p>Hierarchical scene graph with easy transitions</p>
+      </div>
+      <div class="feature">
+        <h3>Asset Pipeline</h3>
+        <p>Efficient loading and caching of textures, sounds, and more</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="quick-links">
+    <h2>Quick Links</h2>
+    <ul>
+      <li><a href="{{ "docs/getting-started/quick-start" | relURL }}">Quick Start Guide</a></li>
+      <li><a href="{{ "docs/api/animation" | relURL }}">Animation API</a></li>
+      <li><a href="{{ "docs/api/entities" | relURL }}">Entity System</a></li>
+      <li><a href="{{ "docs/examples" | relURL }}">Examples</a></li>
+    </ul>
+  </section>
+</div>
+{{ end }}

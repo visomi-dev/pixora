@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pixyn Framework</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  
+</head>
+<body>
+  <div class="layout">
+    <header class="sidebar">
+      <div class="logo">
+        <a href="/">Pixyn Framework</a>
+      </div>
+      <nav class="nav">
+        
+      </nav>
+      <div class="search">
+        <input type="text" placeholder="Search docs...">
+      </div>
+    </header>
+    <main class="content">
+      
+<article class="page">
+  <header class="page-header">
+    <h1>Installation</h1>
+    
+    <p class="description">How to install Pixyn in your project</p>
+    
+  </header>
+  <div class="page-content">
+    <h2 id="prerequisites">Prerequisites</h2>
+<p>Before installing Pixyn, ensure you have:</p>
+<ul>
+<li>Node.js 18+</li>
+<li>npm, yarn, or pnpm</li>
+</ul>
+<h2 id="install-pixyn">Install Pixyn</h2>
+<p>Install Pixyn and its dependencies using your preferred package manager:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>npm install pixyn
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># or</span>
+</span></span><span style="display:flex;"><span>yarn add pixyn
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># or</span>
+</span></span><span style="display:flex;"><span>pnpm add pixyn
+</span></span></code></pre></div><h2 id="peer-dependencies">Peer Dependencies</h2>
+<p>Pixyn requires pixi.js as a peer dependency:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>npm install pixi.js
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># or</span>
+</span></span><span style="display:flex;"><span>yarn add pixi.js
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># or</span>
+</span></span><span style="display:flex;"><span>pnpm add pixi.js
+</span></span></code></pre></div><h2 id="typescript-configuration">TypeScript Configuration</h2>
+<p>Ensure your <code>tsconfig.json</code> has the following settings:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;compilerOptions&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;strict&#34;</span>: <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;moduleResolution&#34;</span>: <span style="color:#e6db74">&#34;bundler&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;esModuleInterop&#34;</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="verify-installation">Verify Installation</h2>
+<p>Create a simple test file to verify the installation:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-typescript" data-lang="typescript"><span style="display:flex;"><span><span style="color:#66d9ef">import</span> { <span style="color:#a6e22e">PixynApp</span> } <span style="color:#66d9ef">from</span> <span style="color:#e6db74">&#39;pixyn&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">app</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">PixynApp</span>({
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">width</span>: <span style="color:#66d9ef">800</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">height</span>: <span style="color:#66d9ef">600</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">backgroundColor</span>: <span style="color:#66d9ef">0x1099bb</span>,
+</span></span><span style="display:flex;"><span>});
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">app</span>.<span style="color:#a6e22e">start</span>();
+</span></span></code></pre></div><p>If the application starts without errors, Pixyn is installed correctly.</p>
+<h2 id="next-steps">Next Steps</h2>
+<ul>
+<li><a href="/docs/getting-started/quick-start/">Quick Start Guide</a> - Build your first game</li>
+<li><a href="/docs/api/">API Reference</a> - Explore the full API</li>
+</ul>
+
+  </div>
+  <footer class="page-footer">
+    
+    <a href="http://localhost:1313/docs/getting-started/quick-start/" class="prev">&larr; Quick Start</a>
+    
+    
+  </footer>
+</article>
+
+    </main>
+  </div>
+</body>
+</html>

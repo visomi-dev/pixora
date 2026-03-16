@@ -1,0 +1,17 @@
+# Railway configuration for Pixyn Documentation
+# https://docs.railway.app/reference/config
+
+[build]
+  builder = "docker"
+  dockerfile = "Dockerfile.docs"
+
+[deploy]
+  num_replicas = 1
+  restart_policy_type = "on-failure"
+  restart_policy_max_retries = 10
+
+[settings]
+  - key: "HUGO_PORT"
+    value: "8080"
+  - key: "PORT"
+    value: "8080"

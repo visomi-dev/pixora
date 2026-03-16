@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pixyn Framework</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  
+</head>
+<body>
+  <div class="layout">
+    <header class="sidebar">
+      <div class="logo">
+        <a href="/">Pixyn Framework</a>
+      </div>
+      <nav class="nav">
+        
+      </nav>
+      <div class="search">
+        <input type="text" placeholder="Search docs...">
+      </div>
+    </header>
+    <main class="content">
+      
+<article class="page">
+  <header class="page-header">
+    <h1>Entities Module</h1>
+    
+    <p class="description">Game entity management</p>
+    
+  </header>
+  <div class="page-content">
+    <p>The Entities module provides the entity system for organizing game objects.</p>
+<h2 id="overview">Overview</h2>
+<p>Entities are the core objects in Pixyn&rsquo;s ECS architecture:</p>
+<ul>
+<li>Lightweight objects that hold components</li>
+<li>Identified by name or ID</li>
+<li>Can be queried and filtered</li>
+</ul>
+<h2 id="creating-entities">Creating Entities</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-typescript" data-lang="typescript"><span style="display:flex;"><span><span style="color:#66d9ef">import</span> { <span style="color:#a6e22e">Entity</span> } <span style="color:#66d9ef">from</span> <span style="color:#e6db74">&#39;pixyn&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">player</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Entity</span>(<span style="color:#e6db74">&#39;player&#39;</span>);
+</span></span></code></pre></div><h2 id="entity-lifecycle">Entity Lifecycle</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-typescript" data-lang="typescript"><span style="display:flex;"><span><span style="color:#75715e">// Initialize
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">player</span>.<span style="color:#a6e22e">onInit</span> <span style="color:#f92672">=</span> () <span style="color:#f92672">=&gt;</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#39;Entity initialized&#39;</span>);
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Update each frame
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">player</span>.<span style="color:#a6e22e">onUpdate</span> <span style="color:#f92672">=</span> (<span style="color:#a6e22e">delta</span>) <span style="color:#f92672">=&gt;</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">player</span>.<span style="color:#a6e22e">position</span>.<span style="color:#a6e22e">x</span> <span style="color:#f92672">+=</span> <span style="color:#a6e22e">player</span>.<span style="color:#a6e22e">velocity</span>.<span style="color:#a6e22e">x</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">delta</span>;
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Cleanup
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">player</span>.<span style="color:#a6e22e">onDestroy</span> <span style="color:#f92672">=</span> () <span style="color:#f92672">=&gt;</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#39;Entity destroyed&#39;</span>);
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><h2 id="entity-queries">Entity Queries</h2>
+<p>Find entities by components:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-typescript" data-lang="typescript"><span style="display:flex;"><span><span style="color:#66d9ef">import</span> { <span style="color:#a6e22e">World</span> } <span style="color:#66d9ef">from</span> <span style="color:#e6db74">&#39;pixyn&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">enemies</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">World</span>.<span style="color:#a6e22e">query</span>(<span style="color:#a6e22e">EnemyComponent</span>, <span style="color:#a6e22e">TransformComponent</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">enemy</span> <span style="color:#66d9ef">of</span> <span style="color:#a6e22e">enemies</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// Process enemy
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><h2 id="api-reference">API Reference</h2>
+<p>For complete API documentation, see the <a href="/docs/api/generated/">Generated API Docs</a>.</p>
+
+  </div>
+  <footer class="page-footer">
+    
+    <a href="http://localhost:1313/docs/api/events/" class="prev">&larr; Events Module</a>
+    
+    
+    <a href="http://localhost:1313/docs/api/components/" class="next">Components Module &rarr;</a>
+    
+  </footer>
+</article>
+
+    </main>
+  </div>
+</body>
+</html>

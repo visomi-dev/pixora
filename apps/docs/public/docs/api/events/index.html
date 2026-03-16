@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pixyn Framework</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  
+</head>
+<body>
+  <div class="layout">
+    <header class="sidebar">
+      <div class="logo">
+        <a href="/">Pixyn Framework</a>
+      </div>
+      <nav class="nav">
+        
+      </nav>
+      <div class="search">
+        <input type="text" placeholder="Search docs...">
+      </div>
+    </header>
+    <main class="content">
+      
+<article class="page">
+  <header class="page-header">
+    <h1>Events Module</h1>
+    
+    <p class="description">Event handling system</p>
+    
+  </header>
+  <div class="page-content">
+    <p>The Events module provides a flexible event system for communication between game objects.</p>
+<h2 id="overview">Overview</h2>
+<p>Pixyn&rsquo;s event system supports:</p>
+<ul>
+<li>Custom events</li>
+<li>Event bubbling</li>
+<li>One-time listeners</li>
+<li>Event priorities</li>
+</ul>
+<h2 id="creating-and-dispatching-events">Creating and Dispatching Events</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-typescript" data-lang="typescript"><span style="display:flex;"><span><span style="color:#66d9ef">import</span> { <span style="color:#a6e22e">EventDispatcher</span>, <span style="color:#a6e22e">GameEvent</span> } <span style="color:#66d9ef">from</span> <span style="color:#e6db74">&#39;pixyn&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">dispatcher</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">EventDispatcher</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Create custom event
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">event</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">GameEvent</span>(<span style="color:#e6db74">&#39;playerDied&#39;</span>, { <span style="color:#a6e22e">score</span>: <span style="color:#66d9ef">1000</span> });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Dispatch
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">dispatcher</span>.<span style="color:#a6e22e">dispatch</span>(<span style="color:#a6e22e">event</span>);
+</span></span></code></pre></div><h2 id="listening-for-events">Listening for Events</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-typescript" data-lang="typescript"><span style="display:flex;"><span><span style="color:#75715e">// Listen for specific event
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">dispatcher</span>.<span style="color:#a6e22e">on</span>(<span style="color:#e6db74">&#39;playerDied&#39;</span>, (<span style="color:#a6e22e">event</span>) <span style="color:#f92672">=&gt;</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#39;Player died with score:&#39;</span>, <span style="color:#a6e22e">event</span>.<span style="color:#a6e22e">data</span>.<span style="color:#a6e22e">score</span>);
+</span></span><span style="display:flex;"><span>});
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// One-time listener
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">dispatcher</span>.<span style="color:#a6e22e">once</span>(<span style="color:#e6db74">&#39;levelComplete&#39;</span>, () <span style="color:#f92672">=&gt;</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#39;Level complete!&#39;</span>);
+</span></span><span style="display:flex;"><span>});
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Remove listener
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">handler</span> <span style="color:#f92672">=</span> () <span style="color:#f92672">=&gt;</span> <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#39;Event!&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">dispatcher</span>.<span style="color:#a6e22e">on</span>(<span style="color:#e6db74">&#39;event&#39;</span>, <span style="color:#a6e22e">handler</span>);
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">dispatcher</span>.<span style="color:#a6e22e">off</span>(<span style="color:#e6db74">&#39;event&#39;</span>, <span style="color:#a6e22e">handler</span>);
+</span></span></code></pre></div><h2 id="global-events">Global Events</h2>
+<p>Use the global event bus for application-wide events:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-typescript" data-lang="typescript"><span style="display:flex;"><span><span style="color:#66d9ef">import</span> { <span style="color:#a6e22e">Events</span> } <span style="color:#66d9ef">from</span> <span style="color:#e6db74">&#39;pixyn&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">Events</span>.<span style="color:#a6e22e">on</span>(<span style="color:#e6db74">&#39;game:start&#39;</span>, () <span style="color:#f92672">=&gt;</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#39;Game started!&#39;</span>);
+</span></span><span style="display:flex;"><span>});
+</span></span></code></pre></div><h2 id="api-reference">API Reference</h2>
+<p>For complete API documentation, see the <a href="/docs/api/generated/">Generated API Docs</a>.</p>
+
+  </div>
+  <footer class="page-footer">
+    
+    <a href="http://localhost:1313/docs/api/input/" class="prev">&larr; Input Module</a>
+    
+    
+    <a href="http://localhost:1313/docs/api/entities/" class="next">Entities Module &rarr;</a>
+    
+  </footer>
+</article>
+
+    </main>
+  </div>
+</body>
+</html>
