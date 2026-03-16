@@ -1,6 +1,5 @@
 import { Assets } from 'pixi.js';
-import type { Disposable, pixoraApp, Viewport } from 'pixora';
-import { createpixoraApp } from 'pixora';
+
 
 import orbiton from '../assets/Orbitron[wght].ttf';
 import jetBrainsMono from '../assets/JetBrainsMono[wght].ttf';
@@ -10,6 +9,9 @@ import { GameOverScene } from './scenes/game-over/game-over.scene';
 import { InstructionsScene } from './scenes/instructions/instructions.scene';
 import { MainMenuScene } from './scenes/main-menu/main-menu.scene';
 import { VictoryScene } from './scenes/victory/victory.scene';
+
+import { createpixoraApp } from 'pixora';
+import type { Disposable, pixoraApp, Viewport } from 'pixora';
 
 import './space-invaders.css';
 
