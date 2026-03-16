@@ -2,10 +2,17 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Launch Chrome",
+      "name": "Launch Example on Chrome",
       "type": "chrome",
       "request": "launch",
       "url": "http://localhost:4200/",
+      "runtimeArgs": ["--auto-open-devtools-for-tabs"]
+    },
+    {
+      "name": "Launch Hugo on Chrome",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:1313/",
       "runtimeArgs": ["--auto-open-devtools-for-tabs"]
     },
     {

@@ -1,0 +1,17 @@
+baseURL = "http://localhost:1313/"
+languageCode = "en-us"
+title = "Pixora Framework"
+theme = "pixora-docs"
+
+[taxonomies]
+  category = "categories"
+  tag = "tags"
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+
+[outputs]
+  home = ["HTML"]
+  page = ["HTML"]

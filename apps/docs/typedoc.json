@@ -1,0 +1,11 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["../../libs/pixora/src/index.ts"],
+  "out": "./content/docs/api/generated",
+  "name": "pixora Framework",
+  "includeVersion": true,
+  "excludePrivate": false,
+  "excludeProtected": false,
+  "treatWarningsAsErrors": false,
+  "skipErrorChecking": true
+}

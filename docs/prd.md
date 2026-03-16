@@ -2,7 +2,7 @@
 
 ## 1. General Information
 
-**Working name:** Pixyn
+**Working name:** pixora
 **Type:** Internal framework / base library
 **Target platform:** Mobile and desktop web
 **Base stack:** TypeScript + PixiJS

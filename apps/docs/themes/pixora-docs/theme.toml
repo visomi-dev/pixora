@@ -1,0 +1,7 @@
+name = "Pixora Docs"
+license = "MIT"
+licenselink = "https://github.com/visomi/pixora"
+description = "Custom documentation theme for Pixora Framework"
+homepage = "https://pixora.dev"
+tags = ["documentation", "theme"]
+author = "Visomi"
