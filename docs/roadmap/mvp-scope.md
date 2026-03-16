@@ -19,7 +19,7 @@ Define the smallest framework feature set that can ship a convincing example app
 - basic pointer input;
 - simple tweens and transitions;
 - basic asset registry;
-- example app with menu, gameplay, pause overlay, and HUD.
+- example app with menu, gameplay, game over, and victory screens.
 
 ## Out of scope
 
@@ -45,4 +45,4 @@ The MVP is ready when:
 - a reactive store updates UI without manual polling;
 - events can be emitted and handled with TypeScript safety;
 - scene cleanup removes listeners and bindings;
-- the example app is built only with the public API of `pixora`.
+- the space-invaders game is built only with the public API of `pixora`.

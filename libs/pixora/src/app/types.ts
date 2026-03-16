@@ -34,6 +34,7 @@ export type pixoraAppOptions = {
   initialScene: SceneKey;
   services?: readonly ServiceDescriptor[];
   assets?: AssetManifest;
+  devtools?: boolean;
 };
 
 export type pixoraApp = {

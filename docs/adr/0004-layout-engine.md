@@ -22,7 +22,7 @@ Layouts are declarative and attached to nodes. The engine recalculates when:
 - the parent layout changes;
 - a layout-relevant property changes.
 
-`grid` and more advanced responsive behavior are postponed until after the first working example app.
+`grid` and more advanced responsive behavior are postponed until after the first working space-invaders game.
 
 ## Consequences
 

@@ -19,10 +19,10 @@ export type { EventBus, EventMap } from './events/create-event-bus';
 
 export { BaseComponent } from './components/base-component';
 export { BaseNode } from './components/base-node';
+export { Box } from './components/box';
 export { Button } from './components/button';
 export { ContainerNode } from './components/container-node';
 export { InteractiveComponent } from './components/interactive-component';
-export { Panel } from './components/panel';
 export { SpriteNode } from './components/sprite-node';
 export { TextNode } from './components/text-node';
 

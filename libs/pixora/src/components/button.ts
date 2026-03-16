@@ -1,7 +1,7 @@
 import { Container } from 'pixi.js';
 
 import { TextNode } from './text-node';
-import { Panel } from './panel';
+import { Box } from './box';
 import { InteractiveComponent } from './interactive-component';
 
 export type ButtonOptions = {
@@ -15,13 +15,13 @@ export type ButtonOptions = {
 };
 
 export class Button extends InteractiveComponent<ButtonOptions, Container> {
-  readonly background: Panel;
+  readonly background: Box;
   readonly label: TextNode;
 
   constructor(options: ButtonOptions) {
     super(new Container(), options);
 
-    this.background = new Panel({
+    this.background = new Box({
       backgroundColor: options.backgroundColor ?? 0x3b82f6,
       height: options.height ?? 48,
       radius: options.radius ?? 8,

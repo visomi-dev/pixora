@@ -81,6 +81,7 @@ export default [
 
       'import-x/order': ['error', { 'newlines-between': 'always' }],
       'import-x/no-named-as-default': ['off'],
+      'import-x/no-unresolved': ['error', { ignore: ['pixora'] }],
 
       'unicorn/filename-case': [
         'error',

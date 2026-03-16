@@ -13,6 +13,7 @@ export class TextNode extends BaseComponent<TextNodeOptions, Text> {
       new Text({
         style: options.style,
         text: options.text,
+        resolution: 2,
       }),
       options,
     );
@@ -20,7 +21,6 @@ export class TextNode extends BaseComponent<TextNodeOptions, Text> {
 
   setText(text: string): this {
     this.displayObject.text = text;
-    this.props = { ...this.props, text };
 
     return this;
   }

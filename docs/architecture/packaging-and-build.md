@@ -7,7 +7,7 @@ This document defines the packaging expectations for `libs/pixora`.
 - publish pixora as an ESM-first package;
 - generate `.d.ts` types;
 - keep the public API surface small and explicit;
-- keep the example app consuming the same package entry used by future consumers.
+- keep the space-invaders game consuming the same package entry used by future consumers.
 
 ## Current workspace facts
 
@@ -35,9 +35,9 @@ This document defines the packaging expectations for `libs/pixora`.
 - utility dependencies must be added only when they clearly reduce complexity.
 - avoid introducing heavyweight dependencies for concerns that can be solved with small internal modules in MVP.
 
-## Example app consumption
+## Space Invaders game consumption
 
-The example app must import from `pixora` rather than from source internals.
+The space-invaders game must import from `pixora` rather than from source internals.
 
 That keeps the demo aligned with the public API and prevents accidental dependency on private details.
 
@@ -48,5 +48,5 @@ Before the package is treated as publish-ready:
 - root exports are documented;
 - type declarations are correct;
 - package metadata is complete;
-- the example app runs against the public API only;
+- the space-invaders game runs against the public API only;
 - changelog and versioning flow are defined.

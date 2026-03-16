@@ -6,13 +6,13 @@
 
 It was created to solve the architectural gaps of PixiJS when building full applications such as:
 
-* menus
-* UI systems
-* scenes
-* responsive layout
-* reactive state
-* event-driven gameplay
-* simple animation orchestration
+- menus
+- UI systems
+- scenes
+- responsive layout
+- reactive state
+- event-driven gameplay
+- simple animation orchestration
 
 pixora is **not a game engine replacement** and **does not attempt to compete with Unity, Godot, or Phaser**.
 
@@ -20,7 +20,7 @@ Instead, it acts as a **structured runtime layer on top of PixiJS**.
 
 Primary use case:
 
-* powering the game **Catfé Express**, a cozy cat café time-management game inspired by Penguin Diner.
+- powering the game **Catfé Express**, a cozy cat café time-management game inspired by Penguin Diner.
 
 However the framework is intentionally **game-agnostic**.
 
@@ -40,11 +40,11 @@ pixora follows these architectural principles:
 
 Design goals:
 
-* minimal abstraction
-* predictable reactivity
-* mobile-first rendering
-* composable systems
-* low boilerplate
+- minimal abstraction
+- predictable reactivity
+- mobile-first rendering
+- composable systems
+- low boilerplate
 
 ---
 
@@ -58,10 +58,10 @@ Handled by **PixiJS**
 
 Responsibilities:
 
-* sprites
-* containers
-* text
-* rendering loop
+- sprites
+- containers
+- text
+- rendering loop
 
 ---
 
@@ -69,16 +69,16 @@ Responsibilities:
 
 Responsibilities:
 
-* application lifecycle
-* scene orchestration
-* reactive state
-* layout
-* event bus
-* UI primitives
-* services
-* input abstraction
-* tween helpers
-* asset registry
+- application lifecycle
+- scene orchestration
+- reactive state
+- layout
+- event bus
+- UI primitives
+- services
+- input abstraction
+- tween helpers
+- asset registry
 
 ---
 
@@ -86,11 +86,11 @@ Responsibilities:
 
 Game-specific logic:
 
-* gameplay rules
-* entities
-* HUD
-* services
-* systems
+- gameplay rules
+- entities
+- HUD
+- services
+- systems
 
 Example: Catfé Express gameplay.
 
@@ -114,18 +114,18 @@ createpixoraApp()
 
 Responsibilities:
 
-* create Pixi application
-* manage viewport
-* register services
-* wire ticker loop
-* provide application context
+- create Pixi application
+- manage viewport
+- register services
+- wire ticker loop
+- provide application context
 
 Core modules:
 
-* application context
-* viewport manager
-* service registry
-* ticker orchestration
+- application context
+- viewport manager
+- service registry
+- ticker orchestration
 
 ---
 
@@ -135,10 +135,10 @@ pixora uses a **Scene Manager architecture**.
 
 Scenes represent major game states such as:
 
-* main menu
-* gameplay
-* pause
-* results
+- main menu
+- gameplay
+- pause
+- results
 
 Scenes follow a lifecycle.
 
@@ -156,10 +156,10 @@ destroy
 
 Features:
 
-* scene stack
-* overlay support
-* automatic cleanup
-* lifecycle orchestration
+- scene stack
+- overlay support
+- automatic cleanup
+- lifecycle orchestration
 
 Overlays allow UI layers like pause menus to run above scenes.
 
@@ -171,11 +171,11 @@ pixora uses a **reactive architecture** for state updates.
 
 Main primitives:
 
-* signals
-* computed values
-* effects
-* stores
-* typed event bus
+- signals
+- computed values
+- effects
+- stores
+- typed event bus
 
 Signals drive UI and rendering updates.
 
@@ -213,19 +213,19 @@ pixora provides a **component-based UI layer** on top of Pixi.
 
 Base primitives include:
 
-* Node
-* Container
-* Sprite
-* Text
-* Button
-* Panel
+- Node
+- Container
+- Sprite
+- Text
+- Button
+- Panel
 
 Features:
 
-* hierarchical composition
-* pointer input abstraction
-* reactive state binding
-* reusable UI primitives
+- hierarchical composition
+- pointer input abstraction
+- reactive state binding
+- reusable UI primitives
 
 ---
 
@@ -235,22 +235,22 @@ pixora includes a **custom layout system** to solve responsive positioning.
 
 Layouts supported:
 
-* fixed
-* anchor
-* stack
-* breakpoints
+- fixed
+- anchor
+- stack
+- breakpoints
 
 Purpose:
 
-* adapt menus and HUD across screen sizes
-* simplify positioning logic
-* avoid manual coordinate calculations
+- adapt menus and HUD across screen sizes
+- simplify positioning logic
+- avoid manual coordinate calculations
 
 Example use cases:
 
-* centered menu layouts
-* pinned HUD elements
-* vertical button stacks
+- centered menu layouts
+- pinned HUD elements
+- vertical button stacks
 
 ---
 
@@ -258,10 +258,10 @@ Example use cases:
 
 pixora abstracts pointer interaction:
 
-* click / tap
-* hover
-* pointer down/up
-* disabled states
+- click / tap
+- hover
+- pointer down/up
+- disabled states
 
 Input integrates directly with UI components.
 
@@ -273,10 +273,10 @@ pixora provides a minimal asset registry.
 
 Responsibilities:
 
-* texture loading
-* spritesheet support
-* centralized asset access
-* asset lookup by key
+- texture loading
+- spritesheet support
+- centralized asset access
+- asset lookup by key
 
 This avoids scattering asset loading logic.
 
@@ -288,10 +288,10 @@ pixora includes lightweight tween utilities.
 
 Use cases:
 
-* button feedback
-* UI transitions
-* sprite movement
-* scene transitions
+- button feedback
+- UI transitions
+- sprite movement
+- scene transitions
 
 Not intended to be a full animation engine.
 
@@ -303,10 +303,10 @@ pixora includes a **minimal entity abstraction** for gameplay.
 
 Entities are lightweight objects representing:
 
-* player
-* customers
-* tables
-* props
+- player
+- customers
+- tables
+- props
 
 This is **not a full ECS system**.
 
@@ -365,11 +365,11 @@ The framework development followed a structured roadmap.
 
 Architecture groundwork:
 
-* glossary
-* architecture documentation
-* ADRs
-* module specs
-* roadmap
+- glossary
+- architecture documentation
+- ADRs
+- module specs
+- roadmap
 
 ---
 
@@ -377,10 +377,10 @@ Architecture groundwork:
 
 Library infrastructure:
 
-* PixiJS dependency
-* internal folder structure
-* public API scaffold
-* Nx scaffolding cleanup
+- PixiJS dependency
+- internal folder structure
+- public API scaffold
+- Nx scaffolding cleanup
 
 ---
 
@@ -388,11 +388,11 @@ Library infrastructure:
 
 Core runtime creation:
 
-* `createpixoraApp`
-* application context
-* viewport manager
-* service registry
-* ticker integration
+- `createpixoraApp`
+- application context
+- viewport manager
+- service registry
+- ticker integration
 
 ---
 
@@ -400,11 +400,11 @@ Core runtime creation:
 
 Scene orchestration:
 
-* base Scene class
-* scene manager
-* overlay support
-* lifecycle orchestration
-* cleanup management
+- base Scene class
+- scene manager
+- overlay support
+- lifecycle orchestration
+- cleanup management
 
 ---
 
@@ -412,11 +412,11 @@ Scene orchestration:
 
 Reactive state system:
 
-* signals
-* computed
-* effects
-* stores
-* typed event bus
+- signals
+- computed
+- effects
+- stores
+- typed event bus
 
 ---
 
@@ -424,10 +424,10 @@ Reactive state system:
 
 UI primitives:
 
-* node and component system
-* reusable button
-* reusable panel
-* pointer input abstraction
+- node and component system
+- reusable button
+- reusable panel
+- pointer input abstraction
 
 ---
 
@@ -435,10 +435,10 @@ UI primitives:
 
 Responsive layout system:
 
-* fixed layout
-* anchor layout
-* stack layout
-* breakpoint support
+- fixed layout
+- anchor layout
+- stack layout
+- breakpoint support
 
 Used to power menus and HUD.
 
@@ -448,10 +448,10 @@ Used to power menus and HUD.
 
 Gameplay utilities:
 
-* asset registry
-* tween helpers
-* minimal entity abstraction
-* gameplay helpers
+- asset registry
+- tween helpers
+- minimal entity abstraction
+- gameplay helpers
 
 ---
 
@@ -459,10 +459,10 @@ Gameplay utilities:
 
 Reference implementation:
 
-* main menu scene
-* gameplay scene
-* pause overlay
-* example services and assets
+- main menu scene
+- gameplay scene
+- pause overlay
+- example services and assets
 
 Demonstrates the full MVP architecture.
 
@@ -472,11 +472,11 @@ Demonstrates the full MVP architecture.
 
 Stability improvements:
 
-* tests
-* documentation
-* API cleanup
-* publishability checks
-* lint / typecheck / build validation
+- tests
+- documentation
+- API cleanup
+- publishability checks
+- lint / typecheck / build validation
 
 ---
 
@@ -486,20 +486,20 @@ pixora has reached **Phase 9 (Hardening)**.
 
 This means the framework currently includes:
 
-* stable runtime architecture
-* reactive state layer
-* scene system
-* component-based UI
-* responsive layout engine
-* gameplay helpers
-* example application
-* documentation and tests
+- stable runtime architecture
+- reactive state layer
+- scene system
+- component-based UI
+- responsive layout engine
+- gameplay helpers
+- Space Invaders game demo
+- documentation and tests
 
 pixora is now ready for:
 
-* integration into the Catfé Express game
-* iterative feature development
-* potential publishing as a library.
+- integration into the Catfé Express game
+- iterative feature development
+- potential publishing as a library.
 
 ---
 
@@ -507,15 +507,15 @@ pixora is now ready for:
 
 pixora is designed to enable fast development of games like:
 
-* diner dash style games
-* management games
-* casual mobile games
-* UI-heavy games
+- diner dash style games
+- management games
+- casual mobile games
+- UI-heavy games
 
 Especially where:
 
-* scene structure
-* reactive UI
-* responsive layout
+- scene structure
+- reactive UI
+- responsive layout
 
 are more important than complex physics or ECS.

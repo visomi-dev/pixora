@@ -62,6 +62,6 @@ This glossary defines the terms used by pixora documents and later by the public
 
 ## Scope language
 
-- MVP: the minimum feature set required to build the example menu, gameplay scene, pause overlay, and HUD.
+- MVP: the minimum feature set required to build the Space Invaders game with menu, gameplay, and game over screens.
 - Framework Core: code inside `libs/pixora` that stays game-agnostic.
-- Example App: code inside `apps/example` used to validate the framework with a realistic integration.
+- Example App: code inside `apps/space-invaders` used to validate the framework with a realistic integration.

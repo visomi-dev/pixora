@@ -1,10 +1,10 @@
-# Example App Spec
+# Space Invaders Game Spec
 
 ## Goal
 
-Use `apps/example` as the first real consumer of pixora.
+Use `apps/space-invaders` as the first real consumer of pixora.
 
-The example app is not marketing-only. It is the integration harness that proves the framework can build the intended MVP flows.
+The Space Invaders game is not marketing-only. It is the integration harness that proves the framework can build the intended MVP flows.
 
 ## Rules
 
@@ -26,41 +26,46 @@ The example app is not marketing-only. It is the integration harness that proves
 ### Gameplay scene
 
 - root play area;
-- at least one moving or stateful entity;
-- minimal HUD;
-- event-driven UI updates.
+- multiple enemy types with different behaviors;
+- player ship with controls;
+- bullets and collision detection;
+- HUD with score, level, and lives;
+- power-up system;
+- combo scoring system;
+- progressive difficulty.
 
-### Pause overlay
+### Game over / Victory
 
-- open and close on demand;
-- stack above gameplay;
-- block gameplay interaction while active;
-- demonstrate overlay transitions.
+- display final score;
+- high score tracking;
+- restart option.
 
-## Suggested future folder structure
+## Suggested folder structure
 
 ```txt
-apps/example/src/
+apps/space-invaders/src/
   main.ts
   app/
-    bootstrap.ts
-    assets.ts
-    events.ts
-    services/
+    space-invaders.ts
+    space-invaders.css
     scenes/
       main-menu/
-      gameplay/
-      pause-overlay/
-    ui/
+      game/
+      game-over/
+      victory/
 ```
 
 ## Success criteria
 
-The example app proves that pixora can:
+The Space Invaders game proves that pixora can:
 
 - start an initial scene;
 - navigate between scenes;
-- show an overlay;
 - render reusable buttons and panels;
+- handle keyboard input;
+- render multiple game entities;
+- handle collision detection;
 - react to state changes;
-- adapt the layout to different viewport sizes.
+- adapt the layout to different viewport sizes;
+- emit and handle custom events;
+- persist data to localStorage.

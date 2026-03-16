@@ -31,6 +31,7 @@
     "@angular/ssr": "21.1.5",
     "@fontsource/inter": "^5.2.8",
     "@fontsource/jetbrains-mono": "^5.2.8",
+    "@pixi/devtools": "^2.0.1",
     "axios": "^1.13.5",
     "dexie": "^4.3.0",
     "express": "^5.2.1",

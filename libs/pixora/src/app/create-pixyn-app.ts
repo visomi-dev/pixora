@@ -8,6 +8,8 @@ import { createServiceRegistry, type ServiceRegistry } from '../services/create-
 import { createViewportManager } from './create-viewport-manager';
 import type { ApplicationContext, pixoraApp, pixoraAppOptions } from './types';
 
+let devtoolsInitialized = false;
+
 type ServiceRegistryWithContext = ServiceRegistry & {
   setContext(context: ApplicationContext): void;
 };
@@ -31,6 +33,16 @@ export async function createpixoraApp(options: pixoraAppOptions): Promise<pixora
   });
 
   options.mount.replaceChildren(app.canvas);
+
+  if (options.devtools && !devtoolsInitialized) {
+    try {
+      const { initDevtools } = await import('@pixi/devtools');
+      initDevtools({ app });
+      devtoolsInitialized = true;
+    } catch {
+      console.warn('Failed to initialize PixiJS devtools. Make sure @pixi/devtools is installed.');
+    }
+  }
 
   const assets = createAssetRegistry();
   const events = createEventBus<Record<string, unknown>>();

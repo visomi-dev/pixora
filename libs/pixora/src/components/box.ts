@@ -2,7 +2,7 @@ import { Container, Graphics } from 'pixi.js';
 
 import { BaseComponent } from './base-component';
 
-export type PanelOptions = {
+export type BoxOptions = {
   alpha?: number;
   backgroundColor?: number;
   height?: number;
@@ -10,10 +10,10 @@ export type PanelOptions = {
   width?: number;
 };
 
-export class Panel extends BaseComponent<PanelOptions, Container> {
+export class Box extends BaseComponent<BoxOptions, Container> {
   private readonly background = new Graphics();
 
-  constructor(options: PanelOptions = {}) {
+  constructor(options: BoxOptions = {}) {
     super(new Container(), options);
     this.displayObject.addChild(this.background);
     this.onPropsChanged();
@@ -43,7 +43,7 @@ export class Panel extends BaseComponent<PanelOptions, Container> {
       if (this.props.width !== undefined) {
         this.displayObject.width = this.props.width;
       }
-      
+
       if (this.props.height !== undefined) {
         this.displayObject.height = this.props.height;
       }

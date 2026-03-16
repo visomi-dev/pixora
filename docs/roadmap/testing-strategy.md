@@ -4,7 +4,7 @@
 
 - verify core logic without requiring full rendering where possible;
 - keep tests fast enough for frequent iteration;
-- validate the example app as an integration harness.
+- validate the space-invaders game as an integration harness.
 
 ## Test layers
 
@@ -29,13 +29,16 @@ Focus on runtime behavior across modules:
 - component bindings;
 - asset registry integration.
 
-### Example app validation
+### Space Invaders game validation
 
-Use the example app to verify:
+Use the space-invaders game to verify:
 
 - real imports from `pixora`;
 - scene and overlay composition;
-- layout behavior on multiple viewport sizes.
+- layout behavior on multiple viewport sizes;
+- keyboard input handling;
+- collision detection;
+- game state management.
 
 ## Commands
 
@@ -43,10 +46,10 @@ Use the example app to verify:
 - `pnpm nx test pixora`
 - `pnpm nx typecheck pixora`
 - `pnpm nx build pixora`
-- `pnpm nx lint example`
-- `pnpm nx test example`
-- `pnpm nx typecheck example`
-- `pnpm nx build example`
+- `pnpm nx lint space-invaders`
+- `pnpm nx test space-invaders`
+- `pnpm nx typecheck space-invaders`
+- `pnpm nx build space-invaders`
 
 ## Manual verification checklist
 

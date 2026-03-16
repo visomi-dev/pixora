@@ -17,7 +17,7 @@ It exists to provide the structure that PixiJS intentionally does not solve on i
 ## Workspace mapping
 
 - `libs/pixora` contains the framework runtime and its public API.
-- `apps/example` is the integration app that proves the framework can build the MVP flows.
+- `apps/space-invaders` is the integration app that proves the framework can build the MVP flows.
 - `docs/` contains the definition set that must be implemented before the framework is considered stable.
 
 ## Layer model

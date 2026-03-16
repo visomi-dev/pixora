@@ -1,16 +1,15 @@
 {
-  "name": "example",
+  "name": "space-invaders",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
-  "sourceRoot": "apps/example/src",
+  "sourceRoot": "apps/space-invaders/src",
   "tags": [],
-  "// targets": "to see all targets run: nx show project example --web",
   "targets": {
     "build": {
       "configurations": {
         "production": {
           "env": {
-            "BASE_URL": "/examples/game/"
+            "BASE_URL": "/examples/space-invaders/"
           }
         }
       },

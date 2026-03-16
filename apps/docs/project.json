@@ -15,7 +15,7 @@
     "build-example": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "pnpm nx build example --skip-nx-cache && cp -r ../../dist/apps/example/* static/examples/game/ && rm -rf ../../dist/apps/example && sed -i 's|/assets/|assets/|g' static/examples/game/index.html",
+        "command": "pnpm nx build space-invaders --skip-nx-cache && cp -r ../../dist/apps/space-invaders/* static/examples/game/ && rm -rf ../../dist/apps/space-invaders && sed -i 's|/assets/|assets/|g' static/examples/game/index.html",
         "cwd": "apps/docs"
       }
     },

@@ -18,7 +18,7 @@ Read the documents in this order:
 ## Current workspace status
 
 - `libs/pixora` exists as a publishable Vite library but still contains scaffold code.
-- `apps/example` exists as a Vite app but still contains the default Nx starter screen.
+- `apps/space-invaders` contains a complete Space Invaders game demo.
 - `docs/prd.md` defines the product direction, but the technical definition set was missing.
 
 ## Document map

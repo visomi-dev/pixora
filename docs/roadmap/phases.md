@@ -27,7 +27,7 @@ Outputs:
 Exit criteria:
 
 - the library builds with the new structure;
-- the example app can import from `pixora`.
+- the space-invaders game can import from `pixora`.
 
 ## Phase 2 - App Core
 
@@ -110,18 +110,18 @@ Exit criteria:
 
 - the gameplay scene can render a stateful entity and HUD.
 
-## Phase 8 - Example App
+## Phase 8 - Space Invaders Game
 
 Outputs:
 
 - main menu scene;
-- gameplay scene;
-- pause overlay;
-- example-specific assets and services.
+- gameplay scene with enemies, power-ups, and combo system;
+- game over and victory screens;
+- game-specific assets and services.
 
 Exit criteria:
 
-- the example app demonstrates the full MVP scope.
+- the space-invaders game demonstrates the full MVP scope.
 
 ## Phase 9 - Hardening
 

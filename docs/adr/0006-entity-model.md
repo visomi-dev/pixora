@@ -28,7 +28,7 @@ Positive:
 
 - enough structure for players, customers, tables, and props;
 - lower implementation risk;
-- easier fit for the example app.
+- easier fit for the space-invaders game.
 
 Negative:
 
