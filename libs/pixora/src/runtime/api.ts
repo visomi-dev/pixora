@@ -1,0 +1,205 @@
+import { applyLayout } from '../layout/apply-layout';
+import {
+  layout,
+  type AnchorLayoutSpec,
+  type AutoLayoutSpec,
+  type BreakpointRule,
+  type FixedLayoutSpec,
+  type LayoutSpec,
+  type PercentLayoutSpec,
+  type StackLayoutSpec,
+} from '../layout/layout';
+import type { ApplicationContext } from '../app/types';
+
+import { box, button, container, keyedContainer, sprite, text } from './create-node';
+import { imperative } from './compat';
+import { registerComponent } from './components';
+import { createScheduler, getScheduler, Scheduler } from './scheduler';
+import {
+  InvalidationFlag,
+  markVisualDirty,
+  markLayoutDirty,
+  clearVisualDirty,
+  clearLayoutDirty,
+  isVisuallyDirty,
+  isLayoutDirty,
+} from './lifecycle';
+import type { MountedNode, MountedTree } from './mounted-node';
+import { mountTree, unmountTree } from './renderer';
+import { updateTree } from './reconcile';
+import {
+  isPixoraNode,
+  type PixoraNode,
+  BoxNodeProps,
+  ButtonNodeProps,
+  ContainerNodeProps,
+  PixoraChild,
+  PixoraComponent,
+  PixoraComponentProps,
+  SpriteNodeProps,
+  TextNodeProps,
+} from './types';
+import { clearSharedCache, createAssetContext } from './asset-context';
+import { pixora } from './pixora';
+
+export { pixora };
+export { isPixoraNode };
+export { box, button, container, keyedContainer, sprite, text };
+export { imperative };
+export { mountTree, unmountTree };
+export { updateTree };
+export { Scheduler, createScheduler, getScheduler };
+export {
+  InvalidationFlag,
+  markVisualDirty,
+  markLayoutDirty,
+  clearVisualDirty,
+  clearLayoutDirty,
+  isVisuallyDirty,
+  isLayoutDirty,
+};
+export type { MountedNode, MountedTree };
+export { applyLayout } from '../layout/apply-layout';
+export { layout } from '../layout/layout';
+export {
+  getOrCreateLayoutNode,
+  markLayoutNodeDirty,
+  markSubtreeLayoutDirty,
+  measureNode,
+  removeLayoutNode,
+  runLayout,
+  setLayoutSpec,
+} from './layout-runtime';
+export { AssetState, clearSharedCache, createAssetContext } from './asset-context';
+export {
+  bindInteractive,
+  getInteractiveState,
+  isInteractive,
+  type InteractionCallback,
+  type InteractionEventType,
+  type InteractiveState,
+  type PixoraInteractionEvent,
+} from './interaction';
+export {
+  findNodeByKey,
+  findNodesByType,
+  formatTree,
+  getTreeStats,
+  inspectNode,
+  inspectTree,
+  type DebugNodeInfo,
+  type DebugTreeStats,
+} from './debug';
+export {
+  getWarningHandler,
+  setWarningHandler,
+  validateHostType,
+  validateKey,
+  validateProps,
+  warn,
+  warnDeprecated,
+  warnInvalidChild,
+  warnInvalidKey,
+  warnInvalidProp,
+  warnMissingRequiredProp,
+  warnUnknownHostType,
+  WarningCode,
+} from './warnings';
+export type {
+  AnchorLayoutSpec,
+  AutoLayoutSpec,
+  BreakpointRule,
+  FixedLayoutSpec,
+  LayoutSpec,
+  PercentLayoutSpec,
+  StackLayoutSpec,
+};
+export type {
+  PixoraNode,
+  ContainerNodeProps,
+  TextNodeProps,
+  SpriteNodeProps,
+  BoxNodeProps,
+  ButtonNodeProps,
+  PixoraChild,
+};
+
+export const api = {
+  container(props?: ContainerNodeProps, ...children: PixoraChild[]) {
+    return container(props, ...children);
+  },
+
+  text(props: TextNodeProps) {
+    return text(props);
+  },
+
+  sprite(props?: SpriteNodeProps) {
+    return sprite(props);
+  },
+
+  box(props?: BoxNodeProps, ...children: PixoraChild[]) {
+    return box(props, ...children);
+  },
+
+  button(props: ButtonNodeProps) {
+    return button(props);
+  },
+
+  keyedContainer(key: string | number, props?: ContainerNodeProps, ...children: PixoraChild[]) {
+    return keyedContainer(key, props, ...children);
+  },
+
+  component<Props extends PixoraComponentProps>(
+    renderFn: PixoraComponent<Props>,
+    name?: string | symbol,
+  ): PixoraComponent<Props> {
+    if (name) {
+      registerComponent(name, renderFn);
+    }
+    return renderFn;
+  },
+
+  scene(renderFn: (context: ApplicationContext) => PixoraNode): { key: string; render: typeof renderFn } {
+    const key = `scene_${Math.random().toString(36).substring(2, 9)}`;
+    return { key, render: renderFn };
+  },
+
+  imperative,
+
+  layout: {
+    apply: applyLayout,
+    create: layout,
+    types: {
+      anchor: (spec: Omit<AnchorLayoutSpec, 'type'>): AnchorLayoutSpec => ({ ...spec, type: 'anchor' }),
+      auto: (spec: Omit<AutoLayoutSpec, 'type'>): AutoLayoutSpec => ({ ...spec, type: 'auto' }),
+      fixed: (spec: Omit<FixedLayoutSpec, 'type'>): FixedLayoutSpec => ({ ...spec, type: 'fixed' }),
+      percent: (spec: Omit<PercentLayoutSpec, 'type'>): PercentLayoutSpec => ({ ...spec, type: 'percent' }),
+      stack: (spec: Omit<StackLayoutSpec, 'type'>): StackLayoutSpec => ({ ...spec, type: 'stack' }),
+    },
+  },
+
+  assets: {
+    create: createAssetContext,
+    clearCache: clearSharedCache,
+  },
+
+  runtime: {
+    mount: mountTree,
+    unmount: unmountTree,
+    update: updateTree,
+    scheduler: {
+      create: createScheduler,
+      get: getScheduler,
+    },
+    lifecycle: {
+      markVisualDirty,
+      markLayoutDirty,
+      clearVisualDirty,
+      clearLayoutDirty,
+      isVisuallyDirty,
+      isLayoutDirty,
+    },
+  },
+};
+
+export default api;

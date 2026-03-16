@@ -20,6 +20,12 @@ export function applyLayout(node: BaseNode, spec: LayoutSpec, parentBounds: Boun
     case 'stack':
       applyStack(node, activeSpec);
       break;
+    case 'auto':
+      applyAuto(node, activeSpec, parentBounds);
+      break;
+    case 'percent':
+      applyPercent(node, activeSpec, parentBounds);
+      break;
   }
 }
 
@@ -161,4 +167,65 @@ function applyStack(node: BaseNode, spec: Extract<LayoutSpec, { type: 'stack' }>
       }
     }
   }
+}
+
+function applyAuto(node: BaseNode, spec: Extract<LayoutSpec, { type: 'auto' }>, _parentBounds: Bounds): void {
+  if (spec.width === 'content' || spec.width === 'auto') {
+    let contentWidth = 0;
+
+    for (const child of node.getChildren()) {
+      if (child.displayObject.visible) {
+        contentWidth = Math.max(contentWidth, child.displayObject.x + child.displayObject.width);
+      }
+    }
+
+    node.displayObject.width = contentWidth;
+  } else if (spec.width === 'fill') {
+    node.displayObject.width = _parentBounds.width;
+  }
+
+  if (spec.height === 'content' || spec.height === 'auto') {
+    let contentHeight = 0;
+
+    for (const child of node.getChildren()) {
+      if (child.displayObject.visible) {
+        contentHeight = Math.max(contentHeight, child.displayObject.y + child.displayObject.height);
+      }
+    }
+
+    node.displayObject.height = contentHeight;
+  } else if (spec.height === 'fill') {
+    node.displayObject.height = _parentBounds.height;
+  }
+}
+
+function applyPercent(node: BaseNode, spec: Extract<LayoutSpec, { type: 'percent' }>, parentBounds: Bounds): void {
+  if (spec.width !== undefined) {
+    node.displayObject.width = parentBounds.width * spec.width;
+  }
+
+  if (spec.height !== undefined) {
+    node.displayObject.height = parentBounds.height * spec.height;
+  }
+
+  let x = parentBounds.x;
+  let y = parentBounds.y;
+
+  if (spec.horizontal === 'center') {
+    x += (parentBounds.width - node.displayObject.width) / 2;
+  } else if (spec.horizontal === 'end') {
+    x += parentBounds.width - node.displayObject.width;
+  }
+
+  if (spec.vertical === 'center') {
+    y += (parentBounds.height - node.displayObject.height) / 2;
+  } else if (spec.vertical === 'end') {
+    y += parentBounds.height - node.displayObject.height;
+  }
+
+  x += spec.offsetX ?? 0;
+  y += spec.offsetY ?? 0;
+
+  node.displayObject.x = x;
+  node.displayObject.y = y;
 }
