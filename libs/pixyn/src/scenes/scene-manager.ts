@@ -10,6 +10,7 @@ export type SceneManager = {
   getRegisteredSceneKeys(): readonly SceneKey[];
   goTo(key: SceneKey, payload?: ScenePayload): Promise<Scene>;
   hideOverlay(key?: SceneKey): void;
+  isPaused(): boolean;
   resize(viewport: Viewport): void;
   showOverlay(key: SceneKey, payload?: ScenePayload): Promise<Scene>;
   update(deltaMs: number): void;
@@ -55,6 +56,9 @@ export function createSceneManager(context: ApplicationContext, definitions: rea
     },
     getRegisteredSceneKeys() {
       return definitions.map((definition) => definition.key);
+    },
+    isPaused() {
+      return overlayStack.length > 0;
     },
     async goTo(key, payload) {
       const definition = definitionMap.get(key);

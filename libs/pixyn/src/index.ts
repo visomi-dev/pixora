@@ -32,8 +32,10 @@ export { layout } from './layout/layout';
 export type { AnchorLayoutSpec, BreakpointRule, FixedLayoutSpec, LayoutSpec, StackLayoutSpec } from './layout/layout';
 
 export { bindInteractive } from './input/bind-interactive';
+export { createKeyboardInput, clearKeyboardFrame, Keys } from './input/create-keyboard-input';
 
 export type { BindInteractiveOptions, ButtonState, InteractionState } from './input/bind-interactive';
+export type { KeyboardState } from './input/create-keyboard-input';
 
 export { createTransition, createTween } from './animation/create-tween';
 
