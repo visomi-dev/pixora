@@ -48,8 +48,12 @@ export type ContainerNodeProps = {
 };
 
 export type TextNodeProps = ContainerNodeProps & {
+  color?: string;
+  font?: string;
+  size?: number;
   style?: Partial<TextStyleOptions>;
   text: string;
+  weight?: string;
 };
 
 export type SpriteNodeProps = ContainerNodeProps & {

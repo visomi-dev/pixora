@@ -731,7 +731,7 @@ Converted the space-invaders game to use the declarative runtime:
 
 ---
 
-## Phase 22 — Recommended API and Component Syntax
+## Phase 22 — Recommended API, Component Syntax, Layout & Text Improvements
 
 Made the declarative API the recommended/default and introduced cleaner component syntax:
 
@@ -774,16 +774,105 @@ Changed from `onPress` to `onPointerTap` (and related pointer events) to align w
 - `onPointerOut`
 - `onPointerTap`
 
+### Flex Layout System
+
+Added a new `flex` layout type to support CSS-like flexbox behavior:
+
+```ts
+type FlexLayoutSpec = {
+  align?: 'center' | 'end' | 'start' | 'stretch';
+  direction: 'horizontal' | 'vertical';
+  gap?: number;
+  grow?: number; // default grow factor for children
+  justify?: 'center' | 'end' | 'space-around' | 'space-between' | 'space-evenly' | 'start';
+  padding?: number;
+  shrink?: number; // default shrink factor for children
+  type: 'flex';
+};
+```
+
+**Key features:**
+
+- `justify`: Controls main axis distribution (`space-between`, `space-around`, `space-evenly`)
+- `align`: Controls cross axis alignment (`stretch`, `center`, `end`, `start`)
+- `grow`/`shrink`: CSS-like flex-grow and flex-shrink behavior
+- `gap`: Space between children
+
+**Example:**
+
+```ts
+pixora.container(
+  {
+    layout: layout.flex({
+      direction: 'vertical',
+      justify: 'space-between',
+      align: 'center',
+      gap: 16,
+      padding: 48,
+    }),
+  },
+  pixora.text({ text: 'Title' }),
+  pixora.button({ label: 'Start' }),
+);
+```
+
+### Simplified Text Props
+
+Extended `TextNodeProps` with direct style properties:
+
+```ts
+type TextNodeProps = ContainerNodeProps & {
+  color?: string; // fill color
+  font?: string; // font family
+  size?: number; // font size
+  style?: Partial<TextStyleOptions>; // full style override
+  text: string;
+  weight?: string; // font weight
+};
+```
+
+**Before:**
+
+```ts
+pixora.text({
+  ...createTextStyle('#00ffaa', 72, '900'),
+  text: 'SPACE',
+  x: centerX,
+  y: titleY,
+});
+```
+
+**After:**
+
+```ts
+pixora.text({
+  text: 'SPACE',
+  color: '#00ffaa',
+  size: 72,
+  weight: '900',
+  font: 'Orbitron, sans-serif',
+  x: centerX,
+  y: titleY,
+});
+```
+
 ### Recommended Usage
 
 ```ts
-import { api as pixora, pixora as createApp } from 'pixora';
+import { api as pixora, layout, pixora as createApp } from 'pixora';
 
-// Create components
+// Create components with flex layout
 const menu = pixora.component((ctx) => {
   return pixora.container(
-    { x: 0, y: 0 },
-    pixora.text({ text: 'Welcome' }),
+    {
+      layout: layout.flex({
+        direction: 'vertical',
+        justify: 'center',
+        align: 'center',
+        gap: 16,
+      }),
+    },
+    pixora.text({ text: 'Welcome', color: '#ffffff', size: 32 }),
     pixora.button({ label: 'Start', onPointerTap: () => {} }),
   );
 }, 'menu');

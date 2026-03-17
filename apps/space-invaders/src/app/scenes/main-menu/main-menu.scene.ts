@@ -1,14 +1,9 @@
-import { createMonoTextStyle, createTextStyle } from '../../shared/styles';
-
-import { pixora } from 'pixora';
+import { layout, pixora } from 'pixora';
 
 export const mainMenuScene = pixora.scene({
   key: 'main-menu',
   render: (context) => {
     const vp = context.viewport.get();
-    const centerX = vp.width / 2;
-    const centerY = vp.height / 2;
-    const titleY = vp.height * 0.12;
 
     let highScoreText = 'GALACTIC DEFENSE v2.0';
     try {
@@ -23,27 +18,71 @@ export const mainMenuScene = pixora.scene({
     return pixora.container(
       { x: 0, y: 0 },
       pixora.box({ backgroundColor: 0x0a0a1a, height: vp.height, width: vp.width, x: 0, y: 0 }),
-      pixora.text({ ...createTextStyle('#00ffaa', 72, '900'), text: 'SPACE', x: centerX, y: titleY }),
-      pixora.text({ ...createTextStyle('#ff00aa', 48, '700'), text: 'INVADERS', x: centerX, y: titleY + 62 }),
-      pixora.text({ ...createMonoTextStyle('#666688', 14), text: highScoreText, x: centerX, y: vp.height - 40 }),
       pixora.container(
-        { x: centerX - 140, y: centerY + 60 },
-        pixora.button({
-          backgroundColor: 0x00ffaa,
-          height: 56,
-          label: 'START GAME',
-          onPointerTap: () => void context.scenes.goTo('game'),
-          width: 280,
-        }),
-        pixora.button({
-          backgroundColor: 0x333366,
-          height: 48,
-          label: 'INSTRUCTIONS',
-          onPointerTap: () => void context.scenes.goTo('instructions'),
-          width: 280,
-          y: 70,
-        }),
+        {
+          layout: layout.percent({
+            horizontal: 'center',
+            vertical: 'start',
+            width: 1,
+          }),
+        },
+        pixora.container(
+          {
+            layout: layout.flex({
+              direction: 'vertical',
+              justify: 'center',
+              align: 'center',
+              gap: 8,
+            }),
+            y: vp.height * 0.15,
+          },
+          pixora.text({ text: 'SPACE', color: '#00ffaa', size: 72, weight: '900', font: 'Orbitron, sans-serif' }),
+          pixora.text({ text: 'INVADERS', color: '#ff00aa', size: 48, weight: '700', font: 'Orbitron, sans-serif' }),
+        ),
       ),
+      pixora.container(
+        {
+          layout: layout.percent({
+            horizontal: 'center',
+            vertical: 'center',
+            width: 1,
+          }),
+        },
+        pixora.container(
+          {
+            layout: layout.flex({
+              direction: 'vertical',
+              justify: 'space-between',
+              align: 'center',
+              gap: 16,
+            }),
+          },
+          pixora.button({
+            backgroundColor: 0x00ffaa,
+            height: 56,
+            label: 'START GAME',
+            onPointerTap: () => void context.scenes.goTo('game'),
+            width: 280,
+          }),
+          pixora.button({
+            backgroundColor: 0x333366,
+            height: 48,
+            label: 'INSTRUCTIONS',
+            onPointerTap: () => void context.scenes.goTo('instructions'),
+            width: 280,
+          }),
+        ),
+      ),
+      pixora.text({
+        text: highScoreText,
+        color: '#666688',
+        size: 14,
+        font: 'JetBrains Mono, monospace',
+        layout: layout.percent({
+          horizontal: 'center',
+          vertical: 'end',
+        }),
+      }),
     );
   },
 });
