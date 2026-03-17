@@ -115,7 +115,7 @@ export class FlexEngine {
     const lines = this.calculateFlexLines(children, mainSize, crossSize, gap, style.flexWrap);
 
     for (const line of lines) {
-      this.calculateLineLayout(line, mainSize, crossSize, style, isRow);
+      this.calculateLineLayout(line, style, isRow);
     }
 
     const totalMainSize = lines.reduce((sum, line) => {
@@ -245,8 +245,6 @@ export class FlexEngine {
 
   private calculateLineLayout(
     line: FlexLine,
-    _mainSize: number,
-    _crossSize: number,
     containerStyle: LayoutStyles,
     isRow: boolean,
   ): void {
