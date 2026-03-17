@@ -33,7 +33,7 @@ Exit criteria:
 
 Outputs:
 
-- `createpixoraApp`;
+- `createPixoraApp`;
 - application context;
 - viewport manager;
 - service registry;

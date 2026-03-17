@@ -1,103 +1,41 @@
-import { applyLayout, Box, Button, layout, Scene, TextNode } from 'pixora';
-import type { Viewport } from 'pixora';
+import { createTextStyle } from '../../shared/styles';
 
-export class VictoryScene extends Scene {
-  readonly key = 'victory';
+import { pixora } from 'pixora';
 
-  private readonly background = new Box();
-  private readonly container = new Box();
+export const victoryScene = pixora.scene({
+  key: 'victory',
+  render: (context) => {
+    const vp = context.viewport.get();
+    const w = vp.width;
+    const h = vp.height;
 
-  private readonly title = new TextNode({
-    style: {
-      fill: '#00ffaa',
-      fontFamily: 'Orbitron, sans-serif',
-      fontSize: 72,
-      fontWeight: '900',
-    },
-    text: 'VICTORY!',
-  });
-
-  private readonly subtitle = new TextNode({
-    style: {
-      fill: '#ff00aa',
-      fontFamily: 'Orbitron, sans-serif',
-      fontSize: 28,
-    },
-    text: 'GALAXY DEFENDED!',
-  });
-
-  private readonly scoreLabel = new TextNode({
-    style: {
-      fill: '#ffffff',
-      fontFamily: 'Orbitron, sans-serif',
-      fontSize: 32,
-    },
-    text: 'FINAL SCORE: 0',
-  });
-
-  private readonly restartButton = new Button({
-    backgroundColor: 0x00ffaa,
-    label: 'PLAY AGAIN',
-    onPress: () => {
-      void this.getContext().scenes.goTo('main-menu');
-    },
-    width: 280,
-    height: 56,
-  });
-
-  private readonly menuButton = new Button({
-    backgroundColor: 0x666688,
-    label: 'MAIN MENU',
-    onPress: () => {
-      void this.getContext().scenes.goTo('main-menu');
-    },
-    width: 280,
-    height: 48,
-  });
-
-  constructor() {
-    super();
-  }
-
-  override mount(): void {
-    this.root.addChild(this.background.displayObject);
-    this.root.addChild(this.container.displayObject);
-
-    this.container.addChild(this.title);
-    this.container.addChild(this.subtitle);
-    this.container.addChild(this.scoreLabel);
-    this.container.addChild(this.restartButton);
-    this.container.addChild(this.menuButton);
-  }
-
-  override resize(viewport: Viewport): void {
-    this.background.updateProps({
-      backgroundColor: 0x0a0a1a,
-      height: viewport.height,
-      width: viewport.width,
-    });
-
-    applyLayout(
-      this.container,
-      layout.stack({
-        align: 'center',
-        direction: 'vertical',
-        fitContent: true,
-        gap: 24,
-        padding: 48,
-      }),
-      { height: viewport.height, width: viewport.width, x: 0, y: 0 },
-      viewport,
+    return pixora.container(
+      { x: 0, y: 0 },
+      pixora.box({ backgroundColor: 0x0a0a1a, height: h, width: w, x: 0, y: 0 }),
+      pixora.container(
+        { x: 0, y: 0 },
+        pixora.text({ ...createTextStyle('#00ffaa', 72, '900'), text: 'VICTORY!', x: w / 2, y: h / 2 - 120 }),
+        pixora.text({ ...createTextStyle('#ff00aa', 28), text: 'GALAXY DEFENDED!', x: w / 2, y: h / 2 - 30 }),
+        pixora.text({ ...createTextStyle('#ffffff', 32), text: 'FINAL SCORE: 0', x: w / 2, y: h / 2 + 40 }),
+        pixora.button({
+          backgroundColor: 0x00ffaa,
+          height: 56,
+          label: 'PLAY AGAIN',
+          onPointerTap: () => void context.scenes.goTo('game'),
+          width: 280,
+          x: w / 2 - 140,
+          y: h / 2 + 120,
+        }),
+        pixora.button({
+          backgroundColor: 0x666688,
+          height: 48,
+          label: 'MAIN MENU',
+          onPointerTap: () => void context.scenes.goTo('main-menu'),
+          width: 280,
+          x: w / 2 - 140,
+          y: h / 2 + 190,
+        }),
+      ),
     );
-
-    applyLayout(
-      this.container,
-      layout.anchor({
-        horizontal: 'center',
-        vertical: 'center',
-      }),
-      { height: viewport.height, width: viewport.width, x: 0, y: 0 },
-      viewport,
-    );
-  }
-}
+  },
+});

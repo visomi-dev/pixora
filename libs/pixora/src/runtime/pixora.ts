@@ -1,5 +1,5 @@
 import type { AssetManifest } from '../assets/create-asset-registry';
-import { createpixoraApp } from '../app/create-pixyn-app';
+import { createPixoraApp } from '../app/create-pixyn-app';
 import type { ApplicationContext, pixoraApp, Viewport } from '../app/types';
 import { Scene } from '../scenes/types';
 import type { SceneDefinition, SceneKey } from '../scenes/types';
@@ -9,6 +9,7 @@ import { createScheduler, type Scheduler } from './scheduler';
 import type { MountedTree } from './mounted-node';
 import { mountTree, unmountTree } from './renderer';
 import type { PixoraNode } from './types';
+import { box, button, container, keyedContainer, sprite, text } from './create-node';
 
 // ---------------------------------------------------------------------------
 // Public types
@@ -51,20 +52,66 @@ export type PixoraRuntime = pixoraApp & {
 };
 
 // ---------------------------------------------------------------------------
-// Entry point
+// Component API
 // ---------------------------------------------------------------------------
 
-/**
- * Creates a pixora application using a declarative scene model.
- *
- * Each scene is described as a `render` function that returns a `PixoraNode`
- * tree. The runtime mounts these trees into the pixi stage via the existing
- * scene manager.
- *
- * Internally delegates to `createpixoraApp` — the full imperative subsystem
- * (ticker, viewport, services, events, assets) remains unchanged.
- */
-export async function pixora(options: PixoraAppOptions): Promise<PixoraRuntime> {
+export type PixoraComponentAPI = {
+  /** Creates a box node */
+  box: typeof box;
+  /** Creates a button node */
+  button: typeof button;
+  /** Creates a container node */
+  container: typeof container;
+  /** Creates a keyed container node */
+  keyedContainer: typeof keyedContainer;
+  /** Creates a scene definition */
+  scene: (
+    sceneDef:
+      | { key: string; render: (context: ApplicationContext) => PixoraNode }
+      | ((context: ApplicationContext) => PixoraNode),
+  ) => { key: string; render: (context: ApplicationContext) => PixoraNode };
+  /** Creates a sprite node */
+  sprite: typeof sprite;
+  /** Creates a text node */
+  text: typeof text;
+};
+
+export type PixoraFn = {
+  (options: PixoraAppOptions): Promise<PixoraRuntime>;
+  box: typeof box;
+  button: typeof button;
+  component(renderFn: (context: ApplicationContext) => PixoraNode): (context: ApplicationContext) => PixoraNode;
+  container: typeof container;
+  keyedContainer: typeof keyedContainer;
+  scene: PixoraComponentAPI['scene'];
+  sprite: typeof sprite;
+  text: typeof text;
+};
+
+const componentAPI: PixoraComponentAPI = {
+  box,
+  button,
+  container,
+  keyedContainer,
+  scene(
+    sceneDef:
+      | { key: string; render: (context: ApplicationContext) => PixoraNode }
+      | ((context: ApplicationContext) => PixoraNode),
+  ): { key: string; render: (context: ApplicationContext) => PixoraNode } {
+    if (typeof sceneDef === 'function') {
+      return { key: `scene_${Math.random().toString(36).substring(2, 9)}`, render: sceneDef };
+    }
+    return sceneDef;
+  },
+  sprite,
+  text,
+};
+
+// ---------------------------------------------------------------------------
+// Imperative App Factory
+// ---------------------------------------------------------------------------
+
+async function createPixoraAppInstance(options: PixoraAppOptions): Promise<PixoraRuntime> {
   const mountedTrees = new Map<string, MountedTree>();
   const adapters = new Map<string, DeclarativeSceneAdapter>();
 
@@ -92,7 +139,7 @@ export async function pixora(options: PixoraAppOptions): Promise<PixoraRuntime> 
 
   const scheduler = createScheduler();
 
-  const app = await createpixoraApp({
+  const app = await createPixoraApp({
     assets: options.assets,
     autoStart: options.autoStart,
     backgroundColor: options.backgroundColor,
@@ -117,6 +164,68 @@ export async function pixora(options: PixoraAppOptions): Promise<PixoraRuntime> 
     },
   };
 }
+
+// ---------------------------------------------------------------------------
+// Callable Function with Properties
+// ---------------------------------------------------------------------------
+
+/**
+ * Creates a pixora application using a declarative scene model.
+ *
+ * Each scene is described as a `render` function that returns a `PixoraNode`
+ * tree. The runtime mounts these trees into the pixi stage via the existing
+ * scene manager.
+ *
+ * Internally delegates to `createPixoraApp` — the full imperative subsystem
+ * (ticker, viewport, services, events, assets) remains unchanged.
+ *
+ * @example
+ * ```ts
+ * const app = pixora({
+ *   mount: document.getElementById('app')!,
+ *   initialScene: 'main',
+ *   scenes: [{ key: 'main', render: () => pixora.container() }]
+ * });
+ * ```
+ *
+ * @example
+ * ```ts
+ * const myContainer = pixora.container({ width: 100 }, pixora.text({ text: 'Hello' }));
+ * const myButton = pixora.button({ label: 'Click', onPointerTap: () => {} });
+ * const myScene = pixora.scene({ key: 'main', render: () => ... });
+ * ```
+ *
+ * @example
+ * ```ts
+ * // Create a component/render function
+ * const MyComponent = pixora.component((ctx) => {
+ *   return pixora.container({},
+ *     pixora.text({ text: 'Hello' })
+ *   );
+ * });
+ *
+ * // Use in scene
+ * scenes: [{ key: 'main', render: MyComponent }]
+ * ```
+ */
+const pixora: PixoraFn = async function (options: PixoraAppOptions): Promise<PixoraRuntime> {
+  return createPixoraAppInstance(options);
+};
+
+pixora.box = box;
+pixora.button = button;
+pixora.component = function (
+  renderFn: (context: ApplicationContext) => PixoraNode,
+): (context: ApplicationContext) => PixoraNode {
+  return renderFn;
+};
+pixora.container = container;
+pixora.keyedContainer = keyedContainer;
+pixora.scene = componentAPI.scene;
+pixora.sprite = sprite;
+pixora.text = text;
+
+export { pixora };
 
 // ---------------------------------------------------------------------------
 // Internal adapter

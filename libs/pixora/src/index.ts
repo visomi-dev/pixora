@@ -1,4 +1,4 @@
-export { createpixoraApp } from './app/create-pixyn-app';
+export { createPixoraApp } from './app/create-pixyn-app';
 
 export type { ApplicationContext, pixoraApp, pixoraAppOptions, Viewport } from './app/types';
 
@@ -72,6 +72,8 @@ export type {
   DeclarativeScene,
   ImperativeSceneDefinition,
   PixoraAppOptions,
+  PixoraComponentAPI,
+  PixoraFn,
   PixoraRuntime,
   PixoraScene,
 } from './runtime/pixora';

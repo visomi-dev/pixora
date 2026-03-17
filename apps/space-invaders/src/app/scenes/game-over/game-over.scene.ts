@@ -1,130 +1,51 @@
-import { applyLayout, Box, Button, layout, Scene, TextNode } from 'pixora';
-import type { Viewport } from 'pixora';
+import { createTextStyle } from '../../shared/styles';
 
-export class GameOverScene extends Scene {
-  readonly key = 'game-over';
+import { pixora } from 'pixora';
 
-  private readonly background = new Box();
-  private readonly container = new Box();
+export const gameOverScene = pixora.scene({
+  key: 'game-over',
+  render: (context) => {
+    const vp = context.viewport.get();
+    const w = vp.width;
+    const h = vp.height;
 
-  private readonly title = new TextNode({
-    style: {
-      fill: '#ff4444',
-      fontFamily: 'Orbitron, sans-serif',
-      fontSize: 72,
-      fontWeight: '900',
-    },
-    text: 'GAME OVER',
-  });
-
-  private readonly scoreLabel = new TextNode({
-    style: {
-      fill: '#ffffff',
-      fontFamily: 'Orbitron, sans-serif',
-      fontSize: 32,
-    },
-    text: 'SCORE: 0',
-  });
-
-  private readonly highScoreLabel = new TextNode({
-    style: {
-      fill: '#ffff00',
-      fontFamily: 'Orbitron, sans-serif',
-      fontSize: 24,
-    },
-    text: 'HIGH SCORE: 0',
-  });
-
-  private readonly newHighScore = new TextNode({
-    style: {
-      fill: '#00ffaa',
-      fontFamily: 'Orbitron, sans-serif',
-      fontSize: 28,
-      fontWeight: 'bold',
-    },
-    text: 'NEW HIGH SCORE!',
-  });
-
-  private readonly restartButton = new Button({
-    backgroundColor: 0x00ffaa,
-    label: 'PLAY AGAIN',
-    onPress: () => {
-      void this.getContext().scenes.goTo('main-menu');
-    },
-    width: 280,
-    height: 56,
-  });
-
-  private readonly menuButton = new Button({
-    backgroundColor: 0x666688,
-    label: 'MAIN MENU',
-    onPress: () => {
-      void this.getContext().scenes.goTo('main-menu');
-    },
-    width: 280,
-    height: 48,
-  });
-
-  constructor() {
-    super();
-  }
-
-  override activate(): void {
-    this.checkHighScore();
-  }
-
-  override mount(): void {
-    this.root.addChild(this.background.displayObject);
-    this.root.addChild(this.container.displayObject);
-
-    this.container.addChild(this.title);
-    this.container.addChild(this.scoreLabel);
-    this.container.addChild(this.highScoreLabel);
-    this.container.addChild(this.newHighScore);
-    this.container.addChild(this.restartButton);
-    this.container.addChild(this.menuButton);
-
-    this.newHighScore.displayObject.visible = false;
-  }
-
-  override resize(viewport: Viewport): void {
-    this.background.updateProps({
-      backgroundColor: 0x0a0a1a,
-      height: viewport.height,
-      width: viewport.width,
-    });
-
-    applyLayout(
-      this.container,
-      layout.stack({
-        align: 'center',
-        direction: 'vertical',
-        fitContent: true,
-        gap: 24,
-        padding: 48,
-      }),
-      { height: viewport.height, width: viewport.width, x: 0, y: 0 },
-      viewport,
-    );
-
-    applyLayout(
-      this.container,
-      layout.anchor({
-        horizontal: 'center',
-        vertical: 'center',
-      }),
-      { height: viewport.height, width: viewport.width, x: 0, y: 0 },
-      viewport,
-    );
-  }
-
-  private checkHighScore(): void {
+    let highScoreText = 'HIGH SCORE: 0';
     try {
       const saved = localStorage.getItem('spaceInvadersHighScore');
-      const currentHigh = saved ? parseInt(saved, 10) : 0;
-      this.highScoreLabel.setText(`HIGH SCORE: ${currentHigh.toLocaleString()}`);
+      if (saved) {
+        highScoreText = `HIGH SCORE: ${parseInt(saved, 10).toLocaleString()}`;
+      }
     } catch {
-      this.highScoreLabel.setText('HIGH SCORE: 0');
+      // localStorage not available
     }
-  }
-}
+
+    return pixora.container(
+      { x: 0, y: 0 },
+      pixora.box({ backgroundColor: 0x0a0a1a, height: h, width: w, x: 0, y: 0 }),
+      pixora.container(
+        { x: 0, y: 0 },
+        pixora.text({ ...createTextStyle('#ff4444', 72, '900'), text: 'GAME OVER', x: w / 2, y: h / 2 - 150 }),
+        pixora.text({ ...createTextStyle('#ffffff', 32), text: 'SCORE: 0', x: w / 2, y: h / 2 - 50 }),
+        pixora.text({ ...createTextStyle('#ffff00', 24), text: highScoreText, x: w / 2, y: h / 2 + 10 }),
+        pixora.button({
+          backgroundColor: 0x00ffaa,
+          height: 56,
+          label: 'PLAY AGAIN',
+          onPointerTap: () => void context.scenes.goTo('game'),
+          width: 280,
+          x: w / 2 - 140,
+          y: h / 2 + 120,
+        }),
+        pixora.button({
+          backgroundColor: 0x666688,
+          height: 48,
+          label: 'MAIN MENU',
+          onPointerTap: () => void context.scenes.goTo('main-menu'),
+          width: 280,
+          x: w / 2 - 140,
+          y: h / 2 + 190,
+        }),
+      ),
+    );
+  },
+});

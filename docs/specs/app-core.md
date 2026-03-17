@@ -49,7 +49,7 @@ type pixoraApp = {
   destroy(): Promise<void>;
 };
 
-declare function createpixoraApp(options: pixoraAppOptions): Promise<pixoraApp>;
+declare function createPixoraApp(options: pixoraAppOptions): Promise<pixoraApp>;
 ```
 
 ## Application context

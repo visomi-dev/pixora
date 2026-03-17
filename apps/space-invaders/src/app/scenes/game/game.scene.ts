@@ -52,7 +52,7 @@ const initializedSignal = signal(false);
 
 let gameId = 0;
 let keyboard: ReturnType<typeof createKeyboardInput> | null = null;
-let tickerCallback: ((deltaMs: number) => void) | null = null;
+let tickerCallback: (() => void) | null = null;
 
 function createGameObject(width: number, height: number, _color: number, type = 'bullet'): GameObject {
   return { id: ++gameId, x: 0, y: 0, width, height, vx: 0, vy: 0, type, hp: 1, maxHp: 1 };
@@ -361,13 +361,7 @@ export function resetGame(): void {
   initGame();
 }
 
-export function stopGame(): void {
-  if (tickerCallback) {
-    tickerCallback = null;
-  }
-}
-
-export const gameScene = pixora.component((context: ApplicationContext) => {
+export const gameScene = pixora.scene((context: ApplicationContext) => {
   const viewport = context.viewport.get();
   viewportWidthSignal.set(viewport.width);
   viewportHeightSignal.set(viewport.height);
@@ -525,4 +519,4 @@ export const gameScene = pixora.component((context: ApplicationContext) => {
       return pixora.box({ backgroundColor: color, height: pu.height, width: pu.width, x: pu.x, y: pu.y });
     }),
   );
-}, 'gameScene');
+});

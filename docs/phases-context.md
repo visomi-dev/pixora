@@ -12,7 +12,7 @@ Before the declarative runtime (Phases 10-20), the framework was built as an imp
 
 - `pixi.js` added as dependency
 - Internal folder structure created
-- `createpixoraApp` application bootstrapper
+- `createPixoraApp` application bootstrapper
 - Application context, viewport manager, service registry
 - Ticker wiring
 
@@ -66,7 +66,7 @@ Phase 10 introduced a **declarative layer** on top of the existing imperative fr
 3. **Children normalization** — flattens arrays, wraps strings/numbers as text nodes, filters falsy values.
 4. **`MountedNode` / `MountedTree`** — the mounted instance tree that links definitions to live Pixi display objects.
 5. **Renderer** — `mountTree()` and `unmountTree()` for initial mount and teardown.
-6. **`pixora()` entry point** — new declarative app bootstrapper that delegates to `createpixoraApp` internally.
+6. **`pixora()` entry point** — new declarative app bootstrapper that delegates to `createPixoraApp` internally.
 7. **`imperative()` bridge** — escape hatch for embedding existing `BaseNode` instances in declarative trees.
 8. **Node factory helpers** — `container()`, `text()`, `sprite()`, `box()`, `button()`, `keyedContainer()`.
 
@@ -141,7 +141,7 @@ Layer 2b — Declarative Runtime (NEW)
   pixora() entry point, node factories, renderer, compatibility bridge
 
 Layer 2a — Imperative Framework Core
-  createpixoraApp, Scene, SceneManager, BaseNode, BaseComponent,
+  createPixoraApp, Scene, SceneManager, BaseNode, BaseComponent,
   signals, events, layout, input, animation, assets, services
 
 Layer 1 — Renderer
@@ -236,7 +236,7 @@ The `patch` function is defined but only used meaningfully in Phase 11.
 
 ```
 pixora(options)
-  └── createpixoraApp(converted options)
+  └── createPixoraApp(converted options)
         └── SceneManager.goTo(initialScene)
               └── DeclarativeSceneAdapter.mount()
                     ├── renderFn(context) → PixoraNode tree
@@ -355,7 +355,7 @@ Scene manager orchestrates: `goTo(key)` → deactivate current → init (once) �
 
 ```ts
 // App
-createpixoraApp(options): Promise<pixoraApp>
+createPixoraApp(options): Promise<pixoraApp>
 
 // Scenes
 Scene, createSceneManager
@@ -422,7 +422,7 @@ isPixoraNode(value): boolean
 
 | Capability              | Status                                                                 |
 | ----------------------- | ---------------------------------------------------------------------- |
-| App bootstrapping       | `createpixoraApp` (imperative) + `pixora` (declarative)                |
+| App bootstrapping       | `createPixoraApp` (imperative) + `pixora` (declarative)                |
 | Scene lifecycle         | Full: init → mount → activate → update → resize → deactivate → destroy |
 | Reactive state          | signal, computed, effect, store — synchronous, push-based              |
 | Component tree          | BaseNode hierarchy with manual addChild/removeChild                    |

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { ApplicationContext } from '../app/types';
 
 import { InvalidationFlag } from './lifecycle';

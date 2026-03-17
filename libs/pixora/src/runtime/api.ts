@@ -159,9 +159,15 @@ export const api = {
     return renderFn;
   },
 
-  scene(renderFn: (context: ApplicationContext) => PixoraNode): { key: string; render: typeof renderFn } {
-    const key = `scene_${Math.random().toString(36).substring(2, 9)}`;
-    return { key, render: renderFn };
+  scene(
+    sceneDef:
+      | { key: string; render: (context: ApplicationContext) => PixoraNode }
+      | ((context: ApplicationContext) => PixoraNode),
+  ): { key: string; render: (context: ApplicationContext) => PixoraNode } {
+    if (typeof sceneDef === 'function') {
+      return { key: `scene_${Math.random().toString(36).substring(2, 9)}`, render: sceneDef };
+    }
+    return sceneDef;
   },
 
   imperative,

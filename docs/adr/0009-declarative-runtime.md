@@ -33,20 +33,20 @@ pixora will use a **hybrid architecture** with a declarative runtime built on to
 **Entry Points**:
 
 - `pixora()` — Creates a declarative app (recommended)
-- `createpixoraApp()` — Creates an imperative app (escape hatch)
+- `createPixoraApp()` — Creates an imperative app (escape hatch)
 
 **Node Creation**:
 
 ```ts
 import { api as pixora } from 'pixora';
 
-const myComponent = pixora.component((context) => {
+const myScene = pixora.component((context) => {
   return pixora.container(
     { x: 0, y: 0 },
     pixora.text({ text: 'Hello' }),
     pixora.button({ label: 'Click me', onPointerTap: () => {} }),
   );
-}, 'myComponent');
+}, 'myScene');
 ```
 
 **Scene Definition**:
@@ -54,7 +54,7 @@ const myComponent = pixora.component((context) => {
 ```ts
 await pixora({
   scenes: [
-    pixora.scene(myComponent), // Declarative
+    myScene, // Declarative
     { key: 'game', create: () => new GameScene() }, // Imperative
   ],
 });
