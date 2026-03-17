@@ -3,6 +3,8 @@ title: Installation
 description: How to install Pixora in your project
 ---
 
+Pixora's default authoring model is declarative: you boot a runtime with `pixora()`, provide scenes, and let the runtime manage rendering, layout, and scene transitions for you.
+
 ## Prerequisites
 
 Before installing Pixora, ensure you have:
@@ -50,7 +52,7 @@ Ensure your `tsconfig.json` has the following settings:
 
 ## Verify Installation
 
-Create a simple test file to verify the installation:
+Create a simple scene to verify the installation:
 
 ```typescript
 import { pixora } from 'pixora';
@@ -58,7 +60,7 @@ import { pixora } from 'pixora';
 const runtime = await pixora({
   backgroundColor: 0x1099bb,
   initialScene: 'hello',
-  mount: document.querySelector('#stage'),
+  mount: document.querySelector('#stage')!,
   scenes: [
     pixora.scene({
       key: 'hello',
@@ -70,9 +72,9 @@ const runtime = await pixora({
 await runtime.start();
 ```
 
-If the application starts without errors, Pixora is installed correctly.
+If the runtime starts without errors and renders the scene tree, Pixora is installed correctly.
 
 ## Next Steps
 
-- [Quick Start Guide](/docs/getting-started/quick-start/) - Build your first game
-- [API Reference](/docs/api/) - Explore the full API
+- [Quick Start Guide](../quick-start/) - Build your first declarative game scene
+- [API Reference](../../api/) - Explore the full runtime and compatibility APIs

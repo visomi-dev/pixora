@@ -3,7 +3,7 @@ title: Quick Start
 description: Build your first Pixora game in minutes
 ---
 
-This tutorial will guide you through creating a simple game using Pixora's declarative API.
+This tutorial walks through Pixora's declarative-default workflow: boot a runtime with `pixora()`, register scenes, and return node trees from pure render functions.
 
 ## Create Your Application
 
@@ -15,7 +15,7 @@ import { pixora } from 'pixora';
 const runtime = await pixora({
   backgroundColor: 0x1099bb,
   initialScene: 'main-menu',
-  mount: document.querySelector('#stage'),
+  mount: document.querySelector('#stage')!,
   scenes: [mainMenuScene],
 });
 
@@ -107,7 +107,7 @@ pixora.text({
 
 ## Handle Input
 
-Use `createKeyboardInput` to poll keyboard state inside a game scene's `update` loop, or use pointer events on interactive elements:
+Use `createKeyboardInput` to poll keyboard state inside scene logic, or use pointer events on interactive elements for buttons and menus:
 
 ```typescript
 import { createKeyboardInput, Keys, pixora } from 'pixora';
@@ -159,7 +159,7 @@ const menuScene = pixora.scene({
 const runtime = await pixora({
   backgroundColor: 0x0a0a1a,
   initialScene: 'menu',
-  mount: document.querySelector('#stage'),
+  mount: document.querySelector('#stage')!,
   scenes: [menuScene],
 });
 
@@ -168,5 +168,5 @@ await runtime.start();
 
 ## Next Steps
 
-- [API Reference](/docs/api/) - Explore all available APIs
-- [Examples](/docs/examples/) - See more complete examples
+- [API Reference](../../api/) - Explore all available APIs
+- [Examples](../../examples/) - See complete examples built with the same runtime

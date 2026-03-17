@@ -3,64 +3,62 @@ title: App Module
 description: Core application and game loop
 ---
 
-The App module is the core of every Pixora application, managing the game loop, rendering, and application lifecycle.
+The App module centers on `pixora()`, the declarative runtime factory. It boots Pixi, mounts the stage, wires scenes together, and returns a runtime you can start, stop, and destroy.
 
 ## Overview
 
-The `PixoraApp` class is the entry point for creating Pixora applications. It handles:
+The runtime returned by `pixora()` handles:
 
-- Canvas creation and management
-- Game loop (ticker)
-- Stage and scene management
-- Resource cleanup
+- Stage creation and mounting
+- Scene registration and initial navigation
+- Asset loading and runtime lifecycle
+- Cleanup and teardown
 
 ## Creating an Application
 
 ```typescript
-import { PixoraApp } from 'pixora';
+import { pixora } from 'pixora';
 
-const app = new PixoraApp({
-  width: 800,
-  height: 600,
+const runtime = await pixora({
   backgroundColor: 0x1099bb,
-  resolution: window.devicePixelRatio || 1,
-  autoDensity: true,
-  antialias: true,
+  initialScene: 'menu',
+  mount: document.querySelector('#stage')!,
+  scenes: [
+    pixora.scene({
+      key: 'menu',
+      render: () => pixora.text({ text: 'Hello, Pixora!', color: '#ffffff', size: 32 }),
+    }),
+  ],
 });
 
-document.body.appendChild(app.view);
-
-app.start();
+await runtime.start();
 ```
 
 ## Configuration Options
 
-| Option            | Type      | Default  | Description            |
-| ----------------- | --------- | -------- | ---------------------- |
-| `width`           | `number`  | 800      | Canvas width           |
-| `height`          | `number`  | 600      | Canvas height          |
-| `backgroundColor` | `number`  | 0x000000 | Background color (hex) |
-| `resolution`      | `number`  | 1        | Resolution multiplier  |
-| `autoDensity`     | `boolean` | false    | Auto density for HiDPI |
-| `antialias`       | `boolean` | false    | Enable antialiasing    |
+| Option            | Type                   | Description                                           |
+| ----------------- | ---------------------- | ----------------------------------------------------- |
+| `mount`           | `HTMLElement`          | Host element that receives the Pixi canvas            |
+| `initialScene`    | `string`               | Scene key that becomes active after startup           |
+| `scenes`          | `PixoraScene[]`        | Declarative or imperative scene definitions           |
+| `backgroundColor` | `number`               | Default background color for the renderer             |
+| `assets`          | `PixoraAssetsOptions`  | Fonts and other assets to preload before startup      |
+| `autoStart`       | `boolean`              | Whether the runtime should start immediately          |
 
-## Game Loop
+## Runtime Lifecycle
 
-The ticker manages the game loop:
+The returned runtime exposes explicit lifecycle methods:
 
 ```typescript
-app.ticker.add((delta) => {
-  // Update game logic
-  entity.update(delta);
-});
+await runtime.start();
+runtime.stop();
+await runtime.destroy();
 ```
 
-## Lifecycle Methods
+## Compatibility APIs
 
-- `start()` - Start the application
-- `stop()` - Stop the application
-- `destroy()` - Destroy and cleanup resources
+If you need lower-level control, Pixora still exports compatibility helpers such as `createPixoraApp()` for older imperative integrations. The declarative runtime remains the recommended default for new code.
 
 ## API Reference
 
-For complete API documentation, see the [Generated API Docs](/docs/api/generated/).
+For complete API documentation, see the [Generated API Docs](../generated/).

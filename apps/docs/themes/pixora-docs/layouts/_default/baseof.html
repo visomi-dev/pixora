@@ -11,7 +11,7 @@
   <div class="layout">
     <header class="sidebar">
       <div class="logo">
-        <a href="{{ "/" | relURL }}">{{ .Site.Title }}</a>
+        <a href="{{ .Site.Home.RelPermalink }}">{{ .Site.Title }}</a>
       </div>
       <nav class="nav">
         {{ range .Site.Menus.main }}

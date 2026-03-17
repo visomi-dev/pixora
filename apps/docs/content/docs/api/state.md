@@ -62,4 +62,4 @@ const settings = persist(
 
 ## API Reference
 
-For complete API documentation, see the [Generated API Docs](/docs/api/generated/).
+For complete API documentation, see the [Generated API Docs](../generated/).

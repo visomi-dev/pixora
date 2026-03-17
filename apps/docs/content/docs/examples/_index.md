@@ -4,14 +4,14 @@ description: Working examples and code samples
 weight: 6
 ---
 
-This section contains working examples demonstrating various Pixora features.
+This section contains working examples built on the same declarative runtime documented throughout the site. Start with Space Invaders for the most complete reference implementation.
 
 ## Available Examples
 
-- [Basic Setup](/docs/examples/basic-setup/) - Simple application setup
-- [Space Invaders Game](/docs/examples/space-invaders/) - Complete shooter game
-- [Entity System](/docs/examples/entity-system/) - Using entities and components
-- [Input Handling](/docs/examples/input/) - Keyboard and mouse input
-- [Animation](/docs/examples/animation/) - Tweens and sprite animations
-- [Scene Management](/docs/examples/scenes/) - Multiple scenes with transitions
-- [Physics](/docs/examples/physics/) - Basic physics simulation
+- [Space Invaders Game](space-invaders/) - Complete shooter game packaged with the docs deploy
+- [Basic Setup](basic-setup/) - Minimal runtime bootstrapping and scene registration
+- [Scene Management](scenes/) - Move between screens with the scene runtime
+- [Input Handling](input/) - Keyboard and pointer input patterns
+- [Animation](animation/) - Tweens and sprite animations
+- [Entity System](entity-system/) - Lower-level entity and component helpers
+- [Physics](physics/) - Basic physics simulation

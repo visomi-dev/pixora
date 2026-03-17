@@ -53,4 +53,4 @@ entity.addComponent(HealthComponent, { health: 100, maxHealth: 100 });
 
 ## API Reference
 
-For complete API documentation, see the [Generated API Docs](/docs/api/generated/).
+For complete API documentation, see the [Generated API Docs](../generated/).

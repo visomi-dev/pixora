@@ -1,0 +1,38 @@
+<section class="example-showcase">
+  <div class="example-showcase-copy">
+    <p class="section-label">Playable example</p>
+    <h2>Space Invaders ships with the docs build.</h2>
+    <p>
+      This page embeds the exact production output that gets copied into the GitHub Pages artifact, so
+      you can validate the declarative runtime and the documentation experience together.
+    </p>
+    <div class="example-actions">
+      <a href="{{ "examples/space-invaders/" | relURL }}" class="button primary">Open standalone build</a>
+      <a href="{{ "docs/getting-started/quick-start/" | relURL }}" class="button secondary">Read the quick start</a>
+    </div>
+  </div>
+
+  <div class="showcase-panel">
+    <iframe
+      src="{{ "examples/space-invaders/" | relURL }}"
+      class="demo-frame"
+      title="Space Invaders demo built with Pixora"
+      loading="lazy"
+    ></iframe>
+  </div>
+
+  <div class="stat-grid">
+    <div class="stat-card">
+      <strong>Scenes</strong>
+      <span>Main menu, instructions, gameplay, game over, and victory flows.</span>
+    </div>
+    <div class="stat-card">
+      <strong>Runtime primitives</strong>
+      <span><code>pixora()</code>, <code>pixora.scene()</code>, layout helpers, and reactive events.</span>
+    </div>
+    <div class="stat-card">
+      <strong>Deployment shape</strong>
+      <span>The same Pages deploy publishes the docs shell and the standalone game output.</span>
+    </div>
+  </div>
+</section>

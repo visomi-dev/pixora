@@ -10,12 +10,20 @@
         "command": "hugo -d ../../dist/apps/docs --gc --minify",
         "cwd": "apps/docs"
       },
-      "dependsOn": ["build-example"]
+      "dependsOn": ["api", "build-example"]
+    },
+    "build-pages": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "sh -c 'hugo -d ../../dist/apps/docs --gc --minify --baseURL \"$PAGES_BASE_URL\"'",
+        "cwd": "apps/docs"
+      },
+      "dependsOn": ["api", "build-example"]
     },
     "build-example": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "pnpm nx build space-invaders --skip-nx-cache && mkdir -p static/examples/game && cp -r ../../dist/apps/space-invaders/* static/examples/game/ && rm -rf ../../dist/apps/space-invaders && sed -i 's|/assets/|assets/|g' static/examples/game/index.html",
+        "command": "rm -rf static/examples/space-invaders && pnpm nx run space-invaders:build:docs --skipNxCache && mkdir -p static/examples/space-invaders && cp -r ../../dist/apps/space-invaders/* static/examples/space-invaders/ && rm -rf ../../dist/apps/space-invaders",
         "cwd": "apps/docs"
       }
     },
@@ -34,7 +42,7 @@
         "command": "hugo -d ../../dist/apps/docs-preview --gc --minify --baseURL /preview/",
         "cwd": "apps/docs"
       },
-      "dependsOn": ["api"]
+      "dependsOn": ["api", "build-example"]
     },
     "api": {
       "executor": "nx:run-commands",
