@@ -115,7 +115,7 @@ export class FlexEngine {
     const lines = this.calculateFlexLines(children, mainSize, crossSize, gap, style.flexWrap);
 
     for (const line of lines) {
-      this.calculateLineLayout(line, mainSize, crossSize, gap, style, isRow);
+      this.calculateLineLayout(line, mainSize, crossSize, style, isRow);
     }
 
     const totalMainSize = lines.reduce((sum, line) => {
@@ -139,30 +139,46 @@ export class FlexEngine {
     node.computed.left = parentX;
     node.computed.top = parentY;
 
-    let lineMainStart = isRow ? parentX + paddingLeft : parentY + paddingTop;
-    const lineCrossStart = isRow ? parentY + paddingTop : parentX + paddingLeft;
+    const alignItems = style.alignItems ?? 'stretch';
+    const isReverse = style.flexDirection === 'row-reverse' || style.flexDirection === 'column-reverse';
+    let lineCrossPos = isRow ? parentY + paddingTop : parentX + paddingLeft;
+    const containerInnerMainSize = isRow ? containerMainSize - paddingX : containerCrossSize - paddingY;
 
     for (const line of lines) {
-      const mainPos = lineMainStart;
-      const crossPos = lineCrossStart;
+      const lineMainSize = line.mainEnd - line.mainStart;
+      const lineCrossSize = line.crossEnd - line.crossStart;
+      const remainingMainSpace = containerInnerMainSize - lineMainSize;
+      const justifyOffsets = this.calculateJustifyOffsets(line.items.length, remainingMainSpace, style.justifyContent);
 
-      for (const item of line.items) {
+      let itemMainPos = isRow ? parentX + paddingLeft : parentY + paddingTop;
+
+      for (let i = 0; i < line.items.length; i++) {
+        const item = line.items[i];
         const itemStyle = { ...DEFAULT_STYLE, ...item.style };
-        const isReverse = isRow ? style.flexDirection === 'row-reverse' : style.flexDirection === 'column-reverse';
-        const _mainPos = mainPos;
+        const alignSelf = itemStyle.alignSelf ?? alignItems;
+
+        const mainPos = itemMainPos + justifyOffsets[i];
+        const itemCrossSize = isRow ? item.computed.height : item.computed.width;
+        let crossOffset = 0;
+        if (alignSelf === 'flex-end') {
+          crossOffset = lineCrossSize - itemCrossSize;
+        } else if (alignSelf === 'center') {
+          crossOffset = (lineCrossSize - itemCrossSize) / 2;
+        }
 
         if (isRow) {
-          item.computed.left = isReverse ? _mainPos - item.computed.width : _mainPos;
-          item.computed.top = crossPos;
+          item.computed.left = isReverse ? mainPos - item.computed.width : mainPos;
+          item.computed.top = lineCrossPos + crossOffset;
         } else {
-          item.computed.left = crossPos;
-          item.computed.top = isReverse ? _mainPos - item.computed.height : _mainPos;
+          item.computed.left = lineCrossPos + crossOffset;
+          item.computed.top = isReverse ? mainPos - item.computed.height : mainPos;
         }
 
         this.applyTransforms(item, itemStyle);
+        itemMainPos += (isRow ? item.computed.width : item.computed.height) + gap;
       }
 
-      lineMainStart += isRow ? line.mainEnd - line.mainStart : line.crossEnd - line.crossStart;
+      lineCrossPos += lineCrossSize;
     }
   }
 
@@ -231,7 +247,6 @@ export class FlexEngine {
     line: FlexLine,
     _mainSize: number,
     _crossSize: number,
-    _gap: number,
     containerStyle: LayoutStyles,
     isRow: boolean,
   ): void {
@@ -257,6 +272,61 @@ export class FlexEngine {
         item.computed.height = itemMainSize;
       }
     }
+  }
+
+  private calculateJustifyOffsets(
+    itemCount: number,
+    remainingSpace: number,
+    justifyContent: LayoutStyles['justifyContent'],
+  ): number[] {
+    const offsets: number[] = new Array(itemCount).fill(0);
+
+    if (remainingSpace <= 0 || !justifyContent || justifyContent === 'flex-start') {
+      return offsets;
+    }
+
+    switch (justifyContent) {
+      case 'center': {
+        const centerOffset = remainingSpace / 2;
+        for (let i = 0; i < itemCount; i++) {
+          offsets[i] = centerOffset;
+        }
+        break;
+      }
+      case 'flex-end': {
+        for (let i = 0; i < itemCount; i++) {
+          offsets[i] = remainingSpace;
+        }
+        break;
+      }
+      case 'space-between': {
+        if (itemCount > 1) {
+          const spaceBetween = remainingSpace / (itemCount - 1);
+          for (let i = 0; i < itemCount; i++) {
+            offsets[i] = i * spaceBetween;
+          }
+        } else {
+          offsets[0] = remainingSpace / 2;
+        }
+        break;
+      }
+      case 'space-around': {
+        const spaceAround = remainingSpace / itemCount;
+        for (let i = 0; i < itemCount; i++) {
+          offsets[i] = spaceAround / 2 + i * spaceAround;
+        }
+        break;
+      }
+      case 'space-evenly': {
+        const spaceEvenly = remainingSpace / (itemCount + 1);
+        for (let i = 0; i < itemCount; i++) {
+          offsets[i] = spaceEvenly * (i + 1);
+        }
+        break;
+      }
+    }
+
+    return offsets;
   }
 
   private getChildMainSize(child: FlexNode, style: LayoutStyles): number {
