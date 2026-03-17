@@ -1,874 +1,522 @@
-import {
-  applyLayout,
-  Box,
-  Button,
-  clearKeyboardFrame,
-  createKeyboardInput,
-  Keys,
-  layout,
-  Scene,
-  TextNode,
-} from 'pixora';
-import type { KeyboardState, Viewport } from 'pixora';
+import { api as pixora, signal, createKeyboardInput, clearKeyboardFrame, Keys } from 'pixora';
+import type { ApplicationContext } from 'pixora';
 
 type GameObject = {
+  id: number;
   x: number;
   y: number;
   width: number;
   height: number;
-  displayObject: Box;
   vx: number;
   vy: number;
-  type?: string;
-  hp?: number;
-  maxHp?: number;
+  type: string;
+  hp: number;
+  maxHp: number;
 };
 
 type PowerUp = {
+  id: number;
   x: number;
   y: number;
   width: number;
   height: number;
-  displayObject: Box;
   type: 'shield' | 'triple-shot' | 'speed' | 'bomb';
   vy: number;
 };
 
-type Particle = {
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  life: number;
-  maxLife: number;
-  displayObject: Box;
-  color: number;
-};
+const scoreSignal = signal(0);
+const levelSignal = signal(1);
+const livesSignal = signal(3);
+const comboSignal = signal(0);
+const comboTimerSignal = signal(0);
+const pausedSignal = signal(false);
+const gameOverSignal = signal(false);
+const viewportWidthSignal = signal(1280);
+const viewportHeightSignal = signal(720);
+const playerSignal = signal<GameObject | null>(null);
+const bulletsSignal = signal<GameObject[]>([]);
+const enemyBulletsSignal = signal<GameObject[]>([]);
+const enemiesSignal = signal<GameObject[]>([]);
+const powerUpsSignal = signal<PowerUp[]>([]);
+const hasShieldSignal = signal(false);
+const hasTripleShotSignal = signal(false);
+const hasSpeedBoostSignal = signal(false);
+const shieldTimerSignal = signal(0);
+const tripleShotTimerSignal = signal(0);
+const speedTimerSignal = signal(0);
+const enemyDirectionSignal = signal(1);
+const enemyDropAmountSignal = signal(0);
+const enemySpeedSignal = signal(0.8);
+const lastShotSignal = signal(0);
+const initializedSignal = signal(false);
 
-export class GameScene extends Scene {
-  readonly key = 'game';
+let gameId = 0;
+let keyboard: ReturnType<typeof createKeyboardInput> | null = null;
+let tickerCallback: (() => void) | null = null;
 
-  private readonly background = new Box();
-  private readonly hud = new Box();
-  private readonly gameArea = new Box();
+function createGameObject(width: number, height: number, _color: number, type = 'bullet'): GameObject {
+  return { id: ++gameId, x: 0, y: 0, width, height, vx: 0, vy: 0, type, hp: 1, maxHp: 1 };
+}
 
-  private readonly scoreLabel = new TextNode({
-    style: {
-      fill: '#00ffaa',
-      fontFamily: 'Orbitron, monospace',
-      fontSize: 20,
-      fontWeight: 'bold',
-    },
-    text: 'SCORE: 0',
+function initGame(): void {
+  const w = viewportWidthSignal.get();
+  const h = viewportHeightSignal.get();
+
+  playerSignal.set({
+    id: ++gameId,
+    x: w / 2 - 20,
+    y: h - 80,
+    width: 40,
+    height: 30,
+    vx: 0,
+    vy: 0,
+    type: 'player',
+    hp: 1,
+    maxHp: 1,
   });
 
-  private readonly levelLabel = new TextNode({
-    style: {
-      fill: '#ff00aa',
-      fontFamily: 'Orbitron, monospace',
-      fontSize: 20,
-      fontWeight: 'bold',
-    },
-    text: 'LEVEL: 1',
-  });
+  bulletsSignal.set([]);
+  enemyBulletsSignal.set([]);
+  powerUpsSignal.set([]);
+  spawnEnemies();
+}
 
-  private readonly comboLabel = new TextNode({
-    style: {
-      fill: '#ffff00',
-      fontFamily: 'Orbitron, monospace',
-      fontSize: 16,
-      fontWeight: 'bold',
-    },
-    text: '',
-  });
+function spawnEnemies(): void {
+  const w = viewportWidthSignal.get();
+  const lvl = levelSignal.get();
+  const spd = enemySpeedSignal.get();
 
-  private readonly livesLabel = new TextNode({
-    style: {
-      fill: '#ff6644',
-      fontFamily: 'Orbitron, monospace',
-      fontSize: 18,
-    },
-    text: 'LIVES: ♥ ♥ ♥',
-  });
+  const rows = 3 + Math.min(lvl - 1, 3);
+  const cols = 5 + Math.min(lvl - 1, 3);
+  const bw = 35,
+    bh = 25,
+    pad = 15;
+  const offX = (w - cols * (bw + pad)) / 2;
+  const offY = 60;
 
-  private readonly pauseLabel = new TextNode({
-    style: {
-      fill: '#ffffff',
-      fontFamily: 'Orbitron, monospace',
-      fontSize: 48,
-      fontWeight: 'bold',
-    },
-    text: 'PAUSED',
-  });
+  const enemies: GameObject[] = [];
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      let color = 0xff4444,
+        etype = 'scout',
+        hp = 1;
+      if (lvl >= 2 && r === 0) {
+        color = 0xff00ff;
+        etype = 'tank';
+        hp = 3;
+      } else if (lvl >= 3 && r <= 1 && c % 2 === 0) {
+        color = 0xffaa00;
+        etype = 'soldier';
+        hp = 2;
+      }
 
-  private readonly continueButton = new Button({
-    backgroundColor: 0x00ffaa,
-    label: 'CONTINUE',
-    onPress: () => {
-      this.paused = false;
-      this.pauseLabel.displayObject.visible = false;
-      this.continueButton.displayObject.visible = false;
-    },
-    width: 200,
-  });
-
-  private readonly restartButton = new Button({
-    backgroundColor: 0xff6644,
-    label: 'RESTART',
-    onPress: () => {
-      this.resetGame();
-    },
-    width: 200,
-  });
-
-  private keyboard: KeyboardState;
-  private player!: GameObject;
-  private bullets: GameObject[] = [];
-  private enemyBullets: GameObject[] = [];
-  private enemies: GameObject[] = [];
-  private powerUps: PowerUp[] = [];
-  private particles: Particle[] = [];
-
-  private score = 0;
-  private level = 1;
-  private lives = 3;
-  private combo = 0;
-  private comboTimer = 0;
-  private lastShot = 0;
-  private enemyDirection = 1;
-  private enemyDropAmount = 0;
-  private enemySpeed = 0.8;
-  private viewportWidth = 1280;
-  private viewportHeight = 720;
-
-  private paused = false;
-  private gameOver = false;
-
-  private hasShield = false;
-  private hasTripleShot = false;
-  private hasSpeedBoost = false;
-  private shieldTimer = 0;
-  private tripleShotTimer = 0;
-  private speedTimer = 0;
-  private screenShake = 0;
-
-  constructor() {
-    super();
-    this.keyboard = createKeyboardInput();
-  }
-
-  override activate(): void {
-    this.score = 0;
-    this.level = 1;
-    this.lives = 3;
-    this.combo = 0;
-    this.gameOver = false;
-    this.paused = false;
-    this.updateLabels();
-    this.initGame();
-    this.emitScore();
-  }
-
-  override mount(): void {
-    this.root.addChild(this.background.displayObject);
-    this.root.addChild(this.gameArea.displayObject);
-    this.root.addChild(this.hud.displayObject);
-
-    this.hud.addChild(this.scoreLabel);
-    this.hud.addChild(this.levelLabel);
-    this.hud.addChild(this.comboLabel);
-    this.hud.addChild(this.livesLabel);
-
-    this.gameArea.addChild(this.pauseLabel);
-    this.gameArea.addChild(this.continueButton);
-    this.gameArea.addChild(this.restartButton);
-
-    this.pauseLabel.displayObject.visible = false;
-    this.continueButton.displayObject.visible = false;
-    this.restartButton.displayObject.visible = false;
-  }
-
-  override resize(viewport: Viewport): void {
-    this.viewportWidth = viewport.width;
-    this.viewportHeight = viewport.height;
-
-    this.background.updateProps({
-      backgroundColor: 0x0a0a1a,
-      height: viewport.height,
-      width: viewport.width,
-    });
-
-    this.gameArea.updateProps({
-      backgroundColor: 0x0a0a1a,
-      height: viewport.height,
-      width: viewport.width,
-    });
-
-    this.hud.displayObject.x = 0;
-    this.hud.displayObject.y = 0;
-
-    this.positionHud();
-
-    applyLayout(
-      this.pauseLabel,
-      layout.anchor({
-        horizontal: 'center',
-        vertical: 'center',
-        offsetY: -40,
-      }),
-      { height: viewport.height, width: viewport.width, x: 0, y: 0 },
-      viewport,
-    );
-
-    applyLayout(
-      this.continueButton,
-      layout.anchor({
-        horizontal: 'center',
-        vertical: 'center',
-        offsetY: 40,
-      }),
-      { height: viewport.height, width: viewport.width, x: 0, y: 0 },
-      viewport,
-    );
-
-    applyLayout(
-      this.restartButton,
-      layout.anchor({
-        horizontal: 'center',
-        vertical: 'center',
-        offsetY: 100,
-      }),
-      { height: viewport.height, width: viewport.width, x: 0, y: 0 },
-      viewport,
-    );
-
-    this.initGame();
-  }
-
-  override update(deltaMs: number): void {
-    if (this.gameOver || this.paused) {
-      return;
+      const e = createGameObject(bw, bh, color, etype);
+      e.x = offX + c * (bw + pad);
+      e.y = offY + r * (bh + pad);
+      e.vx = spd;
+      e.hp = hp;
+      e.maxHp = hp;
+      enemies.push(e);
     }
+  }
+  enemiesSignal.set(enemies);
+  enemyDirectionSignal.set(1);
+  enemyDropAmountSignal.set(0);
+}
 
-    const keys = this.keyboard.keys.get();
-    const keysPressed = this.keyboard.keysPressed.get();
+function rectIntersect(a: GameObject, b: GameObject): boolean {
+  return a.x < b.x + b.width && a.x + a.width > b.x && a.y < b.y + b.height && a.y + a.height > b.y;
+}
 
-    if (keysPressed['KeyP'] || keysPressed['Escape']) {
-      this.paused = true;
-      this.pauseLabel.displayObject.visible = true;
-      this.continueButton.displayObject.visible = true;
-      this.restartButton.displayObject.visible = true;
-      clearKeyboardFrame();
-      return;
-    }
+function update(deltaMs: number): void {
+  if (gameOverSignal.get() || pausedSignal.get() || !keyboard) return;
 
-    this.updatePowerUps(deltaMs);
-    this.updatePlayer(deltaMs, keys);
-    this.updateBullets(deltaMs);
-    this.updateEnemies(deltaMs);
-    this.checkCollisions();
-    this.updateParticles(deltaMs);
-    this.updateCombo(deltaMs);
-    this.updateScreenShake(deltaMs);
-    this.updatePowerUpTimers(deltaMs);
+  const keys = keyboard.keys.get();
+  const keysPressed = keyboard.keysPressed.get();
+  const player = playerSignal.get();
+  const w = viewportWidthSignal.get();
+  const h = viewportHeightSignal.get();
 
-    if (this.screenShake > 0) {
-      const shakeX = (Math.random() - 0.5) * this.screenShake;
-      const shakeY = (Math.random() - 0.5) * this.screenShake;
-      this.gameArea.displayObject.x = shakeX;
-      this.gameArea.displayObject.y = shakeY;
-    } else {
-      this.gameArea.displayObject.x = 0;
-      this.gameArea.displayObject.y = 0;
-    }
-
+  if (keysPressed['KeyP'] || keysPressed['Escape']) {
+    pausedSignal.set(true);
     clearKeyboardFrame();
+    return;
   }
 
-  private initGame(): void {
-    this.clearAllObjects();
+  if (player) {
+    const speed = hasSpeedBoostSignal.get() ? 0.72 : 0.4;
+    if (keys[Keys.ArrowLeft] || keys['KeyA']) player.x = Math.max(0, player.x - speed * deltaMs);
+    if (keys[Keys.ArrowRight] || keys['KeyD']) player.x = Math.min(w - player.width, player.x + speed * deltaMs);
+    playerSignal.set({ ...player });
 
-    this.player = this.createGameObject(40, 30, 0x00ffaa, 'player');
-    this.player.x = this.viewportWidth / 2 - 20;
-    this.player.y = this.viewportHeight - 80;
-    this.player.displayObject.displayObject.x = this.player.x;
-    this.player.displayObject.displayObject.y = this.player.y;
-    this.gameArea.addChild(this.player.displayObject);
-
-    this.spawnEnemies();
-  }
-
-  private clearAllObjects(): void {
-    if (this.player) {
-      this.gameArea.removeChild(this.player.displayObject);
-    }
-
-    for (const bullet of this.bullets) {
-      this.gameArea.removeChild(bullet.displayObject);
-    }
-    for (const bullet of this.enemyBullets) {
-      this.gameArea.removeChild(bullet.displayObject);
-    }
-    for (const enemy of this.enemies) {
-      this.gameArea.removeChild(enemy.displayObject);
-    }
-    for (const powerUp of this.powerUps) {
-      this.gameArea.removeChild(powerUp.displayObject);
-    }
-    for (const particle of this.particles) {
-      this.gameArea.removeChild(particle.displayObject);
-    }
-
-    this.bullets = [];
-    this.enemyBullets = [];
-    this.enemies = [];
-    this.powerUps = [];
-    this.particles = [];
-  }
-
-  private spawnEnemies(): void {
-    const rows = 3 + Math.min(this.level - 1, 3);
-    const cols = 5 + Math.min(this.level - 1, 5);
-    const baseWidth = 35;
-    const baseHeight = 25;
-    const padding = 15;
-    const offsetX = (this.viewportWidth - cols * (baseWidth + padding)) / 2;
-    const offsetY = 60;
-
-    for (let row = 0; row < rows; row++) {
-      for (let col = 0; col < cols; col++) {
-        let color = 0xff4444;
-        let enemyType = 'scout';
-        let hp = 1;
-
-        if (this.level >= 2 && row === 0) {
-          color = 0xff00ff;
-          enemyType = 'tank';
-          hp = 3;
-        } else if (this.level >= 3 && row <= 1 && col % 2 === 0) {
-          color = 0xffaa00;
-          enemyType = 'soldier';
-          hp = 2;
-        }
-
-        const enemy = this.createGameObject(baseWidth, baseHeight, color, enemyType);
-        enemy.x = offsetX + col * (baseWidth + padding);
-        enemy.y = offsetY + row * (baseHeight + padding);
-        enemy.vx = this.enemySpeed;
-        enemy.hp = hp;
-        enemy.maxHp = hp;
-        enemy.displayObject.displayObject.x = enemy.x;
-        enemy.displayObject.displayObject.y = enemy.y;
-        this.enemies.push(enemy);
-        this.gameArea.addChild(enemy.displayObject);
-      }
-    }
-
-    this.enemyDirection = 1;
-    this.enemyDropAmount = 0;
-  }
-
-  private createGameObject(width: number, height: number, color: number, type = 'bullet'): GameObject {
-    const panel = new Box({
-      backgroundColor: color,
-      height,
-      width,
-    });
-
-    return {
-      x: 0,
-      y: 0,
-      width,
-      height,
-      displayObject: panel,
-      vx: 0,
-      vy: 0,
-      type,
-      hp: 1,
-      maxHp: 1,
-    };
-  }
-
-  private updatePlayer(deltaMs: number, keys: Record<string, boolean>): void {
-    let speed = 0.4;
-
-    if (this.hasSpeedBoost) {
-      speed *= 1.8;
-    }
-
-    if (keys[Keys.ArrowLeft] || keys['KeyA']) {
-      this.player.x = Math.max(0, this.player.x - speed * deltaMs);
-    }
-    if (keys[Keys.ArrowRight] || keys['KeyD']) {
-      this.player.x = Math.min(this.viewportWidth - this.player.width, this.player.x + speed * deltaMs);
-    }
-
-    this.player.displayObject.displayObject.x = this.player.x;
-    this.player.displayObject.displayObject.y = this.player.y;
-
-    const keysPressed = this.keyboard.keysPressed.get();
-    if (keysPressed[Keys.Space] && Date.now() - this.lastShot > (this.hasTripleShot ? 150 : 250)) {
-      this.lastShot = Date.now();
-      this.fireBullet();
+    if (keysPressed[Keys.Space] && Date.now() - lastShotSignal.get() > (hasTripleShotSignal.get() ? 150 : 250)) {
+      const bullets = [...bulletsSignal.get()];
+      const b = createGameObject(4, 12, 0x00ffaa);
+      b.x = player.x + player.width / 2 - 2;
+      b.y = player.y - 12;
+      b.vy = -0.9;
+      bullets.push(b);
+      bulletsSignal.set(bullets);
+      lastShotSignal.set(Date.now());
     }
   }
 
-  private fireBullet(): void {
-    if (this.hasTripleShot) {
-      const bullet1 = this.createGameObject(4, 12, 0x00ffaa);
-      bullet1.x = this.player.x + this.player.width / 2 - 2;
-      bullet1.y = this.player.y - 12;
-      bullet1.vy = -0.9;
-      bullet1.displayObject.displayObject.x = bullet1.x;
-      bullet1.displayObject.displayObject.y = bullet1.y;
-      this.bullets.push(bullet1);
-      this.gameArea.addChild(bullet1.displayObject);
+  const bullets = bulletsSignal
+    .get()
+    .map((b: GameObject) => {
+      b.x += b.vx * deltaMs;
+      b.y += b.vy * deltaMs;
+      return b;
+    })
+    .filter((b: GameObject) => b.y > -20);
+  bulletsSignal.set(bullets);
 
-      const bullet2 = this.createGameObject(4, 12, 0x00ffaa);
-      bullet2.x = this.player.x - 10;
-      bullet2.y = this.player.y;
-      bullet2.vx = -0.2;
-      bullet2.vy = -0.8;
-      bullet2.displayObject.displayObject.x = bullet2.x;
-      bullet2.displayObject.displayObject.y = bullet2.y;
-      this.bullets.push(bullet2);
-      this.gameArea.addChild(bullet2.displayObject);
+  const enemyBullets = enemyBulletsSignal
+    .get()
+    .map((b: GameObject) => {
+      b.y += b.vy * deltaMs;
+      return b;
+    })
+    .filter((b: GameObject) => b.y < h + 20);
+  enemyBulletsSignal.set(enemyBullets);
 
-      const bullet3 = this.createGameObject(4, 12, 0x00ffaa);
-      bullet3.x = this.player.x + this.player.width + 6;
-      bullet3.y = this.player.y;
-      bullet3.vx = 0.2;
-      bullet3.vy = -0.8;
-      bullet3.displayObject.displayObject.x = bullet3.x;
-      bullet3.displayObject.displayObject.y = bullet3.y;
-      this.bullets.push(bullet3);
-      this.gameArea.addChild(bullet3.displayObject);
-    } else {
-      const bullet = this.createGameObject(4, 12, 0x00ffaa);
-      bullet.x = this.player.x + this.player.width / 2 - 2;
-      bullet.y = this.player.y - 12;
-      bullet.vy = -0.9;
-      bullet.displayObject.displayObject.x = bullet.x;
-      bullet.displayObject.displayObject.y = bullet.y;
-      this.bullets.push(bullet);
-      this.gameArea.addChild(bullet.displayObject);
-    }
+  updateEnemies(deltaMs);
+  checkCollisions();
+  updatePowerUps(deltaMs);
+  updatePowerUpTimers(deltaMs);
+
+  if (comboTimerSignal.get() > 0) {
+    comboTimerSignal.set(comboTimerSignal.get() - deltaMs);
+    if (comboTimerSignal.get() <= 0) comboSignal.set(0);
   }
 
-  private fireEnemyBullet(enemy: GameObject): void {
-    const bullet = this.createGameObject(4, 12, enemy.type === 'tank' ? 0xff00ff : 0xff4444);
-    bullet.x = enemy.x + enemy.width / 2 - 2;
-    bullet.y = enemy.y + enemy.height;
-    bullet.vy = 0.25 + this.level * 0.05;
-    bullet.displayObject.displayObject.x = bullet.x;
-    bullet.displayObject.displayObject.y = bullet.y;
-    this.enemyBullets.push(bullet);
-    this.gameArea.addChild(bullet.displayObject);
+  clearKeyboardFrame();
+}
+
+function updateEnemies(deltaMs: number): void {
+  const enemies = [...enemiesSignal.get()];
+  const w = viewportWidthSignal.get();
+  const player = playerSignal.get();
+
+  if (enemies.length === 0) {
+    levelSignal.set(levelSignal.get() + 1);
+    scoreSignal.set(scoreSignal.get() + 1000 * levelSignal.get());
+    enemySpeedSignal.set(enemySpeedSignal.get() + 0.2);
+    spawnEnemies();
+    return;
   }
 
-  private updateBullets(deltaMs: number): void {
-    for (let i = this.bullets.length - 1; i >= 0; i--) {
-      const bullet = this.bullets[i];
-      bullet.x += bullet.vx * deltaMs;
-      bullet.y += bullet.vy * deltaMs;
-      bullet.displayObject.displayObject.x = bullet.x;
-      bullet.displayObject.displayObject.y = bullet.y;
-
-      if (bullet.y < -20) {
-        this.gameArea.removeChild(bullet.displayObject);
-        this.bullets.splice(i, 1);
-      }
-    }
-
-    for (let i = this.enemyBullets.length - 1; i >= 0; i--) {
-      const bullet = this.enemyBullets[i];
-      bullet.y += bullet.vy * deltaMs;
-      bullet.displayObject.displayObject.x = bullet.x;
-      bullet.displayObject.displayObject.y = bullet.y;
-
-      if (bullet.y > this.viewportHeight + 20) {
-        this.gameArea.removeChild(bullet.displayObject);
-        this.enemyBullets.splice(i, 1);
-      }
-    }
+  let leftMost = w,
+    rightMost = 0;
+  for (const e of enemies) {
+    leftMost = Math.min(leftMost, e.x);
+    rightMost = Math.max(rightMost, e.x + e.width);
   }
 
-  private updateEnemies(deltaMs: number): void {
-    if (this.enemies.length === 0) {
-      this.level++;
-      this.score += 1000 * this.level;
-      this.enemySpeed += 0.2;
-      this.updateLabels();
-      this.emitScore();
-      this.spawnEnemies();
-      return;
-    }
-
-    let leftMost = this.viewportWidth;
-    let rightMost = 0;
-
-    for (const enemy of this.enemies) {
-      leftMost = Math.min(leftMost, enemy.x);
-      rightMost = Math.max(rightMost, enemy.x + enemy.width);
-    }
-
-    if (rightMost >= this.viewportWidth - 10 && this.enemyDirection > 0) {
-      this.enemyDirection = -1;
-      this.enemyDropAmount = 12;
-    } else if (leftMost <= 10 && this.enemyDirection < 0) {
-      this.enemyDirection = 1;
-      this.enemyDropAmount = 12;
-    }
-
-    for (const enemy of this.enemies) {
-      enemy.x += enemy.vx * this.enemyDirection * deltaMs * 0.05;
-      enemy.y += this.enemyDropAmount;
-      enemy.displayObject.displayObject.x = enemy.x;
-      enemy.displayObject.displayObject.y = enemy.y;
-
-      if (enemy.y > this.player.y - 20) {
-        this.loseLife();
-        return;
-      }
-
-      const fireRate = enemy.type === 'tank' ? 0.0002 : enemy.type === 'soldier' ? 0.0004 : 0.0006;
-      if (Math.random() < fireRate * deltaMs * (1 + this.level * 0.1)) {
-        this.fireEnemyBullet(enemy);
-      }
-    }
-
-    this.enemyDropAmount = 0;
+  const dir = enemyDirectionSignal.get();
+  if (rightMost >= w - 10 && dir > 0) {
+    enemyDirectionSignal.set(-1);
+    enemyDropAmountSignal.set(12);
+  } else if (leftMost <= 10 && dir < 0) {
+    enemyDirectionSignal.set(1);
+    enemyDropAmountSignal.set(12);
   }
 
-  private checkCollisions(): void {
-    for (let i = this.bullets.length - 1; i >= 0; i--) {
-      const bullet = this.bullets[i];
+  const drop = enemyDropAmountSignal.get();
+  const direction = enemyDirectionSignal.get();
 
-      for (let j = this.enemies.length - 1; j >= 0; j--) {
-        const enemy = this.enemies[j];
+  for (const e of enemies) {
+    e.x += e.vx * direction * deltaMs * 0.05;
+    e.y += drop;
+  }
+  enemiesSignal.set(enemies);
+  enemyDropAmountSignal.set(0);
 
-        if (this.rectIntersect(bullet, enemy)) {
-          this.gameArea.removeChild(bullet.displayObject);
-          this.bullets.splice(i, 1);
+  if (player && enemies.some((e: GameObject) => e.y > player.y - 20)) loseLife();
+}
 
-          enemy.hp = (enemy.hp || 1) - 1;
+function checkCollisions(): void {
+  const bullets = [...bulletsSignal.get()];
+  const enemies = [...enemiesSignal.get()];
+  const enemyBullets = enemyBulletsSignal.get();
+  const player = playerSignal.get();
+  const powerUps = [...powerUpsSignal.get()];
 
-          if (enemy.hp !== undefined && enemy.hp <= 0) {
-            this.createExplosion(
-              enemy.x + enemy.width / 2,
-              enemy.y + enemy.height / 2,
-              enemy.type === 'tank' ? 0xff00ff : enemy.type === 'soldier' ? 0xffaa00 : 0xff4444,
-            );
-            this.screenShake = 8;
-
-            let points = 10;
-            if (enemy.type === 'tank') points = 30;
-            else if (enemy.type === 'soldier') points = 20;
-
-            this.combo++;
-            this.comboTimer = 2000;
-            const multiplier = Math.min(Math.floor(this.combo / 5) + 1, 5);
-            this.score += points * multiplier;
-
-            if (Math.random() < 0.15) {
-              this.spawnPowerUp(enemy.x + enemy.width / 2, enemy.y + enemy.height / 2);
-            }
-
-            this.gameArea.removeChild(enemy.displayObject);
-            this.enemies.splice(j, 1);
-          }
-
-          this.updateLabels();
-          this.emitScore();
-          break;
-        }
-      }
-    }
-
-    for (const bullet of this.enemyBullets) {
-      if (this.rectIntersect(bullet, this.player)) {
-        if (this.hasShield) {
-          this.createExplosion(bullet.x, bullet.y, 0x00aaff);
-          this.gameArea.removeChild(bullet.displayObject);
-          const idx = this.enemyBullets.indexOf(bullet);
-          if (idx > -1) this.enemyBullets.splice(idx, 1);
-        } else {
-          this.loseLife();
+  for (let i = bullets.length - 1; i >= 0; i--) {
+    const b = bullets[i];
+    for (let j = enemies.length - 1; j >= 0; j--) {
+      const e = enemies[j];
+      if (rectIntersect(b, e)) {
+        bullets.splice(i, 1);
+        e.hp--;
+        if (e.hp <= 0) {
+          enemies.splice(j, 1);
+          comboSignal.set(comboSignal.get() + 1);
+          comboTimerSignal.set(2000);
+          const mult = Math.min(Math.floor(comboSignal.get() / 5) + 1, 5);
+          const pts = e.type === 'tank' ? 30 : e.type === 'soldier' ? 20 : 10;
+          scoreSignal.set(scoreSignal.get() + pts * mult);
+          if (Math.random() < 0.15) spawnPowerUp(e.x + e.width / 2, e.y + e.height / 2);
         }
         break;
       }
     }
+  }
 
-    for (let i = this.powerUps.length - 1; i >= 0; i--) {
-      const powerUp = this.powerUps[i];
-      if (this.rectIntersect(powerUp, this.player)) {
-        this.activatePowerUp(powerUp.type);
-        this.createExplosion(powerUp.x, powerUp.y, 0x00ff00);
-        this.gameArea.removeChild(powerUp.displayObject);
-        this.powerUps.splice(i, 1);
-      }
+  for (const b of enemyBullets) {
+    if (player && rectIntersect(b, player)) {
+      if (hasShieldSignal.get()) hasShieldSignal.set(false);
+      else loseLife();
+      break;
     }
   }
 
-  private rectIntersect(a: GameObject | PowerUp, b: GameObject): boolean {
-    return a.x < b.x + b.width && a.x + a.width > b.x && a.y < b.y + b.height && a.y + a.height > b.y;
-  }
-
-  private createExplosion(x: number, y: number, color: number): void {
-    const particleCount = 12;
-    for (let i = 0; i < particleCount; i++) {
-      const angle = (Math.PI * 2 * i) / particleCount;
-      const speed = 0.1 + Math.random() * 0.15;
-      const particle: Particle = {
-        x,
-        y,
-        vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed,
-        life: 500,
-        maxLife: 500,
-        displayObject: new Box({
-          backgroundColor: color,
-          height: 3 + Math.random() * 3,
-          width: 3 + Math.random() * 3,
-        }),
-        color,
-      };
-      this.particles.push(particle);
-      this.gameArea.addChild(particle.displayObject);
+  for (let i = powerUps.length - 1; i >= 0; i--) {
+    const pu = powerUps[i];
+    if (player && rectIntersect({ ...pu, vx: 0, vy: 0, type: '', hp: 1, maxHp: 1 }, player)) {
+      activatePowerUp(pu.type);
+      powerUps.splice(i, 1);
     }
   }
 
-  private updateParticles(deltaMs: number): void {
-    for (let i = this.particles.length - 1; i >= 0; i--) {
-      const particle = this.particles[i];
-      particle.x += particle.vx * deltaMs;
-      particle.y += particle.vy * deltaMs;
-      particle.life -= deltaMs;
+  bulletsSignal.set(bullets);
+  enemiesSignal.set(enemies);
+  powerUpsSignal.set(powerUps);
+}
 
-      const alpha = particle.life / particle.maxLife;
-      particle.displayObject.displayObject.alpha = alpha;
-      particle.displayObject.displayObject.x = particle.x;
-      particle.displayObject.displayObject.y = particle.y;
+function spawnPowerUp(x: number, y: number): void {
+  const types: PowerUp['type'][] = ['shield', 'triple-shot', 'speed', 'bomb'];
+  const type = types[Math.floor(Math.random() * types.length)];
+  const pu: PowerUp = { id: ++gameId, x, y, width: 20, height: 20, type, vy: 0.08 };
+  powerUpsSignal.set([...powerUpsSignal.get(), pu]);
+}
 
-      if (particle.life <= 0) {
-        this.gameArea.removeChild(particle.displayObject);
-        this.particles.splice(i, 1);
-      }
-    }
+function updatePowerUps(deltaMs: number): void {
+  const powerUps = powerUpsSignal
+    .get()
+    .map((pu: PowerUp) => {
+      pu.y += pu.vy * deltaMs;
+      return pu;
+    })
+    .filter((pu: PowerUp) => pu.y < viewportHeightSignal.get() + 20);
+  powerUpsSignal.set(powerUps);
+}
+
+function activatePowerUp(type: PowerUp['type']): void {
+  if (type === 'shield') {
+    hasShieldSignal.set(true);
+    shieldTimerSignal.set(8000);
+  } else if (type === 'triple-shot') {
+    hasTripleShotSignal.set(true);
+    tripleShotTimerSignal.set(10000);
+  } else if (type === 'speed') {
+    hasSpeedBoostSignal.set(true);
+    speedTimerSignal.set(8000);
   }
+  scoreSignal.set(scoreSignal.get() + 50);
+}
 
-  private spawnPowerUp(x: number, y: number): void {
-    const types: PowerUp['type'][] = ['shield', 'triple-shot', 'speed', 'bomb'];
-    const type = types[Math.floor(Math.random() * types.length)];
-
-    let color = 0x00aaff;
-    if (type === 'shield') color = 0x00aaff;
-    else if (type === 'triple-shot') color = 0xffaa00;
-    else if (type === 'speed') color = 0xffff00;
-    else if (type === 'bomb') color = 0xff00ff;
-
-    const powerUp: PowerUp = {
-      x,
-      y,
-      width: 20,
-      height: 20,
-      displayObject: new Box({
-        backgroundColor: color,
-        height: 20,
-        width: 20,
-      }),
-      type,
-      vy: 0.08,
-    };
-    powerUp.displayObject.displayObject.x = powerUp.x;
-    powerUp.displayObject.displayObject.y = powerUp.y;
-
-    this.powerUps.push(powerUp);
-    this.gameArea.addChild(powerUp.displayObject);
+function updatePowerUpTimers(deltaMs: number): void {
+  if (hasShieldSignal.get()) {
+    shieldTimerSignal.set(shieldTimerSignal.get() - deltaMs);
+    if (shieldTimerSignal.get() <= 0) hasShieldSignal.set(false);
   }
-
-  private updatePowerUps(deltaMs: number): void {
-    for (let i = this.powerUps.length - 1; i >= 0; i--) {
-      const powerUp = this.powerUps[i];
-      powerUp.y += powerUp.vy * deltaMs;
-      powerUp.displayObject.displayObject.x = powerUp.x;
-      powerUp.displayObject.displayObject.y = powerUp.y;
-
-      if (powerUp.y > this.viewportHeight + 20) {
-        this.gameArea.removeChild(powerUp.displayObject);
-        this.powerUps.splice(i, 1);
-      }
-    }
+  if (hasTripleShotSignal.get()) {
+    tripleShotTimerSignal.set(tripleShotTimerSignal.get() - deltaMs);
+    if (tripleShotTimerSignal.get() <= 0) hasTripleShotSignal.set(false);
   }
-
-  private activatePowerUp(type: PowerUp['type']): void {
-    if (type === 'shield') {
-      this.hasShield = true;
-      this.shieldTimer = 8000;
-    } else if (type === 'triple-shot') {
-      this.hasTripleShot = true;
-      this.tripleShotTimer = 10000;
-    } else if (type === 'speed') {
-      this.hasSpeedBoost = true;
-      this.speedTimer = 8000;
-    } else if (type === 'bomb') {
-      this.useSmartBomb();
-    }
-
-    this.score += 50;
-    this.updateLabels();
-    this.emitScore();
-  }
-
-  private useSmartBomb(): void {
-    const rowY = this.player.y - 100;
-    for (let i = this.enemies.length - 1; i >= 0; i--) {
-      const enemy = this.enemies[i];
-      if (Math.abs(enemy.y - rowY) < 50) {
-        this.createExplosion(enemy.x + enemy.width / 2, enemy.y + enemy.height / 2, 0xff00ff);
-        this.screenShake = 12;
-        this.score += 20 * (this.combo + 1);
-        this.gameArea.removeChild(enemy.displayObject);
-        this.enemies.splice(i, 1);
-      }
-    }
-  }
-
-  private updatePowerUpTimers(deltaMs: number): void {
-    if (this.hasShield) {
-      this.shieldTimer -= deltaMs;
-      if (this.shieldTimer <= 0) {
-        this.hasShield = false;
-      }
-    }
-
-    if (this.hasTripleShot) {
-      this.tripleShotTimer -= deltaMs;
-      if (this.tripleShotTimer <= 0) {
-        this.hasTripleShot = false;
-      }
-    }
-
-    if (this.hasSpeedBoost) {
-      this.speedTimer -= deltaMs;
-      if (this.speedTimer <= 0) {
-        this.hasSpeedBoost = false;
-      }
-    }
-  }
-
-  private updateScreenShake(deltaMs: number): void {
-    if (this.screenShake > 0) {
-      this.screenShake -= deltaMs * 0.05;
-      if (this.screenShake < 0) this.screenShake = 0;
-    }
-  }
-
-  private updateCombo(deltaMs: number): void {
-    if (this.comboTimer > 0) {
-      this.comboTimer -= deltaMs;
-      if (this.comboTimer <= 0) {
-        this.combo = 0;
-        this.updateLabels();
-      }
-    }
-  }
-
-  private loseLife(): void {
-    this.lives--;
-    this.createExplosion(this.player.x + this.player.width / 2, this.player.y + this.player.height / 2, 0xff4444);
-    this.screenShake = 15;
-    this.combo = 0;
-    this.updateLabels();
-
-    if (this.lives <= 0) {
-      this.gameOver = true;
-      this.saveHighScore();
-      void this.getContext().scenes.goTo('game-over');
-    } else {
-      for (const bullet of this.enemyBullets) {
-        this.gameArea.removeChild(bullet.displayObject);
-      }
-      this.enemyBullets = [];
-
-      this.player.x = this.viewportWidth / 2 - 20;
-      this.player.y = this.viewportHeight - 80;
-    }
-  }
-
-  private resetGame(): void {
-    this.score = 0;
-    this.level = 1;
-    this.lives = 3;
-    this.combo = 0;
-    this.gameOver = false;
-    this.paused = false;
-    this.enemySpeed = 0.8;
-    this.hasShield = false;
-    this.hasTripleShot = false;
-    this.hasSpeedBoost = false;
-    this.pauseLabel.displayObject.visible = false;
-    this.continueButton.displayObject.visible = false;
-    this.restartButton.displayObject.visible = false;
-    this.updateLabels();
-    this.initGame();
-    this.emitScore();
-  }
-
-  private updateLabels(): void {
-    this.scoreLabel.setText(`SCORE: ${this.score.toLocaleString()}`);
-    this.levelLabel.setText(`LEVEL: ${this.level}`);
-
-    let livesStr = 'LIVES:';
-    for (let i = 0; i < this.lives; i++) livesStr += ' ♥';
-    this.livesLabel.setText(livesStr);
-
-    if (this.combo > 1) {
-      const multiplier = Math.min(Math.floor(this.combo / 5) + 1, 5);
-      this.comboLabel.setText(`COMBO x${multiplier} (${this.combo})`);
-    } else {
-      this.comboLabel.setText('');
-    }
-
-    this.positionHud();
-  }
-
-  private positionHud(): void {
-    const topPadding = 16;
-    const leftPadding = 20;
-    const rightPadding = 20;
-    const hudWidth = this.viewportWidth - leftPadding - rightPadding;
-
-    this.scoreLabel.displayObject.x = leftPadding;
-    this.scoreLabel.displayObject.y = topPadding;
-
-    this.levelLabel.displayObject.x = leftPadding + 260;
-    this.levelLabel.displayObject.y = topPadding;
-
-    this.comboLabel.displayObject.x = leftPadding + 500;
-    this.comboLabel.displayObject.y = topPadding + 4;
-
-    this.livesLabel.displayObject.x = Math.max(
-      leftPadding + 680,
-      leftPadding + hudWidth - this.livesLabel.displayObject.width,
-    );
-    this.livesLabel.displayObject.y = topPadding + 2;
-  }
-
-  private emitScore(): void {
-    const context = this.getContext();
-    context.events.emit('game.score', { score: this.score, level: this.level });
-  }
-
-  private saveHighScore(): void {
-    try {
-      const saved = localStorage.getItem('spaceInvadersHighScore');
-      const currentHigh = saved ? parseInt(saved, 10) : 0;
-      if (this.score > currentHigh) {
-        localStorage.setItem('spaceInvadersHighScore', this.score.toString());
-      }
-    } catch {
-      // localStorage not available
-    }
+  if (hasSpeedBoostSignal.get()) {
+    speedTimerSignal.set(speedTimerSignal.get() - deltaMs);
+    if (speedTimerSignal.get() <= 0) hasSpeedBoostSignal.set(false);
   }
 }
+
+function loseLife(): void {
+  livesSignal.set(livesSignal.get() - 1);
+  comboSignal.set(0);
+  if (livesSignal.get() <= 0) {
+    gameOverSignal.set(true);
+  } else {
+    const player = playerSignal.get();
+    if (player) {
+      player.x = viewportWidthSignal.get() / 2 - 20;
+      player.y = viewportHeightSignal.get() - 80;
+      playerSignal.set({ ...player });
+    }
+    enemyBulletsSignal.set([]);
+  }
+}
+
+export function resetGame(): void {
+  scoreSignal.set(0);
+  levelSignal.set(1);
+  livesSignal.set(3);
+  comboSignal.set(0);
+  gameOverSignal.set(false);
+  pausedSignal.set(false);
+  enemySpeedSignal.set(0.8);
+  hasShieldSignal.set(false);
+  hasTripleShotSignal.set(false);
+  hasSpeedBoostSignal.set(false);
+  initGame();
+}
+
+export const gameScene = pixora.scene((context: ApplicationContext) => {
+  const viewport = context.viewport.get();
+  viewportWidthSignal.set(viewport.width);
+  viewportHeightSignal.set(viewport.height);
+
+  if (!initializedSignal.get()) {
+    keyboard = createKeyboardInput();
+    initGame();
+    initializedSignal.set(true);
+
+    tickerCallback = () => update(context.app.ticker.deltaMS);
+    context.app.ticker.add(tickerCallback as never);
+  }
+
+  context.events.emit('game.score', { score: scoreSignal.get(), level: levelSignal.get() });
+
+  const score = scoreSignal.get();
+  const level = levelSignal.get();
+  const lives = livesSignal.get();
+  const combo = comboSignal.get();
+  const paused = pausedSignal.get();
+  const gameOver = gameOverSignal.get();
+  const player = playerSignal.get();
+  const bullets = bulletsSignal.get();
+  const enemyBullets = enemyBulletsSignal.get();
+  const enemies = enemiesSignal.get();
+  const powerUps = powerUpsSignal.get();
+
+  const livesStr = 'LIVES:' + ' ♥'.repeat(lives);
+  const comboText = combo > 1 ? `COMBO x${Math.min(Math.floor(combo / 5) + 1, 5)} (${combo})` : '';
+
+  return pixora.container(
+    { x: 0, y: 0 },
+    pixora.box({ backgroundColor: 0x0a0a1a, height: viewport.height, width: viewport.width, x: 0, y: 0 }),
+    pixora.container(
+      { x: 0, y: 0 },
+      pixora.text({
+        style: { fill: '#00ffaa', fontFamily: 'Orbitron, monospace', fontSize: 20, fontWeight: 'bold' },
+        text: `SCORE: ${score.toLocaleString()}`,
+        x: 20,
+        y: 16,
+      }),
+      pixora.text({
+        style: { fill: '#ff00aa', fontFamily: 'Orbitron, monospace', fontSize: 20, fontWeight: 'bold' },
+        text: `LEVEL: ${level}`,
+        x: 280,
+        y: 16,
+      }),
+      pixora.text({
+        style: { fill: '#ffff00', fontFamily: 'Orbitron, monospace', fontSize: 16, fontWeight: 'bold' },
+        text: comboText,
+        x: 520,
+        y: 20,
+      }),
+      pixora.text({
+        style: { fill: '#ff6644', fontFamily: 'Orbitron, monospace', fontSize: 18 },
+        text: livesStr,
+        x: 700,
+        y: 18,
+      }),
+    ),
+    paused
+      ? pixora.container(
+          { x: 0, y: 0 },
+          pixora.text({
+            style: { fill: '#ffffff', fontFamily: 'Orbitron, monospace', fontSize: 48, fontWeight: 'bold' },
+            text: 'PAUSED',
+            x: viewport.width / 2,
+            y: viewport.height / 2 - 40,
+          }),
+          pixora.button({
+            backgroundColor: 0x00ffaa,
+            height: 48,
+            label: 'CONTINUE',
+            onPointerTap: () => pausedSignal.set(false),
+            width: 200,
+            x: viewport.width / 2 - 100,
+            y: viewport.height / 2 + 40,
+          }),
+          pixora.button({
+            backgroundColor: 0xff6644,
+            height: 48,
+            label: 'RESTART',
+            onPointerTap: () => resetGame(),
+            width: 200,
+            x: viewport.width / 2 - 100,
+            y: viewport.height / 2 + 100,
+          }),
+        )
+      : null,
+    gameOver
+      ? pixora.container(
+          { x: 0, y: 0 },
+          pixora.text({
+            style: { fill: '#ff4444', fontFamily: 'Orbitron, sans-serif', fontSize: 72, fontWeight: '900' },
+            text: 'GAME OVER',
+            x: viewport.width / 2,
+            y: viewport.height / 2 - 100,
+          }),
+          pixora.button({
+            backgroundColor: 0x00ffaa,
+            height: 56,
+            label: 'PLAY AGAIN',
+            onPointerTap: () => resetGame(),
+            width: 280,
+            x: viewport.width / 2 - 140,
+            y: viewport.height / 2 + 50,
+          }),
+          pixora.button({
+            backgroundColor: 0x666688,
+            height: 48,
+            label: 'MAIN MENU',
+            onPointerTap: () => {
+              resetGame();
+              void context.scenes.goTo('main-menu');
+            },
+            width: 280,
+            x: viewport.width / 2 - 140,
+            y: viewport.height / 2 + 120,
+          }),
+        )
+      : null,
+    player
+      ? pixora.box({ backgroundColor: 0x00ffaa, height: player.height, width: player.width, x: player.x, y: player.y })
+      : null,
+    ...bullets.map((b: GameObject) =>
+      pixora.box({ backgroundColor: 0x00ffaa, height: b.height, width: b.width, x: b.x, y: b.y }),
+    ),
+    ...enemyBullets.map((b: GameObject) =>
+      pixora.box({
+        backgroundColor: b.type === 'tank' ? 0xff00ff : 0xff4444,
+        height: b.height,
+        width: b.width,
+        x: b.x,
+        y: b.y,
+      }),
+    ),
+    ...enemies.map((e: GameObject) =>
+      pixora.box({
+        backgroundColor: e.type === 'tank' ? 0xff00ff : e.type === 'soldier' ? 0xffaa00 : 0xff4444,
+        height: e.height,
+        width: e.width,
+        x: e.x,
+        y: e.y,
+      }),
+    ),
+    ...powerUps.map((pu: PowerUp) => {
+      const color =
+        pu.type === 'shield'
+          ? 0x00aaff
+          : pu.type === 'triple-shot'
+            ? 0xffaa00
+            : pu.type === 'speed'
+              ? 0xffff00
+              : 0xff00ff;
+      return pixora.box({ backgroundColor: color, height: pu.height, width: pu.width, x: pu.x, y: pu.y });
+    }),
+  );
+});

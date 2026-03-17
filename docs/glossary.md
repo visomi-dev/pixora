@@ -4,7 +4,7 @@ This glossary defines the terms used by pixora documents and later by the public
 
 ## Core runtime terms
 
-- App: the top-level pixora runtime created by `createpixoraApp`.
+- App: the top-level pixora runtime created by `createPixoraApp`.
 - Application Context: the shared runtime object passed to scenes, services, and framework modules.
 - Viewport: the current logical width, height, aspect ratio, orientation, and scale information.
 - Ticker: the per-frame update source used to drive scene updates, tweens, and time-based logic.

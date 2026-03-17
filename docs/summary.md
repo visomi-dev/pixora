@@ -109,7 +109,7 @@ Sprites, sounds, UI graphics, backgrounds.
 Bootstrapped through:
 
 ```
-createpixoraApp()
+createPixoraApp()
 ```
 
 Responsibilities:
@@ -388,7 +388,7 @@ Library infrastructure:
 
 Core runtime creation:
 
-- `createpixoraApp`
+- `createPixoraApp`
 - application context
 - viewport manager
 - service registry

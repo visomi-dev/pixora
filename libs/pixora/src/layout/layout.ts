@@ -4,6 +4,8 @@ export type BreakpointRule = {
   override: LayoutSpec;
 };
 
+export type SizeMode = 'auto' | 'content' | 'fill' | 'fixed' | 'percent';
+
 export type FixedLayoutSpec = {
   breakpoints?: readonly BreakpointRule[];
   height?: number;
@@ -35,7 +37,43 @@ export type StackLayoutSpec = {
   type: 'stack';
 };
 
-export type LayoutSpec = AnchorLayoutSpec | FixedLayoutSpec | StackLayoutSpec;
+export type FlexLayoutSpec = {
+  align?: 'center' | 'end' | 'start' | 'stretch';
+  breakpoints?: readonly BreakpointRule[];
+  direction: 'horizontal' | 'vertical';
+  gap?: number;
+  grow?: number;
+  justify?: 'center' | 'end' | 'space-around' | 'space-between' | 'space-evenly' | 'start';
+  padding?: number;
+  shrink?: number;
+  type: 'flex';
+};
+
+export type AutoLayoutSpec = {
+  breakpoints?: readonly BreakpointRule[];
+  height?: SizeMode;
+  type: 'auto';
+  width?: SizeMode;
+};
+
+export type PercentLayoutSpec = {
+  breakpoints?: readonly BreakpointRule[];
+  height?: number;
+  horizontal?: 'center' | 'end' | 'start';
+  offsetX?: number;
+  offsetY?: number;
+  type: 'percent';
+  vertical?: 'center' | 'end' | 'start';
+  width?: number;
+};
+
+export type LayoutSpec =
+  | AnchorLayoutSpec
+  | AutoLayoutSpec
+  | FixedLayoutSpec
+  | FlexLayoutSpec
+  | PercentLayoutSpec
+  | StackLayoutSpec;
 
 export const layout = {
   anchor(spec: Omit<AnchorLayoutSpec, 'type'>): AnchorLayoutSpec {
@@ -44,10 +82,28 @@ export const layout = {
       type: 'anchor',
     };
   },
+  auto(spec: Omit<AutoLayoutSpec, 'type'>): AutoLayoutSpec {
+    return {
+      ...spec,
+      type: 'auto',
+    };
+  },
   fixed(spec: Omit<FixedLayoutSpec, 'type'>): FixedLayoutSpec {
     return {
       ...spec,
       type: 'fixed',
+    };
+  },
+  flex(spec: Omit<FlexLayoutSpec, 'type'>): FlexLayoutSpec {
+    return {
+      ...spec,
+      type: 'flex',
+    };
+  },
+  percent(spec: Omit<PercentLayoutSpec, 'type'>): PercentLayoutSpec {
+    return {
+      ...spec,
+      type: 'percent',
     };
   },
   stack(spec: Omit<StackLayoutSpec, 'type'>): StackLayoutSpec {

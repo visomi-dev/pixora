@@ -1,6 +1,6 @@
-import { Application } from 'pixi.js';
+import { Application, Assets } from 'pixi.js';
 
-import { createAssetRegistry } from '../assets/create-asset-registry';
+import { createAssetRegistry, type FontAsset } from '../components/create-asset-registry';
 import { createEventBus } from '../events/create-event-bus';
 import { createSceneManager, type SceneManager } from '../scenes/scene-manager';
 import { createServiceRegistry, type ServiceRegistry } from '../services/create-service-registry';
@@ -14,7 +14,23 @@ type ServiceRegistryWithContext = ServiceRegistry & {
   setContext(context: ApplicationContext): void;
 };
 
-export async function createpixoraApp(options: pixoraAppOptions): Promise<pixoraApp> {
+async function loadFonts(fonts?: readonly FontAsset[]): Promise<void> {
+  if (!fonts || fonts.length === 0) {
+    return;
+  }
+
+  await Promise.all(
+    fonts.map((font) =>
+      Assets.load({
+        data: { family: font.family, weights: font.weights },
+        parser: 'web-font',
+        src: font.src,
+      }),
+    ),
+  );
+}
+
+export async function createPixoraApp(options: pixoraAppOptions): Promise<pixoraApp> {
   validateOptions(options);
 
   const app = new Application();
@@ -52,6 +68,7 @@ export async function createpixoraApp(options: pixoraAppOptions): Promise<pixora
 
   if (options.assets) {
     assets.register(options.assets);
+    await loadFonts(options.assets.fonts);
   }
 
   const context: ApplicationContext = {

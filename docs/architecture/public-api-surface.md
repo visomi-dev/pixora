@@ -14,7 +14,7 @@ The root package should expose named exports grouped by module domain.
 
 ### App
 
-- `createpixoraApp`
+- `createPixoraApp`
 - `type pixoraApp`
 - `type pixoraAppOptions`
 - `type Viewport`

@@ -2,8 +2,15 @@ import { Texture } from 'pixi.js';
 
 export type AssetKey = string;
 
+export type FontAsset = {
+  family: string;
+  src: string;
+  weights?: string[];
+};
+
 export type AssetManifest = {
   bundles?: Record<string, readonly AssetKey[]>;
+  fonts?: readonly FontAsset[];
   spritesheets?: Record<AssetKey, string>;
   textures?: Record<AssetKey, string>;
 };

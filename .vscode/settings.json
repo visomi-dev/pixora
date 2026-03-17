@@ -5,6 +5,9 @@
     "source.fixAll.eslint": "always",
     "source.fixAll.stylelint": "always"
   },
+  "debug.javascript.terminalOptions": {
+    "resolveSourceMapLocations": ["${workspaceFolder}/**", "!**/node_modules/**", "**/node_modules/.vite/**"]
+  },
   "[prisma]": {
     "editor.defaultFormatter": "Prisma.prisma"
   },

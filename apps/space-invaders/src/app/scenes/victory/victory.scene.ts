@@ -1,103 +1,49 @@
-import { applyLayout, Box, Button, layout, Scene, TextNode } from 'pixora';
-import type { Viewport } from 'pixora';
+import { layout, pixora } from 'pixora';
 
-export class VictoryScene extends Scene {
-  readonly key = 'victory';
+export const victoryScene = pixora.scene({
+  key: 'victory',
+  render: (context) => {
+    const vp = context.viewport.get();
 
-  private readonly background = new Box();
-  private readonly container = new Box();
-
-  private readonly title = new TextNode({
-    style: {
-      fill: '#00ffaa',
-      fontFamily: 'Orbitron, sans-serif',
-      fontSize: 72,
-      fontWeight: '900',
-    },
-    text: 'VICTORY!',
-  });
-
-  private readonly subtitle = new TextNode({
-    style: {
-      fill: '#ff00aa',
-      fontFamily: 'Orbitron, sans-serif',
-      fontSize: 28,
-    },
-    text: 'GALAXY DEFENDED!',
-  });
-
-  private readonly scoreLabel = new TextNode({
-    style: {
-      fill: '#ffffff',
-      fontFamily: 'Orbitron, sans-serif',
-      fontSize: 32,
-    },
-    text: 'FINAL SCORE: 0',
-  });
-
-  private readonly restartButton = new Button({
-    backgroundColor: 0x00ffaa,
-    label: 'PLAY AGAIN',
-    onPress: () => {
-      void this.getContext().scenes.goTo('main-menu');
-    },
-    width: 280,
-    height: 56,
-  });
-
-  private readonly menuButton = new Button({
-    backgroundColor: 0x666688,
-    label: 'MAIN MENU',
-    onPress: () => {
-      void this.getContext().scenes.goTo('main-menu');
-    },
-    width: 280,
-    height: 48,
-  });
-
-  constructor() {
-    super();
-  }
-
-  override mount(): void {
-    this.root.addChild(this.background.displayObject);
-    this.root.addChild(this.container.displayObject);
-
-    this.container.addChild(this.title);
-    this.container.addChild(this.subtitle);
-    this.container.addChild(this.scoreLabel);
-    this.container.addChild(this.restartButton);
-    this.container.addChild(this.menuButton);
-  }
-
-  override resize(viewport: Viewport): void {
-    this.background.updateProps({
-      backgroundColor: 0x0a0a1a,
-      height: viewport.height,
-      width: viewport.width,
-    });
-
-    applyLayout(
-      this.container,
-      layout.stack({
-        align: 'center',
-        direction: 'vertical',
-        fitContent: true,
-        gap: 24,
-        padding: 48,
-      }),
-      { height: viewport.height, width: viewport.width, x: 0, y: 0 },
-      viewport,
+    return pixora.container(
+      { x: 0, y: 0 },
+      pixora.box({ backgroundColor: 0x0a0a1a, height: vp.height, width: vp.width, x: 0, y: 0 }),
+      pixora.container(
+        {
+          layout: layout.percent({
+            horizontal: 'center',
+            vertical: 'center',
+            width: 1,
+          }),
+        },
+        pixora.container(
+          {
+            layout: layout.flex({
+              direction: 'vertical',
+              justify: 'center',
+              align: 'center',
+              gap: 16,
+            }),
+          },
+          pixora.text({ text: 'VICTORY!', color: '#00ffaa', size: 72, weight: '900', font: 'Orbitron, sans-serif' }),
+          pixora.text({ text: 'GALAXY DEFENDED!', color: '#ff00aa', size: 28, font: 'Orbitron, sans-serif' }),
+          pixora.text({ text: 'FINAL SCORE: 0', color: '#ffffff', size: 32, font: 'Orbitron, sans-serif' }),
+          pixora.button({
+            backgroundColor: 0x00ffaa,
+            height: 56,
+            label: 'PLAY AGAIN',
+            onPointerTap: () => void context.scenes.goTo('game'),
+            width: 280,
+          }),
+          pixora.button({
+            backgroundColor: 0x666688,
+            height: 48,
+            label: 'MAIN MENU',
+            onPointerTap: () => void context.scenes.goTo('main-menu'),
+            width: 280,
+          }),
+        ),
+      ),
     );
-
-    applyLayout(
-      this.container,
-      layout.anchor({
-        horizontal: 'center',
-        vertical: 'center',
-      }),
-      { height: viewport.height, width: viewport.width, x: 0, y: 0 },
-      viewport,
-    );
-  }
-}
+  },
+});

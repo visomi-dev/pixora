@@ -1,4 +1,4 @@
-export { createpixoraApp } from './app/create-pixyn-app';
+export { createPixoraApp } from './app/create-pixyn-app';
 
 export type { ApplicationContext, pixoraApp, pixoraAppOptions, Viewport } from './app/types';
 
@@ -28,8 +28,41 @@ export { TextNode } from './components/text-node';
 
 export { applyLayout } from './layout/apply-layout';
 export { layout } from './layout/layout';
+export { Layout } from './layout/layout-node';
+export { flexEngine, FlexEngine } from './layout/flex-engine';
 
-export type { AnchorLayoutSpec, BreakpointRule, FixedLayoutSpec, LayoutSpec, StackLayoutSpec } from './layout/layout';
+export type {
+  LayoutStyles,
+  FlexItemStyle,
+  FlexContainerStyle,
+  JustifyContent,
+  AlignItems,
+  AlignSelf,
+  AlignContent,
+  FlexDirection,
+  FlexWrap,
+  Position,
+  Display,
+  BoxSizing,
+  Overflow,
+  ObjectFit,
+  Direction,
+  NumberValue,
+  PositionSpecifier,
+} from './layout/layout-types';
+
+export type {
+  AnchorLayoutSpec,
+  AutoLayoutSpec,
+  BreakpointRule,
+  FixedLayoutSpec,
+  LayoutSpec,
+  PercentLayoutSpec,
+  SizeMode,
+  StackLayoutSpec,
+} from './layout/layout';
+
+export type { ComputedLayout, ComputedPixiLayout, LayoutBounds } from './layout/computed-layout';
 
 export { bindInteractive } from './input/bind-interactive';
 export { createKeyboardInput, clearKeyboardFrame, Keys } from './input/create-keyboard-input';
@@ -52,3 +85,73 @@ export type { ServiceDescriptor, ServiceRegistry, ServiceToken } from './service
 export { Entity } from './entities/entity';
 
 export type { EntityOptions } from './entities/entity';
+
+// ---------------------------------------------------------------------------
+// Declarative runtime (Phase 10)
+// ---------------------------------------------------------------------------
+
+export { pixora } from './runtime/pixora';
+
+export type {
+  DeclarativeScene,
+  ImperativeSceneDefinition,
+  PixoraAppOptions,
+  PixoraComponentAPI,
+  PixoraFn,
+  PixoraRuntime,
+  PixoraScene,
+} from './runtime/pixora';
+
+export { isPixoraNode } from './runtime/types';
+
+export type {
+  BoxNodeProps,
+  ButtonNodeProps,
+  ContainerNodeProps,
+  HostPropsMap,
+  HostType,
+  PixoraChild,
+  PixoraChildren,
+  PixoraNode,
+  SpriteNodeProps,
+  TextNodeProps,
+} from './runtime/types';
+
+export { box, button, container, keyedContainer, sprite, text } from './runtime/create-node';
+
+export { imperative } from './runtime/compat';
+
+export { mountTree, unmountTree } from './runtime/renderer';
+
+export { updateTree } from './runtime/reconcile';
+
+export { Scheduler, createScheduler, getScheduler } from './runtime/scheduler';
+
+export {
+  LifecyclePhase,
+  InvalidationFlag,
+  markVisualDirty,
+  markLayoutDirty,
+  clearVisualDirty,
+  clearLayoutDirty,
+  isVisuallyDirty,
+  isLayoutDirty,
+  hasDirtyDescendants,
+} from './runtime/lifecycle';
+
+export type { MountedNode, MountedTree } from './runtime/mounted-node';
+
+export { default as pixoraApi, api } from './runtime/api';
+
+export {
+  registerComponent,
+  getComponent,
+  hasComponent,
+  unregisterComponent,
+  clearComponents,
+  resolveComponent,
+  isComponentType,
+  createComponent,
+} from './runtime/components';
+
+export { isSignal, unwrapSignal } from './runtime/reactive';
