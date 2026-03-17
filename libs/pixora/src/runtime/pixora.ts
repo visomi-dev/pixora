@@ -308,7 +308,6 @@ class DeclarativeSceneAdapter extends Scene {
       unmountTree(this.mountedTree);
       this.mountedTrees.delete(this.key);
       this.mountedTree = null;
-      this.previousDefinition = null;
     }
   }
 
