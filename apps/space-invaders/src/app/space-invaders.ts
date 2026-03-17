@@ -59,7 +59,7 @@ async function mount(root: HTMLElement): Promise<void> {
   sceneName.textContent = runtime.context.scenes.getActiveSceneKey() ?? 'main-menu';
 }
 
-const root = document.querySelector<HTMLElement>('#space-invaders-root');
+const root = document.querySelector<HTMLElement>('.game-shell');
 
 if (root) {
   mount(root);
