@@ -492,3 +492,35 @@ apps/website/src/app/
 - Use semantic HTML5 elements.
 
 ---
+
+## Cursor Cloud specific instructions
+
+### Workspace overview
+
+This is the **Pixora monorepo** — a lightweight reactive 2D game framework built on PixiJS. Key projects:
+
+| Project | Type | Path | Dev command |
+|---|---|---|---|
+| `pixora` | Library | `libs/pixora/` | n/a (consumed by apps) |
+| `space-invaders` | App (demo game) | `apps/space-invaders/` | `pnpm nx dev space-invaders` (Vite, port 4200) |
+| `docs` | App (Hugo site) | `apps/docs/` | `pnpm nx dev docs` (requires Hugo binary — not installed by default) |
+
+No databases, external APIs, or Docker services are required.
+
+### Running tasks
+
+All tasks go through Nx. Standard commands (see `package.json` scripts and `nx.json`):
+
+- **Lint:** `pnpm nx run-many -t lint`
+- **Test:** `pnpm nx run pixora:test --run` (pass `--run` to avoid Vitest watch mode, which is the default per `nx.json`)
+- **Typecheck:** `pnpm nx run-many -t typecheck`
+- **Build:** `pnpm nx run-many -t build --exclude=docs`
+- **Dev server:** `pnpm nx dev space-invaders` (serves on `http://localhost:4200`)
+
+### Gotchas
+
+- **Node.js v24 is required** (`.node-version`). The update script installs it via `nvm`; it should already be available.
+- **Vitest is configured in watch mode** by default (`nx.json` → `@nx/vitest` plugin → `testMode: "watch"`). Always pass `--run` when running tests non-interactively to prevent the process from hanging.
+- **`space-invaders` has no test files** — running `pnpm nx test space-invaders` exits with code 1 (expected). Only `pixora` has unit tests.
+- **`docs` app requires Hugo** (not installed in the Cloud VM). Exclude it from build/serve with `--exclude=docs`.
+- **Pre-commit hooks** (`.husky/pre-commit`) run `pnpm affected -t lint` and `pnpm run version:bump`. The commit-msg hook runs `commitlint`, enforcing conventional commits.
