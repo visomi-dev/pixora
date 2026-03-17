@@ -361,162 +361,165 @@ export function resetGame(): void {
   initGame();
 }
 
-export const gameScene = pixora.scene((context: ApplicationContext) => {
-  const viewport = context.viewport.get();
-  viewportWidthSignal.set(viewport.width);
-  viewportHeightSignal.set(viewport.height);
+export const gameScene = pixora.scene({
+  key: 'game',
+  render: (context: ApplicationContext) => {
+    const viewport = context.viewport.get();
+    viewportWidthSignal.set(viewport.width);
+    viewportHeightSignal.set(viewport.height);
 
-  if (!initializedSignal.get()) {
-    keyboard = createKeyboardInput();
-    initGame();
-    initializedSignal.set(true);
+    if (!initializedSignal.get()) {
+      keyboard = createKeyboardInput();
+      initGame();
+      initializedSignal.set(true);
 
-    tickerCallback = () => update(context.app.ticker.deltaMS);
-    context.app.ticker.add(tickerCallback as never);
-  }
+      tickerCallback = () => update(context.app.ticker.deltaMS);
+      context.app.ticker.add(tickerCallback as never);
+    }
 
-  context.events.emit('game.score', { score: scoreSignal.get(), level: levelSignal.get() });
+    context.events.emit('game.score', { score: scoreSignal.get(), level: levelSignal.get() });
 
-  const score = scoreSignal.get();
-  const level = levelSignal.get();
-  const lives = livesSignal.get();
-  const combo = comboSignal.get();
-  const paused = pausedSignal.get();
-  const gameOver = gameOverSignal.get();
-  const player = playerSignal.get();
-  const bullets = bulletsSignal.get();
-  const enemyBullets = enemyBulletsSignal.get();
-  const enemies = enemiesSignal.get();
-  const powerUps = powerUpsSignal.get();
+    const score = scoreSignal.get();
+    const level = levelSignal.get();
+    const lives = livesSignal.get();
+    const combo = comboSignal.get();
+    const paused = pausedSignal.get();
+    const gameOver = gameOverSignal.get();
+    const player = playerSignal.get();
+    const bullets = bulletsSignal.get();
+    const enemyBullets = enemyBulletsSignal.get();
+    const enemies = enemiesSignal.get();
+    const powerUps = powerUpsSignal.get();
 
-  const livesStr = 'LIVES:' + ' ♥'.repeat(lives);
-  const comboText = combo > 1 ? `COMBO x${Math.min(Math.floor(combo / 5) + 1, 5)} (${combo})` : '';
+    const livesStr = 'LIVES:' + ' ♥'.repeat(lives);
+    const comboText = combo > 1 ? `COMBO x${Math.min(Math.floor(combo / 5) + 1, 5)} (${combo})` : '';
 
-  return pixora.container(
-    { x: 0, y: 0 },
-    pixora.box({ backgroundColor: 0x0a0a1a, height: viewport.height, width: viewport.width, x: 0, y: 0 }),
-    pixora.container(
+    return pixora.container(
       { x: 0, y: 0 },
-      pixora.text({
-        style: { fill: '#00ffaa', fontFamily: 'Orbitron, monospace', fontSize: 20, fontWeight: 'bold' },
-        text: `SCORE: ${score.toLocaleString()}`,
-        x: 20,
-        y: 16,
+      pixora.box({ backgroundColor: 0x0a0a1a, height: viewport.height, width: viewport.width, x: 0, y: 0 }),
+      pixora.container(
+        { x: 0, y: 0 },
+        pixora.text({
+          style: { fill: '#00ffaa', fontFamily: 'Orbitron, monospace', fontSize: 20, fontWeight: 'bold' },
+          text: `SCORE: ${score.toLocaleString()}`,
+          x: 20,
+          y: 16,
+        }),
+        pixora.text({
+          style: { fill: '#ff00aa', fontFamily: 'Orbitron, monospace', fontSize: 20, fontWeight: 'bold' },
+          text: `LEVEL: ${level}`,
+          x: 280,
+          y: 16,
+        }),
+        pixora.text({
+          style: { fill: '#ffff00', fontFamily: 'Orbitron, monospace', fontSize: 16, fontWeight: 'bold' },
+          text: comboText,
+          x: 520,
+          y: 20,
+        }),
+        pixora.text({
+          style: { fill: '#ff6644', fontFamily: 'Orbitron, monospace', fontSize: 18 },
+          text: livesStr,
+          x: 700,
+          y: 18,
+        }),
+      ),
+      paused
+        ? pixora.container(
+            { x: 0, y: 0 },
+            pixora.text({
+              style: { fill: '#ffffff', fontFamily: 'Orbitron, monospace', fontSize: 48, fontWeight: 'bold' },
+              text: 'PAUSED',
+              x: viewport.width / 2,
+              y: viewport.height / 2 - 40,
+            }),
+            pixora.button({
+              backgroundColor: 0x00ffaa,
+              height: 48,
+              label: 'CONTINUE',
+              onPointerTap: () => pausedSignal.set(false),
+              width: 200,
+              x: viewport.width / 2 - 100,
+              y: viewport.height / 2 + 40,
+            }),
+            pixora.button({
+              backgroundColor: 0xff6644,
+              height: 48,
+              label: 'RESTART',
+              onPointerTap: () => resetGame(),
+              width: 200,
+              x: viewport.width / 2 - 100,
+              y: viewport.height / 2 + 100,
+            }),
+          )
+        : null,
+      gameOver
+        ? pixora.container(
+            { x: 0, y: 0 },
+            pixora.text({
+              style: { fill: '#ff4444', fontFamily: 'Orbitron, sans-serif', fontSize: 72, fontWeight: '900' },
+              text: 'GAME OVER',
+              x: viewport.width / 2,
+              y: viewport.height / 2 - 100,
+            }),
+            pixora.button({
+              backgroundColor: 0x00ffaa,
+              height: 56,
+              label: 'PLAY AGAIN',
+              onPointerTap: () => resetGame(),
+              width: 280,
+              x: viewport.width / 2 - 140,
+              y: viewport.height / 2 + 50,
+            }),
+            pixora.button({
+              backgroundColor: 0x666688,
+              height: 48,
+              label: 'MAIN MENU',
+              onPointerTap: () => {
+                resetGame();
+                void context.scenes.goTo('main-menu');
+              },
+              width: 280,
+              x: viewport.width / 2 - 140,
+              y: viewport.height / 2 + 120,
+            }),
+          )
+        : null,
+      player
+        ? pixora.box({ backgroundColor: 0x00ffaa, height: player.height, width: player.width, x: player.x, y: player.y })
+        : null,
+      ...bullets.map((b: GameObject) =>
+        pixora.box({ backgroundColor: 0x00ffaa, height: b.height, width: b.width, x: b.x, y: b.y }),
+      ),
+      ...enemyBullets.map((b: GameObject) =>
+        pixora.box({
+          backgroundColor: b.type === 'tank' ? 0xff00ff : 0xff4444,
+          height: b.height,
+          width: b.width,
+          x: b.x,
+          y: b.y,
+        }),
+      ),
+      ...enemies.map((e: GameObject) =>
+        pixora.box({
+          backgroundColor: e.type === 'tank' ? 0xff00ff : e.type === 'soldier' ? 0xffaa00 : 0xff4444,
+          height: e.height,
+          width: e.width,
+          x: e.x,
+          y: e.y,
+        }),
+      ),
+      ...powerUps.map((pu: PowerUp) => {
+        const color =
+          pu.type === 'shield'
+            ? 0x00aaff
+            : pu.type === 'triple-shot'
+              ? 0xffaa00
+              : pu.type === 'speed'
+                ? 0xffff00
+                : 0xff00ff;
+        return pixora.box({ backgroundColor: color, height: pu.height, width: pu.width, x: pu.x, y: pu.y });
       }),
-      pixora.text({
-        style: { fill: '#ff00aa', fontFamily: 'Orbitron, monospace', fontSize: 20, fontWeight: 'bold' },
-        text: `LEVEL: ${level}`,
-        x: 280,
-        y: 16,
-      }),
-      pixora.text({
-        style: { fill: '#ffff00', fontFamily: 'Orbitron, monospace', fontSize: 16, fontWeight: 'bold' },
-        text: comboText,
-        x: 520,
-        y: 20,
-      }),
-      pixora.text({
-        style: { fill: '#ff6644', fontFamily: 'Orbitron, monospace', fontSize: 18 },
-        text: livesStr,
-        x: 700,
-        y: 18,
-      }),
-    ),
-    paused
-      ? pixora.container(
-          { x: 0, y: 0 },
-          pixora.text({
-            style: { fill: '#ffffff', fontFamily: 'Orbitron, monospace', fontSize: 48, fontWeight: 'bold' },
-            text: 'PAUSED',
-            x: viewport.width / 2,
-            y: viewport.height / 2 - 40,
-          }),
-          pixora.button({
-            backgroundColor: 0x00ffaa,
-            height: 48,
-            label: 'CONTINUE',
-            onPointerTap: () => pausedSignal.set(false),
-            width: 200,
-            x: viewport.width / 2 - 100,
-            y: viewport.height / 2 + 40,
-          }),
-          pixora.button({
-            backgroundColor: 0xff6644,
-            height: 48,
-            label: 'RESTART',
-            onPointerTap: () => resetGame(),
-            width: 200,
-            x: viewport.width / 2 - 100,
-            y: viewport.height / 2 + 100,
-          }),
-        )
-      : null,
-    gameOver
-      ? pixora.container(
-          { x: 0, y: 0 },
-          pixora.text({
-            style: { fill: '#ff4444', fontFamily: 'Orbitron, sans-serif', fontSize: 72, fontWeight: '900' },
-            text: 'GAME OVER',
-            x: viewport.width / 2,
-            y: viewport.height / 2 - 100,
-          }),
-          pixora.button({
-            backgroundColor: 0x00ffaa,
-            height: 56,
-            label: 'PLAY AGAIN',
-            onPointerTap: () => resetGame(),
-            width: 280,
-            x: viewport.width / 2 - 140,
-            y: viewport.height / 2 + 50,
-          }),
-          pixora.button({
-            backgroundColor: 0x666688,
-            height: 48,
-            label: 'MAIN MENU',
-            onPointerTap: () => {
-              resetGame();
-              void context.scenes.goTo('main-menu');
-            },
-            width: 280,
-            x: viewport.width / 2 - 140,
-            y: viewport.height / 2 + 120,
-          }),
-        )
-      : null,
-    player
-      ? pixora.box({ backgroundColor: 0x00ffaa, height: player.height, width: player.width, x: player.x, y: player.y })
-      : null,
-    ...bullets.map((b: GameObject) =>
-      pixora.box({ backgroundColor: 0x00ffaa, height: b.height, width: b.width, x: b.x, y: b.y }),
-    ),
-    ...enemyBullets.map((b: GameObject) =>
-      pixora.box({
-        backgroundColor: b.type === 'tank' ? 0xff00ff : 0xff4444,
-        height: b.height,
-        width: b.width,
-        x: b.x,
-        y: b.y,
-      }),
-    ),
-    ...enemies.map((e: GameObject) =>
-      pixora.box({
-        backgroundColor: e.type === 'tank' ? 0xff00ff : e.type === 'soldier' ? 0xffaa00 : 0xff4444,
-        height: e.height,
-        width: e.width,
-        x: e.x,
-        y: e.y,
-      }),
-    ),
-    ...powerUps.map((pu: PowerUp) => {
-      const color =
-        pu.type === 'shield'
-          ? 0x00aaff
-          : pu.type === 'triple-shot'
-            ? 0xffaa00
-            : pu.type === 'speed'
-              ? 0xffff00
-              : 0xff00ff;
-      return pixora.box({ backgroundColor: color, height: pu.height, width: pu.width, x: pu.x, y: pu.y });
-    }),
-  );
+    );
+  },
 });

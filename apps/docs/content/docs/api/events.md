@@ -61,4 +61,4 @@ Events.on('game:start', () => {
 
 ## API Reference
 
-For complete API documentation, see the [Generated API Docs](/docs/api/generated/).
+For complete API documentation, see the [Generated API Docs](../generated/).

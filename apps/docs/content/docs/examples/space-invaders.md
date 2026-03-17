@@ -3,19 +3,31 @@ title: Space Invaders Game
 description: A complete Space Invaders-style shooter game built with Pixora
 ---
 
-This example demonstrates a complete Space Invaders-style game built using Pixora's declarative scene system, layout engine, input handling, and UI components.
+{{< space-invaders-showcase >}}
 
-## Play the Game
+Space Invaders is the reference example for Pixora's declarative-default runtime. It demonstrates how one runtime can coordinate menus, gameplay, overlays, and HUD state without switching mental models between docs and deploy.
 
-<iframe src="/examples/game/" width="100%" height="720" frameborder="0" style="max-width: 1280px; margin: 2rem 0; border-radius: 8px; background: #0f172a;"></iframe>
+## What this example proves
 
-## Game Features
+- The same build publishes the documentation site and the production game output together.
+- Scenes stay declarative from the main menu through gameplay and post-game flows.
+- HUD updates come from runtime events and reactive state, not from ad hoc DOM wiring.
+- Layout primitives handle menu composition, overlays, and viewport-aware positioning.
 
-- **Player Control**: Arrow keys to move, Space to shoot
-- **Enemy AI**: Enemies move in formation and shoot back
-- **Scoring System**: Earn points for destroying enemies
-- **Lives System**: Player has 3 lives
-- **Game States**: Main menu, gameplay, pause overlay, and game over
+<div class="control-grid">
+  <div class="control-card">
+    <strong>Move</strong>
+    <span>Use <code>←</code> and <code>→</code> to reposition the ship.</span>
+  </div>
+  <div class="control-card">
+    <strong>Shoot</strong>
+    <span>Press <code>Space</code> to fire at the invading wave.</span>
+  </div>
+  <div class="control-card">
+    <strong>Pause</strong>
+    <span>Press <code>Escape</code> to open the pause overlay.</span>
+  </div>
+</div>
 
 ## Code Overview
 
@@ -38,7 +50,7 @@ const runtime = await pixora({
   autoStart: false,
   backgroundColor: 0x0a0a1a,
   initialScene: 'main-menu',
-  mount: document.querySelector('[data-stage-host]'),
+  mount: document.querySelector('[data-stage-host]')!,
   scenes: [mainMenuScene, gameScene],
 });
 
@@ -95,17 +107,18 @@ export const mainMenuScene = pixora.scene({
 | `pixora.button()`     | Menu buttons with pointer event callbacks |
 | `layout.flex()`       | Flow-based component layout               |
 | `layout.percent()`    | Percentage-based positioning              |
-| `createKeyboardInput` | Arrow keys and space bar                  |
+| `createKeyboardInput` | Arrow keys, space bar, and pause shortcut |
 
-## Controls
-
-| Key       | Action      |
-| --------- | ----------- |
-| `←` / `→` | Move player |
-| `Space`   | Shoot       |
-| `Escape`  | Pause game  |
+<div class="note-card">
+  <strong>Deployment note</strong>
+  <span>
+    The embedded iframe and the standalone example both point at the game output copied into the docs build,
+    which keeps the GitHub Pages artifact self-contained.
+  </span>
+</div>
 
 ## Next Steps
 
-- [API Reference](/docs/api/) - Explore the full API
-- [Scene Management](/docs/api/scenes/) - Learn about scenes
+- [API Reference](../../api/) - Explore the full API
+- [Scene Management](../../api/scenes/) - Learn about scenes
+- [Quick Start](../../getting-started/quick-start/) - Build your own declarative scene flow

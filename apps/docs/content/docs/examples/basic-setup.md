@@ -3,27 +3,32 @@ title: Basic Setup Example
 description: A minimal Pixora application
 ---
 
-This example demonstrates the minimum code needed to create a Pixora application.
+This example demonstrates the smallest declarative Pixora runtime you can boot.
 
 ## Complete Example
 
 ```typescript
-import { PixoraApp } from 'pixora';
+import { pixora } from 'pixora';
 
-const app = new PixoraApp({
-  width: 800,
+const runtime = await pixora({
   height: 600,
+  initialScene: 'hello',
+  mount: document.querySelector('#stage')!,
   backgroundColor: 0x1099bb,
+  scenes: [
+    pixora.scene({
+      key: 'hello',
+      render: () => pixora.text({ text: 'Hello, Pixora!', color: '#ffffff', size: 32 }),
+    }),
+  ],
 });
 
-document.body.appendChild(app.view);
-
-app.start();
+await runtime.start();
 ```
 
 ## Expected Result
 
-A blue (0x1099bb) canvas will appear with dimensions 800x600.
+A blue canvas appears and renders a single declarative text node.
 
 ## Running the Example
 
@@ -33,5 +38,5 @@ A blue (0x1099bb) canvas will appear with dimensions 800x600.
 
 ## Next Steps
 
-- [Entity System Example](/docs/examples/entity-system/) - Add game objects
-- [Input Handling Example](/docs/examples/input/) - Add interactivity
+- [Entity System Example](../entity-system/) - Add game objects
+- [Input Handling Example](../input/) - Add interactivity

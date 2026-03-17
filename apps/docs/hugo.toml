@@ -1,6 +1,6 @@
 baseURL = "http://localhost:1313/"
 languageCode = "en-us"
-title = "Pixora Framework"
+title = "Pixora"
 theme = "pixora-docs"
 
 [taxonomies]

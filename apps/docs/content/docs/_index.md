@@ -1,21 +1,21 @@
 ---
 title: Welcome to Pixora
-description: A modern 2D/3D game framework built with TypeScript and Pixi.js
+description: Declarative-by-default game framework for Pixi.js and TypeScript
 ---
 
-Welcome to the Pixora Framework documentation. Pixora is a powerful, flexible game development framework designed for building 2D and 3D games using TypeScript and Pixi.js.
+Pixora is a declarative-by-default framework for building Pixi.js games with TypeScript. Start with `pixora()`, render scenes with `pixora.scene()`, and compose HUD, menus, and overlays with layout-aware nodes before dropping to lower-level APIs.
 
 ## Why Pixora?
 
-- **TypeScript First**: Full type safety and modern JavaScript features
-- **Entity Component System**: Flexible architecture for game objects
-- **Reactive State**: Built on Angular signals for reactive data flow
-- **Modular Design**: Use only what you need
-- **Performance**: Built on Pixi.js for fast rendering
+- **Declarative runtime**: Author games from scenes, components, and render functions instead of wiring everything imperatively up front.
+- **Reactive state**: Keep gameplay state close to your scene with signals, computed values, and events.
+- **Layout-aware UI**: Build menu flows and HUD surfaces with `layout.flex()` and `layout.percent()`.
+- **Pixi escape hatches**: Reach for lower-level APIs when migrating existing systems or optimizing a hot path.
+- **Live examples**: Ship the docs and runnable games together, including the Space Invaders reference app.
 
 ## Quick Navigation
 
-- [Installation Guide](/docs/getting-started/installation/)
-- [Quick Start Tutorial](/docs/getting-started/quick-start/)
-- [API Reference](/docs/api/)
-- [Examples](/docs/examples/)
+- [Installation Guide](getting-started/installation/)
+- [Quick Start Tutorial](getting-started/quick-start/)
+- [API Reference](api/)
+- [Examples](examples/)
