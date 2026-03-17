@@ -53,15 +53,21 @@ Ensure your `tsconfig.json` has the following settings:
 Create a simple test file to verify the installation:
 
 ```typescript
-import { PixoraApp } from 'pixora';
+import { pixora } from 'pixora';
 
-const app = new PixoraApp({
-  width: 800,
-  height: 600,
+const runtime = await pixora({
   backgroundColor: 0x1099bb,
+  initialScene: 'hello',
+  mount: document.querySelector('#stage'),
+  scenes: [
+    pixora.scene({
+      key: 'hello',
+      render: () => pixora.text({ text: 'Hello, Pixora!', color: '#ffffff', size: 32 }),
+    }),
+  ],
 });
 
-app.start();
+await runtime.start();
 ```
 
 If the application starts without errors, Pixora is installed correctly.

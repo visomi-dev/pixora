@@ -238,7 +238,6 @@ export { pixora };
 class DeclarativeSceneAdapter extends Scene {
   override readonly key: SceneKey;
   private mountedTree: MountedTree | null = null;
-  private previousDefinition: PixoraNode | null = null;
   private isScheduled = false;
 
   constructor(
@@ -257,7 +256,6 @@ class DeclarativeSceneAdapter extends Scene {
 
     this.mountedTree = mountTree(tree, this.root, context);
     this.mountedTrees.set(this.key, this.mountedTree);
-    this.previousDefinition = tree;
   }
 
   override update(_deltaMs: number): void {

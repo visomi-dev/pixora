@@ -3,7 +3,7 @@ title: Space Invaders Game
 description: A complete Space Invaders-style shooter game built with Pixora
 ---
 
-This example demonstrates a complete Space Invaders-style game built using Pixora's scene system, entity components, input handling, and UI elements.
+This example demonstrates a complete Space Invaders-style game built using Pixora's declarative scene system, layout engine, input handling, and UI components.
 
 ## Play the Game
 
@@ -19,63 +19,83 @@ This example demonstrates a complete Space Invaders-style game built using Pixor
 
 ## Code Overview
 
-The game is organized into three scenes:
+The game is organized into declarative scenes using `pixora.scene()`:
 
-1. **MainMenuScene** - Title screen with play button
-2. **GameplayScene** - The main game logic
-3. **PauseOverlay** - Pause menu with resume and quit options
+1. **mainMenuScene** - Title screen with play button
+2. **gameScene** - The main game logic
+3. **gameOverScene** - Game over screen
+4. **victoryScene** - Victory screen
+5. **instructionsScene** - Controls and tips
 
 ### Main Application Setup
 
 ```typescript
-import { createPixoraApp } from 'pixora';
+import { pixora } from 'pixora';
+import { mainMenuScene } from './scenes/main-menu/main-menu.scene';
+import { gameScene } from './scenes/game/game.scene';
 
-const app = await createPixoraApp({
+const runtime = await pixora({
   autoStart: false,
-  backgroundColor: 0x172033,
+  backgroundColor: 0x0a0a1a,
   initialScene: 'main-menu',
-  mount: stageHost,
-  scenes: [
-    { create: () => new MainMenuScene(), key: 'main-menu' },
-    { create: () => new GameplayScene(), key: 'gameplay' },
-    { create: () => new PauseOverlay(), key: 'pause-overlay', kind: 'overlay' },
-  ],
+  mount: document.querySelector('[data-stage-host]'),
+  scenes: [mainMenuScene, gameScene],
 });
 
-await app.start();
+await runtime.start();
 ```
 
 ### Scene Structure
 
+Scenes are pure functions that return a node tree. Layout is handled declaratively with `layout.flex()` and `layout.percent()`:
+
 ```typescript
-export class GameplayScene extends Scene {
-  readonly key = 'gameplay';
+import { layout, pixora } from 'pixora';
 
-  private player: GameObject;
-  private bullets: GameObject[] = [];
-  private enemies: GameObject[] = [];
-  private score = 0;
-  private lives = 3;
+export const mainMenuScene = pixora.scene({
+  key: 'main-menu',
+  render: (context) => {
+    const vp = context.viewport.get();
 
-  override update(deltaMs: number): void {
-    // Handle input
-    // Update game objects
-    // Check collisions
-  }
-}
+    return pixora.container(
+      { x: 0, y: 0 },
+      pixora.box({ backgroundColor: 0x0a0a1a, width: vp.width, height: vp.height }),
+      pixora.container(
+        {
+          layout: layout.percent({ horizontal: 'center', vertical: 'center', width: 1 }),
+        },
+        pixora.container(
+          {
+            layout: layout.flex({ direction: 'vertical', align: 'center', gap: 16 }),
+          },
+          pixora.text({ text: 'SPACE', color: '#00ffaa', size: 72, weight: '900', font: 'Orbitron, sans-serif' }),
+          pixora.text({ text: 'INVADERS', color: '#ff00aa', size: 48, weight: '700', font: 'Orbitron, sans-serif' }),
+          pixora.button({
+            label: 'START GAME',
+            backgroundColor: 0x00ffaa,
+            width: 280,
+            height: 56,
+            onPointerTap: () => void context.scenes.goTo('game'),
+          }),
+        ),
+      ),
+    );
+  },
+});
 ```
 
 ## Key Pixora Features Used
 
-| Feature               | Usage                               |
-| --------------------- | ----------------------------------- |
-| `Scene`               | Game scenes (menu, gameplay, pause) |
-| `Panel`               | Game objects and UI                 |
-| `Button`              | Menu buttons                        |
-| `TextNode`            | Score and UI labels                 |
-| `createKeyboardInput` | Arrow keys and space bar            |
-| `applyLayout`         | Responsive positioning              |
-| `layout.anchor`       | Center game over text               |
+| Feature               | Usage                                     |
+| --------------------- | ----------------------------------------- |
+| `pixora.scene()`      | Declarative scene definition              |
+| `pixora.container()`  | Node grouping and layout root             |
+| `pixora.box()`        | Background fills                          |
+| `pixora.text()`       | Score labels and UI text                  |
+| `pixora.button()`     | Menu buttons with pointer event callbacks |
+| `layout.flex()`       | Flow-based component layout               |
+| `layout.percent()`    | Percentage-based positioning              |
+| `createKeyboardInput` | Arrow keys and space bar                  |
 
 ## Controls
 

@@ -3,120 +3,167 @@ title: Quick Start
 description: Build your first Pixora game in minutes
 ---
 
-This tutorial will guide you through creating a simple game using Pixora.
+This tutorial will guide you through creating a simple game using Pixora's declarative API.
 
 ## Create Your Application
 
-Every Pixora game starts with creating an application instance:
+Every Pixora game starts with `pixora()` — an async factory that boots the renderer, loads assets, and returns a running runtime:
 
 ```typescript
-import { PixoraApp } from 'pixora';
+import { pixora } from 'pixora';
 
-const app = new PixoraApp({
-  width: 800,
-  height: 600,
+const runtime = await pixora({
   backgroundColor: 0x1099bb,
-  resolution: window.devicePixelRatio || 1,
-  autoDensity: true,
+  initialScene: 'main-menu',
+  mount: document.querySelector('#stage'),
+  scenes: [mainMenuScene],
 });
 
-document.body.appendChild(app.view);
-
-app.start();
+await runtime.start();
 ```
 
-## Add Game Objects
+## Define a Scene
 
-Create game objects using the Entity system:
+Scenes are created with `pixora.scene()`. Each scene has a `key` and a `render` function that returns a tree of nodes:
 
 ```typescript
-import { Entity, SpriteComponent } from 'pixora';
+import { layout, pixora } from 'pixora';
 
-const player = new Entity('player');
+export const mainMenuScene = pixora.scene({
+  key: 'main-menu',
+  render: (context) => {
+    const vp = context.viewport.get();
 
-// Add a sprite component
-const sprite = player.addComponent(SpriteComponent, {
-  texture: 'player.png',
-  x: 100,
-  y: 100,
+    return pixora.container(
+      { x: 0, y: 0 },
+      pixora.box({ backgroundColor: 0x0a0a1a, width: vp.width, height: vp.height }),
+      pixora.container(
+        {
+          layout: layout.percent({ horizontal: 'center', vertical: 'center', width: 1 }),
+        },
+        pixora.container(
+          {
+            layout: layout.flex({ direction: 'vertical', justify: 'center', align: 'center', gap: 16 }),
+          },
+          pixora.text({ text: 'MY GAME', color: '#00ffaa', size: 72, weight: '900' }),
+          pixora.button({
+            label: 'START',
+            backgroundColor: 0x00ffaa,
+            width: 240,
+            height: 56,
+            onPointerTap: () => void context.scenes.goTo('game'),
+          }),
+        ),
+      ),
+    );
+  },
 });
-
-// Add to scene
-app.stage.addChild(player);
 ```
 
-## Add Animation
+## Layout System
 
-Use the animation system to bring your game to life:
+Pixora includes a flexible layout system. Use `layout.flex()` for flow-based layouts and `layout.percent()` for percentage-based positioning:
 
 ```typescript
-import { Tween, Easing } from 'pixora';
+import { layout, pixora } from 'pixora';
 
-// Move player with tween
-const tween = new Tween(player.position).to({ x: 400 }, 1000, Easing.Quadratic.Out).start();
+// Flex layout — CSS-like flexbox
+pixora.container(
+  {
+    layout: layout.flex({
+      direction: 'vertical',  // or 'horizontal'
+      justify: 'space-between',
+      align: 'center',
+      gap: 16,
+      padding: 24,
+    }),
+  },
+  pixora.text({ text: 'Top' }),
+  pixora.text({ text: 'Bottom' }),
+);
 
-app.ticker.add(() => {
-  tween.update(app.ticker.elapsedMS);
+// Percent layout — positions relative to parent size
+pixora.container(
+  {
+    layout: layout.percent({ horizontal: 'center', vertical: 'end' }),
+  },
+  pixora.button({ label: 'Footer Button', width: 200, height: 48 }),
+);
+```
+
+## Text and Components
+
+Text nodes accept direct style properties — no helper functions needed:
+
+```typescript
+pixora.text({
+  text: 'SCORE: 1000',
+  color: '#ffffff',
+  size: 24,
+  weight: 'bold',
+  font: 'Orbitron, sans-serif',
 });
 ```
 
 ## Handle Input
 
-Pixora provides a unified input system:
+Use `createKeyboardInput` to poll keyboard state inside a game scene's `update` loop, or use pointer events on interactive elements:
 
 ```typescript
-import { Input, Keyboard } from 'pixora';
+import { createKeyboardInput, Keys, pixora } from 'pixora';
 
-// Listen for keyboard events
-Input.keyboard.on('keydown', (event) => {
-  if (event.code === Keyboard.Space) {
-    // Jump action
-  }
+const keyboard = createKeyboardInput();
+
+const gameScene = pixora.scene({
+  key: 'game',
+  render: (context) => {
+    // Update loop runs every frame via the scheduler
+    return pixora.container({ x: 0, y: 0 });
+  },
 });
 ```
 
 ## Complete Example
 
-Here's a complete example putting it all together:
+Here's a minimal but complete game setup:
 
 ```typescript
-import { PixoraApp, Entity, SpriteComponent, Tween, Easing, Input, Keyboard } from 'pixora';
+import { layout, pixora } from 'pixora';
 
-const app = new PixoraApp({
-  width: 800,
-  height: 600,
-  backgroundColor: 0x1099bb,
+const menuScene = pixora.scene({
+  key: 'menu',
+  render: (context) => {
+    const vp = context.viewport.get();
+
+    return pixora.container(
+      { x: 0, y: 0 },
+      pixora.box({ backgroundColor: 0x0a0a1a, width: vp.width, height: vp.height }),
+      pixora.container(
+        { layout: layout.percent({ horizontal: 'center', vertical: 'center', width: 1 }) },
+        pixora.container(
+          { layout: layout.flex({ direction: 'vertical', align: 'center', gap: 24 }) },
+          pixora.text({ text: 'MY GAME', color: '#00ffaa', size: 64, weight: '900' }),
+          pixora.button({
+            label: 'PLAY',
+            backgroundColor: 0x00ffaa,
+            width: 220,
+            height: 56,
+            onPointerTap: () => void context.scenes.goTo('game'),
+          }),
+        ),
+      ),
+    );
+  },
 });
 
-const player = new Entity('player');
-player.addComponent(SpriteComponent, {
-  texture: 'player.png',
-  x: 100,
-  y: 300,
+const runtime = await pixora({
+  backgroundColor: 0x0a0a1a,
+  initialScene: 'menu',
+  mount: document.querySelector('#stage'),
+  scenes: [menuScene],
 });
 
-app.stage.addChild(player);
-
-// Move on arrow keys
-Input.keyboard.on('keydown', (event) => {
-  const speed = 10;
-  switch (event.code) {
-    case Keyboard.ArrowLeft:
-      player.position.x -= speed;
-      break;
-    case Keyboard.ArrowRight:
-      player.position.x += speed;
-      break;
-    case Keyboard.ArrowUp:
-      player.position.y -= speed;
-      break;
-    case Keyboard.ArrowDown:
-      player.position.y += speed;
-      break;
-  }
-});
-
-app.start();
+await runtime.start();
 ```
 
 ## Next Steps
