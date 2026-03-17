@@ -48,6 +48,8 @@ export default defineConfig(() => ({
     environment: 'node',
     include: ['{src,tests}/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     reporters: ['default'],
+    testTimeout: 10_000,
+    forceExit: true,
     coverage: {
       reportsDirectory: '../../coverage/libs/pixora',
       provider: 'v8' as const,

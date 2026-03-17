@@ -1,4 +1,4 @@
-import type { Container } from 'pixi.js';
+import type { Container, TextStyleOptions } from 'pixi.js';
 
 import type { BaseNode } from '../components/base-node';
 import { Box } from '../components/box';
@@ -6,6 +6,8 @@ import { Button } from '../components/button';
 import { ContainerNode } from '../components/container-node';
 import { SpriteNode } from '../components/sprite-node';
 import { TextNode } from '../components/text-node';
+import type { LayoutSpec } from '../layout/layout';
+import type { LayoutStyles } from '../layout/layout-types';
 
 import type {
   BoxNodeProps,
@@ -17,6 +19,7 @@ import type {
   TextNodeProps,
 } from './types';
 import { bindInteractive } from './interaction';
+import { setLayoutSpec, setLayoutStyles } from './layout-runtime';
 
 // ---------------------------------------------------------------------------
 // Host type descriptor
@@ -72,10 +75,29 @@ function createContainerDescriptor(): HostTypeDescriptor<'container'> {
 
       applyCommonProps(node.displayObject, props);
 
+      if (props.layout) {
+        if ('type' in props.layout) {
+          setLayoutSpec(node, props.layout as LayoutSpec);
+        } else {
+          setLayoutStyles(node, props.layout as LayoutStyles);
+        }
+      }
+
       return node;
     },
-    patch(node: BaseNode, _previous: ContainerNodeProps, next: ContainerNodeProps): void {
+    patch(node: BaseNode, previous: ContainerNodeProps, next: ContainerNodeProps): void {
       applyCommonProps(node.displayObject, next);
+
+      if (next.layout !== previous.layout) {
+        if (next.layout && 'type' in next.layout) {
+          setLayoutSpec(node, next.layout as LayoutSpec);
+        } else if (next.layout) {
+          setLayoutStyles(node, next.layout as LayoutStyles);
+        } else {
+          setLayoutSpec(node, null);
+          setLayoutStyles(node, null);
+        }
+      }
     },
   };
 }
@@ -83,17 +105,41 @@ function createContainerDescriptor(): HostTypeDescriptor<'container'> {
 function createTextDescriptor(): HostTypeDescriptor<'text'> {
   return {
     create(props: TextNodeProps): BaseNode {
-      const node = new TextNode({ text: props.text, style: props.style });
+      const style = buildTextStyle(props);
+      const node = new TextNode({ text: props.text, style });
 
       applyCommonProps(node.displayObject, props);
 
       return node;
     },
     patch(node: BaseNode, _previous: TextNodeProps, next: TextNodeProps): void {
-      (node as TextNode).updateProps({ text: next.text, style: next.style });
+      const style = buildTextStyle(next);
+      (node as TextNode).updateProps({ text: next.text, style });
       applyCommonProps(node.displayObject, next);
     },
   };
+}
+
+function buildTextStyle(props: TextNodeProps): Partial<TextStyleOptions> {
+  const style = { ...props.style };
+
+  if (props.color !== undefined) {
+    style.fill = props.color;
+  }
+
+  if (props.size !== undefined) {
+    style.fontSize = props.size;
+  }
+
+  if (props.weight !== undefined) {
+    style.fontWeight = props.weight as TextStyleOptions['fontWeight'];
+  }
+
+  if (props.font !== undefined) {
+    style.fontFamily = props.font;
+  }
+
+  return style;
 }
 
 function createSpriteDescriptor(): HostTypeDescriptor<'sprite'> {

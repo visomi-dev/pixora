@@ -37,6 +37,18 @@ export type StackLayoutSpec = {
   type: 'stack';
 };
 
+export type FlexLayoutSpec = {
+  align?: 'center' | 'end' | 'start' | 'stretch';
+  breakpoints?: readonly BreakpointRule[];
+  direction: 'horizontal' | 'vertical';
+  gap?: number;
+  grow?: number;
+  justify?: 'center' | 'end' | 'space-around' | 'space-between' | 'space-evenly' | 'start';
+  padding?: number;
+  shrink?: number;
+  type: 'flex';
+};
+
 export type AutoLayoutSpec = {
   breakpoints?: readonly BreakpointRule[];
   height?: SizeMode;
@@ -55,7 +67,13 @@ export type PercentLayoutSpec = {
   width?: number;
 };
 
-export type LayoutSpec = AnchorLayoutSpec | AutoLayoutSpec | FixedLayoutSpec | PercentLayoutSpec | StackLayoutSpec;
+export type LayoutSpec =
+  | AnchorLayoutSpec
+  | AutoLayoutSpec
+  | FixedLayoutSpec
+  | FlexLayoutSpec
+  | PercentLayoutSpec
+  | StackLayoutSpec;
 
 export const layout = {
   anchor(spec: Omit<AnchorLayoutSpec, 'type'>): AnchorLayoutSpec {
@@ -74,6 +92,12 @@ export const layout = {
     return {
       ...spec,
       type: 'fixed',
+    };
+  },
+  flex(spec: Omit<FlexLayoutSpec, 'type'>): FlexLayoutSpec {
+    return {
+      ...spec,
+      type: 'flex',
     };
   },
   percent(spec: Omit<PercentLayoutSpec, 'type'>): PercentLayoutSpec {
