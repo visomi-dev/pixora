@@ -1,11 +1,36 @@
 # pixora
 
-This library was generated with [Nx](https://nx.dev).
+Pixora is a declarative-by-default game framework for Pixi.js and TypeScript.
 
-## Building
+Start with `pixora()`, describe screens with `pixora.scene()`, and compose menus, HUD, and overlays from layout-aware nodes and reactive state. Lower-level compatibility APIs remain available when you need imperative interop or migration paths.
 
-Run `nx build pixora` to build the library.
+## Install
 
-## Running unit tests
+```bash
+pnpm add pixora pixi.js
+```
 
-Run `nx test pixora` to execute the unit tests via [Vitest](https://vitest.dev/).
+## First runtime
+
+```ts
+import { pixora } from 'pixora';
+
+const runtime = await pixora({
+  backgroundColor: 0x0a0a1a,
+  initialScene: 'menu',
+  mount: document.querySelector('#stage'),
+  scenes: [
+    pixora.scene({
+      key: 'menu',
+      render: () => pixora.text({ text: 'Hello, Pixora!', color: '#ffffff', size: 32 }),
+    }),
+  ],
+});
+
+await runtime.start();
+```
+
+## Workspace tasks
+
+- `pnpm nx build pixora`
+- `pnpm nx run pixora:test --run`
