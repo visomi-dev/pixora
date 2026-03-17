@@ -5,14 +5,15 @@ import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 import { nxCopyAssetsPlugin } from '@nx/vite/plugins/nx-copy-assets.plugin';
-
-export default defineConfig(() => ({
+export default defineConfig(({ command }) => ({
   root: import.meta.dirname,
   cacheDir: '../../node_modules/.vite/libs/pixora',
   plugins: [
     nxViteTsPaths(),
     nxCopyAssetsPlugin(['*.md']),
-    dts({ entryRoot: 'src', tsconfigPath: path.join(import.meta.dirname, 'tsconfig.lib.json'), pathsToAliases: false }),
+    ...(command === 'build'
+      ? [dts({ entryRoot: 'src', tsconfigPath: path.join(import.meta.dirname, 'tsconfig.lib.json'), pathsToAliases: false })]
+      : []),
   ],
   // Uncomment this if you are using workers.
   // worker: {
