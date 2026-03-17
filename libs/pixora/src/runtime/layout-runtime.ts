@@ -193,10 +193,10 @@ function applyLayoutRecursive(
 
     if (childLayoutNode) {
       const childBounds = {
-        height: child.displayObject.height,
-        width: child.displayObject.width,
-        x: child.displayObject.x,
-        y: child.displayObject.y,
+        height: node.measuredHeight,
+        width: node.measuredWidth,
+        x: 0,
+        y: 0,
       };
 
       applyLayoutRecursive(childLayoutNode, childBounds, viewport);
