@@ -1,5 +1,7 @@
 import type { Texture, TextStyleOptions } from 'pixi.js';
 
+import type { LayoutSpec } from '../layout/layout';
+import type { LayoutStyles } from '../layout/layout-types';
 import type { BaseNode } from '../components/base-node';
 
 // ---------------------------------------------------------------------------
@@ -40,7 +42,7 @@ export function isAssetRef<T extends string>(value: unknown): value is AssetRef<
 
 export type ContainerNodeProps = {
   alpha?: number;
-  layout?: unknown;
+  layout?: LayoutSpec | LayoutStyles | null;
   scale?: number | { x: number; y: number };
   visible?: boolean;
   x?: number;

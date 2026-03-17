@@ -28,6 +28,28 @@ export { TextNode } from './components/text-node';
 
 export { applyLayout } from './layout/apply-layout';
 export { layout } from './layout/layout';
+export { Layout } from './layout/layout-node';
+export { flexEngine, FlexEngine } from './layout/flex-engine';
+
+export type {
+  LayoutStyles,
+  FlexItemStyle,
+  FlexContainerStyle,
+  JustifyContent,
+  AlignItems,
+  AlignSelf,
+  AlignContent,
+  FlexDirection,
+  FlexWrap,
+  Position,
+  Display,
+  BoxSizing,
+  Overflow,
+  ObjectFit,
+  Direction,
+  NumberValue,
+  PositionSpecifier,
+} from './layout/layout-types';
 
 export type {
   AnchorLayoutSpec,
@@ -39,6 +61,8 @@ export type {
   SizeMode,
   StackLayoutSpec,
 } from './layout/layout';
+
+export type { ComputedLayout, ComputedPixiLayout, LayoutBounds } from './layout/computed-layout';
 
 export { bindInteractive } from './input/bind-interactive';
 export { createKeyboardInput, clearKeyboardFrame, Keys } from './input/create-keyboard-input';

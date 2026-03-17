@@ -7,6 +7,7 @@ import { ContainerNode } from '../components/container-node';
 import { SpriteNode } from '../components/sprite-node';
 import { TextNode } from '../components/text-node';
 import type { LayoutSpec } from '../layout/layout';
+import type { LayoutStyles } from '../layout/layout-types';
 
 import type {
   BoxNodeProps,
@@ -18,7 +19,7 @@ import type {
   TextNodeProps,
 } from './types';
 import { bindInteractive } from './interaction';
-import { setLayoutSpec } from './layout-runtime';
+import { setLayoutSpec, setLayoutStyles } from './layout-runtime';
 
 // ---------------------------------------------------------------------------
 // Host type descriptor
@@ -75,7 +76,11 @@ function createContainerDescriptor(): HostTypeDescriptor<'container'> {
       applyCommonProps(node.displayObject, props);
 
       if (props.layout) {
-        setLayoutSpec(node, props.layout as LayoutSpec);
+        if ('type' in props.layout) {
+          setLayoutSpec(node, props.layout as LayoutSpec);
+        } else {
+          setLayoutStyles(node, props.layout as LayoutStyles);
+        }
       }
 
       return node;
@@ -84,7 +89,14 @@ function createContainerDescriptor(): HostTypeDescriptor<'container'> {
       applyCommonProps(node.displayObject, next);
 
       if (next.layout !== previous.layout) {
-        setLayoutSpec(node, next.layout as LayoutSpec | null);
+        if (next.layout && 'type' in next.layout) {
+          setLayoutSpec(node, next.layout as LayoutSpec);
+        } else if (next.layout) {
+          setLayoutStyles(node, next.layout as LayoutStyles);
+        } else {
+          setLayoutSpec(node, null);
+          setLayoutStyles(node, null);
+        }
       }
     },
   };
