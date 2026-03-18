@@ -100,7 +100,7 @@ function getSectionHref(slug: string): string {
 }
 
 function getSpaceInvadersShowcaseHtml(basePath: string): string {
-  const exampleHref = withBasePath(basePath, 'examples/space-invaders/');
+  const exampleHref = withBasePath(basePath, 'examples/space-invaders/index.html');
   const quickStartHref = withBasePath(basePath, 'docs/getting-started/quick-start/');
 
   return `
