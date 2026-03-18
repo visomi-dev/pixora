@@ -83,9 +83,11 @@ describe('effect', () => {
     const runSpy = vi.fn();
 
     const ef = effect(() => {
-      runSpy(s.get());
+      const current = s.get();
+
+      runSpy(current);
       return () => {
-        cleanupSpy(s.get());
+        cleanupSpy(current);
       };
     });
 

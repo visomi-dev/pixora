@@ -95,11 +95,11 @@ class SignalState<T> implements Signal<T>, ReactiveSource {
 
     this.value = next;
 
-    for (const observer of this.observers) {
+    for (const observer of Array.from(this.observers)) {
       observer.onDependencyChanged();
     }
 
-    for (const listener of this.listeners) {
+    for (const listener of Array.from(this.listeners)) {
       listener(this.value, previous);
     }
   }
@@ -163,7 +163,7 @@ class ComputedState<T> implements ReadonlySignal<T>, ReactiveObserver, ReactiveS
     this.recompute(true);
 
     if (!Object.is(previous, this.value)) {
-      for (const observer of this.observers) {
+      for (const observer of Array.from(this.observers)) {
         observer.onDependencyChanged();
       }
     }
@@ -199,7 +199,7 @@ class ComputedState<T> implements ReadonlySignal<T>, ReactiveObserver, ReactiveS
     this.dirty = false;
 
     if (notifyListeners && this.initialized && !Object.is(previous, this.value)) {
-      for (const listener of this.listeners) {
+      for (const listener of Array.from(this.listeners)) {
         listener(this.value, previous);
       }
     }

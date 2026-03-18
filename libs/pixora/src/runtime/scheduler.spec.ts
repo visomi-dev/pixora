@@ -18,6 +18,7 @@ describe('Scheduler', () => {
 
   afterEach(() => {
     scheduler.destroy();
+    vi.restoreAllMocks();
   });
 
   describe('scheduleUpdate', () => {
@@ -91,6 +92,17 @@ describe('Scheduler', () => {
       scheduler.clear();
 
       expect(scheduler.hasPendingUpdates()).toBe(false);
+    });
+  });
+
+  describe('destroy', () => {
+    it('cancels a queued frame before teardown', () => {
+      const clearTimeoutSpy = vi.spyOn(globalThis, 'clearTimeout');
+
+      scheduler.scheduleUpdate('scene1', mockMountedTree as any, () => container(), mockContext, InvalidationFlag.Visual);
+      scheduler.destroy();
+
+      expect(clearTimeoutSpy).toHaveBeenCalled();
     });
   });
 });

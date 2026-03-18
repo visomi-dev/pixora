@@ -1,14 +1,21 @@
 import { Container, Sprite, Text } from 'pixi.js';
+import { vi } from 'vitest';
 
 import { Box } from '../components/box';
 import { Button } from '../components/button';
 import { ContainerNode } from '../components/container-node';
 import { SpriteNode } from '../components/sprite-node';
 import { TextNode } from '../components/text-node';
+import { layout } from '../layout/layout';
 
+import * as layoutRuntime from './layout-runtime';
 import { applyCommonProps, createHostTypeRegistry } from './host-types';
 
 describe('createHostTypeRegistry', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it('returns a registry with all five host types', () => {
     const registry = createHostTypeRegistry();
 
@@ -47,6 +54,18 @@ describe('createHostTypeRegistry', () => {
       expect(node.displayObject).toBeInstanceOf(Text);
       expect((node.displayObject as Text).text).toBe('Hello');
     });
+
+    it('applies layout props to text nodes', () => {
+      const setLayoutSpecSpy = vi.spyOn(layoutRuntime, 'setLayoutSpec');
+      const registry = createHostTypeRegistry();
+      const layoutSpec = layout.anchor({ horizontal: 'center', vertical: 'center' });
+      const node = registry.text.create({
+        layout: layoutSpec,
+        text: 'Hello',
+      });
+
+      expect(setLayoutSpecSpy).toHaveBeenCalledWith(node, layoutSpec);
+    });
   });
 
   describe('sprite descriptor', () => {
@@ -75,6 +94,19 @@ describe('createHostTypeRegistry', () => {
       const node = registry.button.create({ label: 'Click' });
 
       expect(node).toBeInstanceOf(Button);
+    });
+
+    it('applies layout props to button nodes', () => {
+      const setLayoutSpecSpy = vi.spyOn(layoutRuntime, 'setLayoutSpec');
+      const registry = createHostTypeRegistry();
+      const layoutSpec = layout.anchor({ horizontal: 'center', vertical: 'center' });
+      const node = registry.button.create({
+        label: 'Click',
+        layout: layoutSpec,
+        width: 120,
+      });
+
+      expect(setLayoutSpecSpy).toHaveBeenCalledWith(node, layoutSpec);
     });
   });
 });

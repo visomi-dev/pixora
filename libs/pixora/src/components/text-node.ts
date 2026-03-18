@@ -20,6 +20,7 @@ export class TextNode extends BaseComponent<TextNodeOptions, Text> {
   }
 
   setText(text: string): this {
+    this.props = { ...this.props, text };
     this.displayObject.text = text;
 
     return this;

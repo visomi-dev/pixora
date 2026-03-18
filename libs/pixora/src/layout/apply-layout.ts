@@ -21,7 +21,7 @@ export function applyLayout(node: BaseNode, spec: LayoutSpec, parentBounds: Boun
       applyStack(node, activeSpec);
       break;
     case 'flex':
-      applyFlex(node, activeSpec);
+      applyFlex(node, activeSpec, parentBounds);
       break;
     case 'auto':
       applyAuto(node, activeSpec, parentBounds);
@@ -172,7 +172,7 @@ function applyStack(node: BaseNode, spec: Extract<LayoutSpec, { type: 'stack' }>
   }
 }
 
-function applyFlex(node: BaseNode, spec: Extract<LayoutSpec, { type: 'flex' }>): void {
+function applyFlex(node: BaseNode, spec: Extract<LayoutSpec, { type: 'flex' }>, parentBounds: Bounds): void {
   const gap = spec.gap ?? 0;
   const padding = spec.padding ?? 0;
   const isVertical = spec.direction === 'vertical';
@@ -184,9 +184,6 @@ function applyFlex(node: BaseNode, spec: Extract<LayoutSpec, { type: 'flex' }>):
   if (visibleChildren.length === 0) {
     return;
   }
-
-  const containerMainSize = isVertical ? node.displayObject.height : node.displayObject.width;
-  const containerCrossSize = isVertical ? node.displayObject.width : node.displayObject.height;
 
   let totalBasis = 0;
   let totalGrow = 0;
@@ -203,6 +200,19 @@ function applyFlex(node: BaseNode, spec: Extract<LayoutSpec, { type: 'flex' }>):
   });
 
   const totalGap = gap * (visibleChildren.length - 1);
+  const contentMainSize = totalBasis + totalGap + padding * 2;
+  const fallbackCrossSize = isVertical ? parentBounds.width : parentBounds.height;
+  const containerMainSize = (isVertical ? node.displayObject.height : node.displayObject.width) || contentMainSize;
+  const containerCrossSize = (isVertical ? node.displayObject.width : node.displayObject.height) || fallbackCrossSize;
+
+  if (isVertical) {
+    node.displayObject.height = containerMainSize;
+    node.displayObject.width = containerCrossSize;
+  } else {
+    node.displayObject.width = containerMainSize;
+    node.displayObject.height = containerCrossSize;
+  }
+
   const availableSpace = containerMainSize - totalBasis - totalGap - padding * 2;
 
   const finalSizes: number[] = [];
