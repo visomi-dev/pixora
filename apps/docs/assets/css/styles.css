@@ -4,7 +4,7 @@
 
 @import 'tailwindcss';
 @import 'primeicons/primeicons.css' layer(utilities);
-@import 'chroma.css';
+@import './chroma.css';
 
 @custom-variant dark (&:where(.dark, .dark *));
 
