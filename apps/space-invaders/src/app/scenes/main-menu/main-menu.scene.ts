@@ -1,4 +1,5 @@
 import { centeredBoxX, centeredTextX } from '../scene-positioning';
+
 import { pixora } from 'pixora';
 
 export const mainMenuScene = pixora.scene({
