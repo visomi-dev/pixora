@@ -55,6 +55,7 @@
     "@angular/compiler-cli": "21.1.5",
     "@angular/language-service": "21.1.5",
     "@angular/localize": "^21.1.5",
+    "@astrojs/check": "^0.9.8",
     "@commitlint/cli": "^20.4.2",
     "@commitlint/config-conventional": "^20.4.2",
     "@eslint/js": "^10.0.1",
