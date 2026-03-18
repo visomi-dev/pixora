@@ -1,38 +1,52 @@
-<section class="example-showcase">
-  <div class="example-showcase-copy">
-    <p class="section-label">Playable example</p>
-    <h2>Space Invaders ships with the docs build.</h2>
-    <p>
+<section class="my-8">
+  <div class="rounded-3xl border border-slate-200 bg-slate-50 p-8 dark:border-slate-800 dark:bg-slate-900">
+    <p class="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-blue-600 dark:text-blue-400">Playable example</p>
+    <h2 class="mb-4 text-3xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">
+      Space Invaders ships with the docs build.
+    </h2>
+    <p class="text-slate-600 dark:text-slate-400">
       This page embeds the exact production output that gets copied into the GitHub Pages artifact, so
       you can validate the declarative runtime and the documentation experience together.
     </p>
-    <div class="example-actions">
-      <a href="{{ "examples/space-invaders/" | relURL }}" class="button primary">Open standalone build</a>
-      <a href="{{ "docs/getting-started/quick-start/" | relURL }}" class="button secondary">Read the quick start</a>
+    <div class="mt-6 flex flex-wrap gap-4">
+      <a
+        href="{{ "examples/space-invaders/" | relURL }}"
+        class="inline-flex items-center justify-center rounded-lg bg-blue-600 px-5 py-3 text-sm font-medium text-white no-underline transition-colors hover:bg-blue-700"
+        >Open standalone build</a
+      >
+      <a
+        href="{{ "docs/getting-started/quick-start/" | relURL }}"
+        class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-slate-100 px-5 py-3 text-sm font-medium text-slate-900 no-underline transition-colors hover:bg-slate-200 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100 dark:hover:bg-slate-800"
+        >Read the quick start</a
+      >
     </div>
   </div>
 
-  <div class="showcase-panel">
+  <div class="mt-6 rounded-3xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-900">
     <iframe
       src="{{ "examples/space-invaders/" | relURL }}"
-      class="demo-frame"
+      class="min-h-[26.25rem] w-full rounded-2xl border-0 bg-slate-950 md:min-h-[35rem]"
       title="Space Invaders demo built with Pixora"
       loading="lazy"
     ></iframe>
   </div>
 
-  <div class="stat-grid">
-    <div class="stat-card">
-      <strong>Scenes</strong>
-      <span>Main menu, instructions, gameplay, game over, and victory flows.</span>
+  <div class="my-6 grid gap-4 md:grid-cols-3">
+    <div class="rounded-3xl border border-slate-200 bg-slate-50 p-6 dark:border-slate-800 dark:bg-slate-900">
+      <strong class="mb-1 block text-base font-semibold text-slate-900 dark:text-slate-100">Scenes</strong>
+      <span class="text-slate-600 dark:text-slate-400">Main menu, instructions, gameplay, game over, and victory flows.</span>
     </div>
-    <div class="stat-card">
-      <strong>Runtime primitives</strong>
-      <span><code>pixora()</code>, <code>pixora.scene()</code>, layout helpers, and reactive events.</span>
+    <div class="rounded-3xl border border-slate-200 bg-slate-50 p-6 dark:border-slate-800 dark:bg-slate-900">
+      <strong class="mb-1 block text-base font-semibold text-slate-900 dark:text-slate-100">Runtime primitives</strong>
+      <span class="text-slate-600 dark:text-slate-400"
+        ><code>pixora()</code>, <code>pixora.scene()</code>, layout helpers, and reactive events.</span
+      >
     </div>
-    <div class="stat-card">
-      <strong>Deployment shape</strong>
-      <span>The same Pages deploy publishes the docs shell and the standalone game output.</span>
+    <div class="rounded-3xl border border-slate-200 bg-slate-50 p-6 dark:border-slate-800 dark:bg-slate-900">
+      <strong class="mb-1 block text-base font-semibold text-slate-900 dark:text-slate-100">Deployment shape</strong>
+      <span class="text-slate-600 dark:text-slate-400"
+        >The same Pages deploy publishes the docs shell and the standalone game output.</span
+      >
     </div>
   </div>
 </section>

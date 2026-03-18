@@ -1,30 +1,107 @@
-<!DOCTYPE html>
-<html lang="{{ .Site.Language.Lang }}">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ block "title" . }}{{ .Site.Title }}{{ end }}</title>
-  <link rel="stylesheet" href="{{ "css/styles.css" | relURL }}">
-  {{ block "head" . }}{{ end }}
-</head>
-<body>
-  <div class="layout">
-    <header class="sidebar">
-      <div class="logo">
-        <a href="{{ .Site.Home.RelPermalink }}">{{ .Site.Title }}</a>
+<!doctype html>
+<html lang="{{ .Site.Language.Lang }}" class="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ block "title" . }}{{ .Site.Title }}{{ end }}</title>
+    <meta name="description" content="{{ .Site.Params.description }}" />
+    <link href="{{ "css/styles.css" | relURL }}" rel="stylesheet" />
+    {{ block "head" . }}{{ end }}
+  </head>
+  <body class="font-sans bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased">
+    <div class="flex min-h-screen">
+      <aside class="w-72 shrink-0 border-r border-border-muted dark:border-border-dark bg-surface-light dark:bg-surface-dark flex flex-col">
+        <div class="p-6 border-b border-border-muted dark:border-border-dark flex items-center gap-3">
+          <div class="w-8 h-8 bg-primary rounded flex items-center justify-center">
+            <span class="material-symbols-outlined text-white text-xl">deployed_code</span>
+          </div>
+          <div>
+            <h1 class="font-bold text-lg leading-none">Pixora</h1>
+            <p class="text-[10px] text-primary font-bold uppercase tracking-widest mt-1">Engine v2.4.0</p>
+          </div>
+        </div>
+        <nav class="flex-1 overflow-y-auto p-4 custom-scrollbar space-y-6">
+          <div>
+            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-3 mb-2">Getting Started</p>
+            <div class="space-y-1">
+              <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-colors" href="{{ "docs/" | relURL }}">
+                <span class="material-symbols-outlined text-sm">info</span>
+                <span class="text-sm font-medium">Introduction</span>
+              </a>
+              <a class="flex items-center gap-3 px-3 py-2 rounded-lg{{ if hasPrefix .RelPermalink "/docs/getting-started/" }} bg-primary/10 text-primary border border-primary/20{{ else }} text-slate-600 dark:text-slate-400{{ end }}" href="{{ "docs/getting-started/" | relURL }}">
+                <span class="material-symbols-outlined text-sm">rocket_launch</span>
+                <span class="text-sm font-medium">Getting Started</span>
+              </a>
+              <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-colors" href="{{ "docs/getting-started/installation/" | relURL }}">
+                <span class="material-symbols-outlined text-sm">download</span>
+                <span class="text-sm font-medium">Installation</span>
+              </a>
+            </div>
+          </div>
+          <div>
+            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-3 mb-2">Core API</p>
+            <div class="space-y-1">
+              <a class="flex items-center gap-3 px-3 py-2 rounded-lg{{ if hasPrefix .RelPermalink "/docs/api/" }} bg-primary/10 text-primary border border-primary/20{{ else }} text-slate-600 dark:text-slate-400{{ end }}" href="{{ "docs/api/" | relURL }}">
+                <span class="material-symbols-outlined text-sm">api</span>
+                <span class="text-sm font-medium">API Reference</span>
+              </a>
+              <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-colors" href="{{ "docs/guides/" | relURL }}">
+                <span class="material-symbols-outlined text-sm">auto_fix_high</span>
+                <span class="text-sm font-medium">Guides</span>
+              </a>
+            </div>
+          </div>
+          <div>
+            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-3 mb-2">Resources</p>
+            <div class="space-y-1">
+              <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-colors" href="{{ "docs/examples/" | relURL }}">
+                <span class="material-symbols-outlined text-sm">menu_book</span>
+                <span class="text-sm font-medium">Examples</span>
+              </a>
+              <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-colors" href="#">
+                <span class="material-symbols-outlined text-sm">forum</span>
+                <span class="text-sm font-medium">Community</span>
+              </a>
+            </div>
+          </div>
+        </nav>
+        <div class="p-4 mt-auto border-t border-border-muted dark:border-border-dark">
+          <button class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-2.5 rounded-lg text-sm flex items-center justify-center gap-2 transition-all">
+            <span class="material-symbols-outlined text-sm">favorite</span>
+            Support Us
+          </button>
+        </div>
+      </aside>
+      <div class="flex-1 flex flex-col min-h-screen">
+        <header class="sticky top-0 z-10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-border-muted dark:border-border-dark px-8 py-4 flex items-center justify-between">
+          <div class="flex items-center gap-2 text-xs font-medium text-slate-500">
+            <a class="hover:text-primary transition-colors" href="{{ "docs/" | relURL }}">Documentation</a>
+            <span class="material-symbols-outlined text-[10px]">chevron_right</span>
+            <span class="text-slate-700 dark:text-slate-200">{{ .Title }}</span>
+          </div>
+          <div class="flex items-center gap-6">
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-lg">search</span>
+              <input class="bg-white dark:bg-surface-dark border border-border-muted dark:border-border-dark rounded-lg pl-10 pr-4 py-1.5 text-sm focus:ring-1 focus:ring-primary focus:border-primary w-64 text-slate-900 dark:text-slate-100 placeholder:text-slate-400" placeholder="Search documentation..." type="text"/>
+            </div>
+            <div class="flex items-center gap-2 border-l border-border-muted dark:border-border-dark pl-6">
+              <button class="p-2 text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors" id="theme-toggle" aria-label="Toggle theme">
+                <span class="material-symbols-outlined dark:hidden">dark_mode</span>
+                <span class="material-symbols-outlined hidden dark:block">light_mode</span>
+              </button>
+              <button class="p-2 text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors">
+                <span class="material-symbols-outlined">notifications</span>
+              </button>
+              <div class="w-8 h-8 rounded-full bg-primary/20 border border-primary/30 ml-2"></div>
+            </div>
+          </div>
+        </header>
+        <main class="flex-1 overflow-y-auto custom-scrollbar px-8 py-12 max-w-4xl mx-auto">
+          {{ block "main" . }}{{ end }}
+        </main>
       </div>
-      <nav class="nav">
-        {{ range .Site.Menus.main }}
-        <a href="{{ .URL | relURL }}">{{ .Name }}</a>
-        {{ end }}
-      </nav>
-      <div class="search">
-        <input type="text" placeholder="Search docs...">
-      </div>
-    </header>
-    <main class="content">
-      {{ block "main" . }}{{ end }}
-    </main>
-  </div>
-</body>
+    </div>
+    <script src="{{ "js/theme-toggle.js" | relURL }}"></script>
+    <script src="{{ "js/copy-code.js" | relURL }}"></script>
+  </body>
 </html>

@@ -99,7 +99,7 @@ function patchNode(
 
   const descriptor = registry[hostType];
 
-  if (descriptor) {
+  if (descriptor && oldNode.hostNode.displayObject) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (descriptor.patch as any)(oldNode.hostNode, oldDefinition.props, newDefinition.props);
   }

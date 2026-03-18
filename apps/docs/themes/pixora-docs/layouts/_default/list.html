@@ -1,20 +1,25 @@
 {{ define "main" }}
-<section class="list">
-  <header class="list-header">
-    <h1>{{ .Title }}</h1>
+<section class="page">
+  <header class="mb-12">
+    <h1 class="mb-4 text-5xl font-black tracking-tight text-slate-900 dark:text-white">{{ .Title }}</h1>
     {{ with.Description }}
-    <p class="description">{{ . }}</p>
+    <p class="text-xl leading-relaxed font-light text-slate-600 dark:text-slate-400">{{ . }}</p>
     {{ end }}
   </header>
-  <ul class="list-items">
+  <ul class="space-y-4">
     {{
       range.Pages
     }}
     <li>
-      <a href="{{ .Permalink }}">{{ .Title }}</a>
-      {{ with.Description }}
-      <p>{{ . }}</p>
-      {{ end }}
+      <a
+        href="{{ .Permalink }}"
+        class="hover:border-primary/50 block rounded-xl border border-slate-200 p-4 transition-all hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-white/5"
+      >
+        <h2 class="mb-2 text-lg font-bold text-slate-900 dark:text-white">{{ .Title }}</h2>
+        {{ with.Description }}
+        <p class="text-sm text-slate-600 dark:text-slate-400">{{ . }}</p>
+        {{ end }}
+      </a>
     </li>
     {{
       end

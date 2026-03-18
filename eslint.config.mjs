@@ -30,6 +30,8 @@ export default [
       '**/node_modules',
       '**/legacy',
       '**/examples',
+      'apps/docs/public/',
+      'apps/docs/content/docs/api/generated/',
     ],
   },
 

@@ -29,7 +29,7 @@ export const mainMenuScene = pixora.scene({
         size: 72,
         text: 'SPACE',
         weight: '900',
-        x: centeredTextX(vp.width, 'SPACE', 72, 0.62),
+        x: centeredTextX(vp.width, 'SPACE', 72, 0.6),
         y: titleY,
       }),
       pixora.text({
@@ -38,7 +38,7 @@ export const mainMenuScene = pixora.scene({
         size: 48,
         text: 'INVADERS',
         weight: '700',
-        x: centeredTextX(vp.width, 'INVADERS', 48, 0.58),
+        x: centeredTextX(vp.width, 'INVADERS', 48, 0.6),
         y: titleY + 76,
       }),
       pixora.button({
