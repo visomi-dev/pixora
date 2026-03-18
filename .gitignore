@@ -15,7 +15,8 @@ pnpm-workspace.yaml
 coverage/
 
 apps/docs/static/examples/game/
-apps/docs/content/docs/api/generated/
+apps/docs/static/docs/api/generated/
+apps/docs/.astro/
 apps/docs/public/
 
 apps/docs/static/examples/

@@ -15,7 +15,7 @@
             "command": "tailwindcss -i assets/css/styles.css -o static/css/styles.css --minify"
           },
           {
-            "command": "hugo -d ../../dist/apps/docs --gc --minify --baseURL /"
+            "command": "pnpm exec astro build --outDir ../../dist/apps/docs --base /"
           }
         ],
         "parallel": false,
@@ -34,7 +34,7 @@
             "command": "tailwindcss -i assets/css/styles.css -o static/css/styles.css --minify"
           },
           {
-            "command": "hugo -d ../../dist/apps/docs --gc --minify --baseURL /"
+            "command": "pnpm exec astro build --outDir ../../dist/apps/docs --base /"
           }
         ],
         "parallel": false,
@@ -60,7 +60,7 @@
             "command": "tailwindcss -i assets/css/styles.css -o static/css/styles.css --watch"
           },
           {
-            "command": "hugo server -D"
+            "command": "pnpm exec astro dev --host 0.0.0.0 --port 1313"
           }
         ],
         "parallel": true,
@@ -72,7 +72,18 @@
     "preview": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "hugo -d ../../dist/apps/docs-preview --gc --minify --baseURL /preview/",
+        "commands": [
+          {
+            "command": "mkdir -p static/fonts && cp -r ../../node_modules/@fontsource/space-grotesk/files/fonts/* static/fonts/ 2>/dev/null || true && cp -r ../../node_modules/@fontsource/jetbrains-mono/files/fonts/* static/fonts/ 2>/dev/null || true && cp -r ../../node_modules/@fontsource/material-symbols-outlined/files/fonts/* static/fonts/ 2>/dev/null || true"
+          },
+          {
+            "command": "tailwindcss -i assets/css/styles.css -o static/css/styles.css --minify"
+          },
+          {
+            "command": "pnpm exec astro build --outDir ../../dist/apps/docs-preview --base /preview/"
+          }
+        ],
+        "parallel": false,
         "cwd": "apps/docs"
       },
       "dependsOn": ["api", "build-example"]
@@ -80,7 +91,14 @@
     "api": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "pnpm exec typedoc",
+        "command": "rm -rf static/docs/api/generated && pnpm exec typedoc --options typedoc.json",
+        "cwd": "apps/docs"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm exec astro check",
         "cwd": "apps/docs"
       }
     }
