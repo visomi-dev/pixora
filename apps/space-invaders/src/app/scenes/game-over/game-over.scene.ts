@@ -1,9 +1,13 @@
-import { layout, pixora } from 'pixora';
+import { centeredBoxX, centeredTextX } from '../scene-positioning';
+
+import { pixora } from 'pixora';
 
 export const gameOverScene = pixora.scene({
   key: 'game-over',
   render: (context) => {
     const vp = context.viewport.get();
+    const headingY = Math.max(140, vp.height * 0.22);
+    const menuX = centeredBoxX(vp.width, 280);
 
     let highScoreText = 'HIGH SCORE: 0';
     try {
@@ -18,42 +22,50 @@ export const gameOverScene = pixora.scene({
     return pixora.container(
       { x: 0, y: 0 },
       pixora.box({ backgroundColor: 0x0a0a1a, height: vp.height, width: vp.width, x: 0, y: 0 }),
-      pixora.container(
-        {
-          layout: layout.percent({
-            horizontal: 'center',
-            vertical: 'center',
-            width: 1,
-          }),
-        },
-        pixora.container(
-          {
-            layout: layout.flex({
-              direction: 'vertical',
-              justify: 'center',
-              align: 'center',
-              gap: 16,
-            }),
-          },
-          pixora.text({ text: 'GAME OVER', color: '#ff4444', size: 72, weight: '900', font: 'Orbitron, sans-serif' }),
-          pixora.text({ text: 'SCORE: 0', color: '#ffffff', size: 32, font: 'Orbitron, sans-serif' }),
-          pixora.text({ text: highScoreText, color: '#ffff00', size: 24, font: 'Orbitron, sans-serif' }),
-          pixora.button({
-            backgroundColor: 0x00ffaa,
-            height: 56,
-            label: 'PLAY AGAIN',
-            onPointerTap: () => void context.scenes.goTo('game'),
-            width: 280,
-          }),
-          pixora.button({
-            backgroundColor: 0x666688,
-            height: 48,
-            label: 'MAIN MENU',
-            onPointerTap: () => void context.scenes.goTo('main-menu'),
-            width: 280,
-          }),
-        ),
-      ),
+      pixora.text({
+        color: '#ff4444',
+        font: 'Orbitron, sans-serif',
+        size: 72,
+        text: 'GAME OVER',
+        weight: '900',
+        x: centeredTextX(vp.width, 'GAME OVER', 72, 0.62),
+        y: headingY,
+      }),
+      pixora.text({
+        color: '#ffffff',
+        font: 'Orbitron, sans-serif',
+        size: 32,
+        text: 'SCORE: 0',
+        x: centeredTextX(vp.width, 'SCORE: 0', 32, 0.56),
+        y: headingY + 110,
+      }),
+      pixora.text({
+        color: '#ffff00',
+        font: 'Orbitron, sans-serif',
+        size: 24,
+        style: { align: 'center' },
+        text: highScoreText,
+        x: centeredTextX(vp.width, highScoreText, 24, 0.56),
+        y: headingY + 160,
+      }),
+      pixora.button({
+        backgroundColor: 0x00ffaa,
+        height: 56,
+        label: 'PLAY AGAIN',
+        onPointerTap: () => void context.scenes.goTo('game'),
+        width: 280,
+        x: menuX,
+        y: headingY + 240,
+      }),
+      pixora.button({
+        backgroundColor: 0x666688,
+        height: 48,
+        label: 'MAIN MENU',
+        onPointerTap: () => void context.scenes.goTo('main-menu'),
+        width: 280,
+        x: menuX,
+        y: headingY + 320,
+      }),
     );
   },
 });

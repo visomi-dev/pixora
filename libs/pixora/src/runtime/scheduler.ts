@@ -28,6 +28,8 @@ export class Scheduler {
   private postUpdateCallbacks: (() => void)[] = [];
   private isProcessing = false;
   private frameCallback: (() => void) | null = null;
+  private frameHandle: number | ReturnType<typeof setTimeout> | null = null;
+  private usesAnimationFrame = false;
 
   scheduleUpdate(
     sceneKey: string,
@@ -58,19 +60,23 @@ export class Scheduler {
   }
 
   scheduleFrame(): void {
-    if (this.frameCallback) {
+    if (this.frameHandle !== null) {
       return;
     }
 
     this.frameCallback = () => {
       this.frameCallback = null;
+      this.frameHandle = null;
+      this.usesAnimationFrame = false;
       this.processUpdates();
     };
 
     if (typeof requestAnimationFrame !== 'undefined') {
-      requestAnimationFrame(this.frameCallback);
+      this.usesAnimationFrame = true;
+      this.frameHandle = requestAnimationFrame(this.frameCallback);
     } else {
-      setTimeout(this.frameCallback, 16);
+      this.usesAnimationFrame = false;
+      this.frameHandle = setTimeout(this.frameCallback, 16);
     }
   }
 
@@ -140,8 +146,18 @@ export class Scheduler {
   }
 
   destroy(): void {
+    if (this.frameHandle !== null) {
+      if (this.usesAnimationFrame && typeof cancelAnimationFrame === 'function' && typeof this.frameHandle === 'number') {
+        cancelAnimationFrame(this.frameHandle);
+      } else {
+        clearTimeout(this.frameHandle);
+      }
+    }
+
     this.clear();
     this.frameCallback = null;
+    this.frameHandle = null;
+    this.usesAnimationFrame = false;
   }
 }
 

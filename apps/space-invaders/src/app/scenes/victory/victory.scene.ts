@@ -1,49 +1,60 @@
-import { layout, pixora } from 'pixora';
+import { centeredBoxX, centeredTextX } from '../scene-positioning';
+
+import { pixora } from 'pixora';
 
 export const victoryScene = pixora.scene({
   key: 'victory',
   render: (context) => {
     const vp = context.viewport.get();
+    const headingY = Math.max(140, vp.height * 0.22);
+    const menuX = centeredBoxX(vp.width, 280);
 
     return pixora.container(
       { x: 0, y: 0 },
       pixora.box({ backgroundColor: 0x0a0a1a, height: vp.height, width: vp.width, x: 0, y: 0 }),
-      pixora.container(
-        {
-          layout: layout.percent({
-            horizontal: 'center',
-            vertical: 'center',
-            width: 1,
-          }),
-        },
-        pixora.container(
-          {
-            layout: layout.flex({
-              direction: 'vertical',
-              justify: 'center',
-              align: 'center',
-              gap: 16,
-            }),
-          },
-          pixora.text({ text: 'VICTORY!', color: '#00ffaa', size: 72, weight: '900', font: 'Orbitron, sans-serif' }),
-          pixora.text({ text: 'GALAXY DEFENDED!', color: '#ff00aa', size: 28, font: 'Orbitron, sans-serif' }),
-          pixora.text({ text: 'FINAL SCORE: 0', color: '#ffffff', size: 32, font: 'Orbitron, sans-serif' }),
-          pixora.button({
-            backgroundColor: 0x00ffaa,
-            height: 56,
-            label: 'PLAY AGAIN',
-            onPointerTap: () => void context.scenes.goTo('game'),
-            width: 280,
-          }),
-          pixora.button({
-            backgroundColor: 0x666688,
-            height: 48,
-            label: 'MAIN MENU',
-            onPointerTap: () => void context.scenes.goTo('main-menu'),
-            width: 280,
-          }),
-        ),
-      ),
+      pixora.text({
+        color: '#00ffaa',
+        font: 'Orbitron, sans-serif',
+        size: 72,
+        text: 'VICTORY!',
+        weight: '900',
+        x: centeredTextX(vp.width, 'VICTORY!', 72, 0.62),
+        y: headingY,
+      }),
+      pixora.text({
+        color: '#ff00aa',
+        font: 'Orbitron, sans-serif',
+        size: 28,
+        text: 'GALAXY DEFENDED!',
+        x: centeredTextX(vp.width, 'GALAXY DEFENDED!', 28, 0.58),
+        y: headingY + 105,
+      }),
+      pixora.text({
+        color: '#ffffff',
+        font: 'Orbitron, sans-serif',
+        size: 32,
+        text: 'FINAL SCORE: 0',
+        x: centeredTextX(vp.width, 'FINAL SCORE: 0', 32, 0.56),
+        y: headingY + 160,
+      }),
+      pixora.button({
+        backgroundColor: 0x00ffaa,
+        height: 56,
+        label: 'PLAY AGAIN',
+        onPointerTap: () => void context.scenes.goTo('game'),
+        width: 280,
+        x: menuX,
+        y: headingY + 240,
+      }),
+      pixora.button({
+        backgroundColor: 0x666688,
+        height: 48,
+        label: 'MAIN MENU',
+        onPointerTap: () => void context.scenes.goTo('main-menu'),
+        width: 280,
+        x: menuX,
+        y: headingY + 320,
+      }),
     );
   },
 });

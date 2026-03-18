@@ -180,8 +180,8 @@ function applyLayoutRecursive(
     node.measuredHeight = displayObject.height;
   } else {
     const measured = measureNode(node.hostNode);
-    node.measuredWidth = measured.width;
-    node.measuredHeight = measured.height;
+    node.measuredWidth = node.parent ? measured.width : Math.max(parentBounds.width, measured.width);
+    node.measuredHeight = node.parent ? measured.height : Math.max(parentBounds.height, measured.height);
   }
 
   node.needsLayout = false;
@@ -193,10 +193,10 @@ function applyLayoutRecursive(
 
     if (childLayoutNode) {
       const childBounds = {
-        height: child.displayObject.height,
-        width: child.displayObject.width,
-        x: child.displayObject.x,
-        y: child.displayObject.y,
+        height: node.measuredHeight,
+        width: node.measuredWidth,
+        x: 0,
+        y: 0,
       };
 
       applyLayoutRecursive(childLayoutNode, childBounds, viewport);

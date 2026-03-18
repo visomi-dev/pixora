@@ -1,3 +1,5 @@
+import { centeredTextX, rightAlignedTextX } from '../scene-positioning';
+
 import { api as pixora, signal, createKeyboardInput, clearKeyboardFrame, Keys } from 'pixora';
 import type { ApplicationContext } from 'pixora';
 
@@ -391,8 +393,13 @@ export const gameScene = pixora.scene({
     const enemies = enemiesSignal.get();
     const powerUps = powerUpsSignal.get();
 
+    const scoreText = `SCORE: ${score.toLocaleString()}`;
+    const levelText = `LEVEL: ${level}`;
     const livesStr = 'LIVES:' + ' ♥'.repeat(lives);
     const comboText = combo > 1 ? `COMBO x${Math.min(Math.floor(combo / 5) + 1, 5)} (${combo})` : '';
+    const comboX = centeredTextX(viewport.width, comboText, 16, 0.56);
+    const levelX = centeredTextX(viewport.width, levelText, 20, 0.56);
+    const livesX = rightAlignedTextX(viewport.width, livesStr, 18, 20, 0.58);
 
     return pixora.container(
       { x: 0, y: 0 },
@@ -401,26 +408,26 @@ export const gameScene = pixora.scene({
         { x: 0, y: 0 },
         pixora.text({
           style: { fill: '#00ffaa', fontFamily: 'Orbitron, monospace', fontSize: 20, fontWeight: 'bold' },
-          text: `SCORE: ${score.toLocaleString()}`,
+          text: scoreText,
           x: 20,
           y: 16,
         }),
         pixora.text({
           style: { fill: '#ff00aa', fontFamily: 'Orbitron, monospace', fontSize: 20, fontWeight: 'bold' },
-          text: `LEVEL: ${level}`,
-          x: 280,
+          text: levelText,
+          x: levelX,
           y: 16,
         }),
         pixora.text({
           style: { fill: '#ffff00', fontFamily: 'Orbitron, monospace', fontSize: 16, fontWeight: 'bold' },
           text: comboText,
-          x: 520,
+          x: comboX,
           y: 20,
         }),
         pixora.text({
           style: { fill: '#ff6644', fontFamily: 'Orbitron, monospace', fontSize: 18 },
           text: livesStr,
-          x: 700,
+          x: livesX,
           y: 18,
         }),
       ),
