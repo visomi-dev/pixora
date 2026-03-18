@@ -1,4 +1,6 @@
-import { layout, pixora } from 'pixora';
+import { pixora } from 'pixora';
+
+import { centeredBoxX, centeredTextX } from '../scene-positioning';
 
 export const instructionsScene = pixora.scene({
   key: 'instructions',
@@ -6,6 +8,7 @@ export const instructionsScene = pixora.scene({
     const vp = context.viewport.get();
     const titleY = Math.max(40, vp.height * 0.05);
     const contentTop = Math.max(180, vp.height * 0.22);
+    const bodyX = centeredTextX(vp.width, 'Chain eliminations for score multipliers.', 16, 0.56);
 
     return pixora.container(
       { x: 0, y: 0 },
@@ -13,98 +16,74 @@ export const instructionsScene = pixora.scene({
       pixora.text({
         color: '#00ffaa',
         font: 'Orbitron, sans-serif',
-        layout: layout.anchor({
-          horizontal: 'center',
-          offsetY: titleY,
-          vertical: 'start',
-        }),
         size: 48,
         text: 'INSTRUCTIONS',
         weight: '900',
+        x: centeredTextX(vp.width, 'INSTRUCTIONS', 48, 0.58),
+        y: titleY,
       }),
       pixora.text({
         color: '#ff00aa',
         font: 'Orbitron, sans-serif',
-        layout: layout.anchor({
-          horizontal: 'center',
-          offsetY: contentTop,
-          vertical: 'start',
-        }),
         size: 24,
         text: 'CONTROLS',
         weight: 'bold',
+        x: centeredTextX(vp.width, 'CONTROLS', 24, 0.58),
+        y: contentTop,
       }),
       pixora.text({
         color: '#ffffff',
         font: 'JetBrains Mono, monospace',
-        layout: layout.anchor({
-          horizontal: 'center',
-          offsetY: contentTop + 40,
-          vertical: 'start',
-        }),
         size: 16,
         style: { align: 'center' },
         text: 'LEFT / RIGHT or A / D - Move Ship\nSPACE - Fire\nP - Pause\nESC - Pause',
+        x: bodyX,
+        y: contentTop + 40,
       }),
       pixora.text({
         color: '#ff00aa',
         font: 'Orbitron, sans-serif',
-        layout: layout.anchor({
-          horizontal: 'center',
-          offsetY: contentTop + 150,
-          vertical: 'start',
-        }),
         size: 24,
         text: 'POWER-UPS',
         weight: 'bold',
+        x: centeredTextX(vp.width, 'POWER-UPS', 24, 0.58),
+        y: contentTop + 150,
       }),
       pixora.text({
         color: '#ffffff',
         font: 'JetBrains Mono, monospace',
-        layout: layout.anchor({
-          horizontal: 'center',
-          offsetY: contentTop + 190,
-          vertical: 'start',
-        }),
         size: 16,
         style: { align: 'center' },
         text: 'SPEED BOOST - Move faster\nSHIELD - Temporary protection\nTRIPLE SHOT - Fire three bullets\nSMART BOMB - Clear a row',
+        x: centeredTextX(vp.width, 'SPEED BOOST - Move faster', 16, 0.56),
+        y: contentTop + 190,
       }),
       pixora.text({
         color: '#ff00aa',
         font: 'Orbitron, sans-serif',
-        layout: layout.anchor({
-          horizontal: 'center',
-          offsetY: contentTop + 320,
-          vertical: 'start',
-        }),
         size: 24,
         text: 'TIPS',
         weight: 'bold',
+        x: centeredTextX(vp.width, 'TIPS', 24, 0.58),
+        y: contentTop + 320,
       }),
       pixora.text({
         color: '#ffffff',
         font: 'JetBrains Mono, monospace',
-        layout: layout.anchor({
-          horizontal: 'center',
-          offsetY: contentTop + 360,
-          vertical: 'start',
-        }),
         size: 16,
         style: { align: 'center' },
         text: 'Chain eliminations for score multipliers.\nDestroy waves quickly for bonus points.\nWatch for falling power-ups.\nEach level ramps up the pressure.',
+        x: bodyX,
+        y: contentTop + 360,
       }),
       pixora.button({
         backgroundColor: 0x00ffaa,
         height: 56,
         label: 'BACK',
-        layout: layout.anchor({
-          horizontal: 'center',
-          offsetY: -36,
-          vertical: 'end',
-        }),
         onPointerTap: () => void context.scenes.goTo('main-menu'),
         width: 200,
+        x: centeredBoxX(vp.width, 200),
+        y: vp.height - 72,
       }),
     );
   },

@@ -1,4 +1,6 @@
-import { layout, pixora } from 'pixora';
+import { pixora } from 'pixora';
+
+import { centeredBoxX, centeredTextX } from '../scene-positioning';
 
 export const mainMenuScene = pixora.scene({
   key: 'main-menu',
@@ -6,6 +8,7 @@ export const mainMenuScene = pixora.scene({
     const vp = context.viewport.get();
     const titleY = Math.max(72, vp.height * 0.14);
     const menuY = Math.max(260, vp.height * 0.45);
+    const menuX = centeredBoxX(vp.width, 280);
 
     let highScoreText = 'GALACTIC DEFENSE v2.0';
     try {
@@ -23,62 +26,47 @@ export const mainMenuScene = pixora.scene({
       pixora.text({
         color: '#00ffaa',
         font: 'Orbitron, sans-serif',
-        layout: layout.anchor({
-          horizontal: 'center',
-          offsetY: titleY,
-          vertical: 'start',
-        }),
         size: 72,
         text: 'SPACE',
         weight: '900',
+        x: centeredTextX(vp.width, 'SPACE', 72, 0.62),
+        y: titleY,
       }),
       pixora.text({
         color: '#ff00aa',
         font: 'Orbitron, sans-serif',
-        layout: layout.anchor({
-          horizontal: 'center',
-          offsetY: titleY + 76,
-          vertical: 'start',
-        }),
         size: 48,
         text: 'INVADERS',
         weight: '700',
+        x: centeredTextX(vp.width, 'INVADERS', 48, 0.58),
+        y: titleY + 76,
       }),
       pixora.button({
         backgroundColor: 0x00ffaa,
         height: 56,
         label: 'START GAME',
-        layout: layout.anchor({
-          horizontal: 'center',
-          offsetY: menuY,
-          vertical: 'start',
-        }),
         onPointerTap: () => void context.scenes.goTo('game'),
         width: 280,
+        x: menuX,
+        y: menuY,
       }),
       pixora.button({
         backgroundColor: 0x333366,
         height: 48,
         label: 'INSTRUCTIONS',
-        layout: layout.anchor({
-          horizontal: 'center',
-          offsetY: menuY + 80,
-          vertical: 'start',
-        }),
         onPointerTap: () => void context.scenes.goTo('instructions'),
         width: 280,
+        x: menuX,
+        y: menuY + 80,
       }),
       pixora.text({
         text: highScoreText,
         color: '#666688',
         size: 14,
         font: 'JetBrains Mono, monospace',
-        layout: layout.anchor({
-          horizontal: 'center',
-          vertical: 'end',
-          offsetY: -28,
-        }),
         style: { align: 'center' },
+        x: centeredTextX(vp.width, highScoreText, 14, 0.6),
+        y: vp.height - 36,
       }),
     );
   },

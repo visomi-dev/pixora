@@ -1,10 +1,13 @@
-import { layout, pixora } from 'pixora';
+import { pixora } from 'pixora';
+
+import { centeredBoxX, centeredTextX } from '../scene-positioning';
 
 export const victoryScene = pixora.scene({
   key: 'victory',
   render: (context) => {
     const vp = context.viewport.get();
     const headingY = Math.max(140, vp.height * 0.22);
+    const menuX = centeredBoxX(vp.width, 280);
 
     return pixora.container(
       { x: 0, y: 0 },
@@ -12,60 +15,45 @@ export const victoryScene = pixora.scene({
       pixora.text({
         color: '#00ffaa',
         font: 'Orbitron, sans-serif',
-        layout: layout.anchor({
-          horizontal: 'center',
-          offsetY: headingY,
-          vertical: 'start',
-        }),
         size: 72,
         text: 'VICTORY!',
         weight: '900',
+        x: centeredTextX(vp.width, 'VICTORY!', 72, 0.62),
+        y: headingY,
       }),
       pixora.text({
         color: '#ff00aa',
         font: 'Orbitron, sans-serif',
-        layout: layout.anchor({
-          horizontal: 'center',
-          offsetY: headingY + 105,
-          vertical: 'start',
-        }),
         size: 28,
         text: 'GALAXY DEFENDED!',
+        x: centeredTextX(vp.width, 'GALAXY DEFENDED!', 28, 0.58),
+        y: headingY + 105,
       }),
       pixora.text({
         color: '#ffffff',
         font: 'Orbitron, sans-serif',
-        layout: layout.anchor({
-          horizontal: 'center',
-          offsetY: headingY + 160,
-          vertical: 'start',
-        }),
         size: 32,
         text: 'FINAL SCORE: 0',
+        x: centeredTextX(vp.width, 'FINAL SCORE: 0', 32, 0.56),
+        y: headingY + 160,
       }),
       pixora.button({
         backgroundColor: 0x00ffaa,
         height: 56,
         label: 'PLAY AGAIN',
-        layout: layout.anchor({
-          horizontal: 'center',
-          offsetY: headingY + 240,
-          vertical: 'start',
-        }),
         onPointerTap: () => void context.scenes.goTo('game'),
         width: 280,
+        x: menuX,
+        y: headingY + 240,
       }),
       pixora.button({
         backgroundColor: 0x666688,
         height: 48,
         label: 'MAIN MENU',
-        layout: layout.anchor({
-          horizontal: 'center',
-          offsetY: headingY + 320,
-          vertical: 'start',
-        }),
         onPointerTap: () => void context.scenes.goTo('main-menu'),
         width: 280,
+        x: menuX,
+        y: headingY + 320,
       }),
     );
   },
