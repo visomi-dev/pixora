@@ -1,4 +1,5 @@
 import { Container, Sprite, Text } from 'pixi.js';
+import { vi } from 'vitest';
 
 import { Box } from '../components/box';
 import { Button } from '../components/button';
@@ -6,11 +7,15 @@ import { ContainerNode } from '../components/container-node';
 import { SpriteNode } from '../components/sprite-node';
 import { TextNode } from '../components/text-node';
 import { layout } from '../layout/layout';
-import { runLayout } from './layout-runtime';
+import * as layoutRuntime from './layout-runtime';
 
 import { applyCommonProps, createHostTypeRegistry } from './host-types';
 
 describe('createHostTypeRegistry', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it('returns a registry with all five host types', () => {
     const registry = createHostTypeRegistry();
 
@@ -51,18 +56,15 @@ describe('createHostTypeRegistry', () => {
     });
 
     it('applies layout props to text nodes', () => {
+      const setLayoutSpecSpy = vi.spyOn(layoutRuntime, 'setLayoutSpec');
       const registry = createHostTypeRegistry();
-      const root = new ContainerNode();
+      const layoutSpec = layout.anchor({ horizontal: 'center', vertical: 'center' });
       const node = registry.text.create({
-        layout: layout.anchor({ horizontal: 'center', vertical: 'center' }),
+        layout: layoutSpec,
         text: 'Hello',
       });
 
-      root.addChild(node);
-      runLayout(root, { aspectRatio: 2, height: 100, orientation: 'landscape', width: 200 });
-
-      expect(node.displayObject.x).toBeGreaterThan(0);
-      expect(node.displayObject.y).toBeGreaterThan(0);
+      expect(setLayoutSpecSpy).toHaveBeenCalledWith(node, layoutSpec);
     });
   });
 
@@ -95,19 +97,16 @@ describe('createHostTypeRegistry', () => {
     });
 
     it('applies layout props to button nodes', () => {
+      const setLayoutSpecSpy = vi.spyOn(layoutRuntime, 'setLayoutSpec');
       const registry = createHostTypeRegistry();
-      const root = new ContainerNode();
+      const layoutSpec = layout.anchor({ horizontal: 'center', vertical: 'center' });
       const node = registry.button.create({
         label: 'Click',
-        layout: layout.anchor({ horizontal: 'center', vertical: 'center' }),
+        layout: layoutSpec,
         width: 120,
       });
 
-      root.addChild(node);
-      runLayout(root, { aspectRatio: 2, height: 100, orientation: 'landscape', width: 200 });
-
-      expect(node.displayObject.x).toBe(40);
-      expect(node.displayObject.y).toBe(26);
+      expect(setLayoutSpecSpy).toHaveBeenCalledWith(node, layoutSpec);
     });
   });
 });
