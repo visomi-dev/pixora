@@ -1,30 +1,49 @@
 <!DOCTYPE html>
-<html lang="{{ .Site.Language.Lang }}">
+<html lang="{{ .Site.Language.Lang | default "en" }}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ block "title" . }}{{ .Site.Title }}{{ end }}</title>
+  <title>{{ block "title" . }}{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} · {{ .Site.Title }}{{ end }}{{ end }}</title>
+  <meta name="description" content="{{ with .Description }}{{ . }}{{ else }}{{ .Site.Params.description | default "Pixora documentation and examples." }}{{ end }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,500,0,0&family=Space+Grotesk:wght@400;500;700&display=swap">
+  <script>
+    (() => {
+      try {
+        const storageKey = 'pixora-docs-theme';
+        const stored = window.localStorage.getItem(storageKey);
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const theme = stored === 'light' || stored === 'dark' ? stored : (prefersDark ? 'dark' : 'light');
+        document.documentElement.classList.toggle('dark', theme === 'dark');
+        document.documentElement.dataset.theme = theme;
+      } catch (_error) {
+        document.documentElement.classList.add('dark');
+        document.documentElement.dataset.theme = 'dark';
+      }
+    })();
+  </script>
   <link rel="stylesheet" href="{{ "css/styles.css" | relURL }}">
   {{ block "head" . }}{{ end }}
 </head>
 <body>
-  <div class="layout">
-    <header class="sidebar">
-      <div class="logo">
-        <a href="{{ .Site.Home.RelPermalink }}">{{ .Site.Title }}</a>
+  {{ if .IsHome }}
+  {{ block "main" . }}{{ end }}
+  {{ else }}
+  <div class="relative min-h-screen overflow-hidden bg-mist-50 dark:bg-ink-950">
+    <div class="hero-spotlight pointer-events-none absolute inset-0"></div>
+    <div class="grid-pattern pointer-events-none absolute inset-0 opacity-70 dark:opacity-100"></div>
+    <div class="relative lg:grid lg:min-h-screen lg:grid-cols-[18rem_minmax(0,1fr)]">
+      {{ partial "docs-sidebar.html" . }}
+      <div class="min-w-0">
+        {{ partial "docs-header.html" . }}
+        <main class="px-4 pb-16 pt-8 sm:px-6 lg:px-10 lg:pb-24">
+          {{ block "main" . }}{{ end }}
+        </main>
       </div>
-      <nav class="nav">
-        {{ range .Site.Menus.main }}
-        <a href="{{ .URL | relURL }}">{{ .Name }}</a>
-        {{ end }}
-      </nav>
-      <div class="search">
-        <input type="text" placeholder="Search docs...">
-      </div>
-    </header>
-    <main class="content">
-      {{ block "main" . }}{{ end }}
-    </main>
+    </div>
   </div>
+  {{ end }}
+  <script src="{{ "js/site.js" | relURL }}" defer></script>
 </body>
 </html>

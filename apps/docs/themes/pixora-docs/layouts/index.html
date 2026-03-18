@@ -1,85 +1,239 @@
 {{ define "main" }}
-<div class="home">
-  <section class="hero">
-    <p class="eyebrow">Declarative by default</p>
-    <h1>Build Pixi games from scenes, state, and layout.</h1>
-    <p class="tagline">
-      Pixora is a TypeScript-first framework for composing reactive game UIs with <code>pixora()</code>,
-      <code>pixora.scene()</code>, and layout-driven nodes before reaching for low-level escape hatches.
-    </p>
-    <div class="cta">
-      <a href="{{ "docs/getting-started/quick-start" | relURL }}" class="button primary">Start with pixora()</a>
-      <a href="{{ "docs/examples/space-invaders" | relURL }}" class="button secondary">Play Space Invaders</a>
-    </div>
-  </section>
+{{ $docs := site.GetPage "/docs" }}
+{{ $gettingStarted := site.GetPage "/docs/getting-started" }}
+{{ $api := site.GetPage "/docs/api" }}
+{{ $examples := site.GetPage "/docs/examples" }}
 
-  <section class="showcase">
-    <div class="showcase-copy">
-      <p class="section-label">Live reference example</p>
-      <h2>The docs now ship a runnable game.</h2>
-      <p>
-        Space Invaders is bundled into the docs artifact, so GitHub Pages publishes the framework guide
-        and a production build of the game together.
-      </p>
-      <ul class="pill-list">
-        <li>Declarative scenes with <code>pixora.scene()</code></li>
-        <li>Reactive HUD and score updates</li>
-        <li>Layout-driven menus and overlays</li>
-        <li>Standalone output ready for GitHub Pages</li>
-      </ul>
-      <div class="cta">
-        <a href="{{ "examples/space-invaders/" | relURL }}" class="button primary">Open standalone build</a>
-        <a href="{{ "docs/examples/space-invaders" | relURL }}" class="button secondary">Read the walkthrough</a>
-      </div>
-    </div>
-    <div class="showcase-panel">
-      <iframe
-        src="{{ "examples/space-invaders/" | relURL }}"
-        class="demo-frame"
-        title="Space Invaders demo built with Pixora"
-        loading="lazy"
-      ></iframe>
-    </div>
-  </section>
+<div class="relative min-h-screen overflow-hidden bg-ink-950 text-slate-100">
+  <div class="hero-spotlight pointer-events-none absolute inset-0"></div>
+  <div class="grid-pattern pointer-events-none absolute inset-0 opacity-90"></div>
 
-  <section class="features">
-    <h2>Why teams start with the declarative runtime</h2>
-    <div class="feature-grid">
-      <div class="feature">
-        <h3>Declarative scenes</h3>
-        <p>Compose screens from pure render functions instead of wiring scene classes first.</p>
-      </div>
-      <div class="feature">
-        <h3>Reactive state</h3>
-        <p>Drive game state with signals, computed values, and effects that stay close to the scene.</p>
-      </div>
-      <div class="feature">
-        <h3>Layout-aware UI</h3>
-        <p>Use flex and percent layout primitives to build HUDs, menus, overlays, and stage chrome.</p>
-      </div>
-      <div class="feature">
-        <h3>Pixi-powered rendering</h3>
-        <p>Keep direct access to Pixi.js performance while authoring against a higher-level runtime.</p>
-      </div>
-      <div class="feature">
-        <h3>Imperative escape hatches</h3>
-        <p>Interop with lower-level scene and application APIs when you need migration or fine-grained control.</p>
-      </div>
-      <div class="feature">
-        <h3>Deployable examples</h3>
-        <p>Use the same build pipeline for docs, examples, and a GitHub Pages development environment.</p>
+  <header class="sticky top-0 z-30 border-b border-white/10 bg-ink-950/78 backdrop-blur-xl">
+    <div class="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-4">
+      <a href="{{ .Site.Home.RelPermalink }}" class="flex items-center gap-3">
+        <span class="flex size-10 items-center justify-center rounded-2xl bg-brand-500 text-white shadow-lg shadow-brand-500/30">
+          <span class="material-symbols-outlined text-[22px]">deployed_code</span>
+        </span>
+        <span class="font-display text-lg font-bold tracking-tight">{{ .Site.Title }}</span>
+      </a>
+
+      <nav class="hidden items-center gap-8 text-sm font-medium text-slate-400 md:flex">
+        <a href="{{ $docs.RelPermalink }}" class="hover:text-brand-300">Docs</a>
+        <a href="{{ $gettingStarted.RelPermalink }}" class="hover:text-brand-300">Getting Started</a>
+        <a href="{{ $api.RelPermalink }}" class="hover:text-brand-300">API</a>
+        <a href="{{ $examples.RelPermalink }}" class="hover:text-brand-300">Examples</a>
+      </nav>
+
+      <div class="flex items-center gap-3">
+        <a
+          href="{{ $docs.RelPermalink }}"
+          class="hidden rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-slate-200 transition hover:border-brand-500/40 hover:text-brand-300 sm:inline-flex"
+        >
+          Open docs
+        </a>
+        <button
+          type="button"
+          data-theme-toggle
+          class="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-slate-200 transition hover:border-brand-500/40 hover:text-brand-300"
+        >
+          <span class="material-symbols-outlined text-[18px]" data-theme-icon>light_mode</span>
+          <span class="hidden sm:inline" data-theme-label>Light mode</span>
+        </button>
       </div>
     </div>
-  </section>
+  </header>
 
-  <section class="quick-links">
-    <h2>Start here</h2>
-    <ul>
-      <li><a href="{{ "docs/getting-started/installation" | relURL }}">Install Pixora and Pixi.js</a></li>
-      <li><a href="{{ "docs/getting-started/quick-start" | relURL }}">Build your first declarative scene</a></li>
-      <li><a href="{{ "docs/api/app" | relURL }}">Understand the runtime returned by <code>pixora()</code></a></li>
-      <li><a href="{{ "docs/examples" | relURL }}">Browse working examples and demos</a></li>
-    </ul>
-  </section>
+  <main class="relative">
+    <section class="mx-auto grid max-w-7xl gap-16 px-6 py-20 lg:grid-cols-[minmax(0,1.05fr)_24rem] lg:items-center lg:py-28">
+      <div class="space-y-8">
+        <div class="inline-flex items-center gap-3 rounded-full border border-brand-500/20 bg-brand-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-brand-300">
+          <span class="relative flex size-2.5">
+            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-400 opacity-70"></span>
+            <span class="relative inline-flex h-full w-full rounded-full bg-brand-300"></span>
+          </span>
+          Stitch-inspired docs refresh
+        </div>
+
+        <div class="space-y-5">
+          <h1 class="max-w-4xl font-display text-5xl font-bold leading-[1.04] tracking-tight text-white sm:text-6xl lg:text-7xl">
+            Ship Pixi games from <span class="bg-gradient-to-r from-brand-300 to-white bg-clip-text text-transparent">scenes, state, and layout</span>.
+          </h1>
+          <p class="max-w-2xl text-lg leading-8 text-slate-300">
+            Pixora is a declarative-by-default framework for building high-performance Pixi.js interfaces. The docs now mirror the product language with a polished landing page, rich docs shell, and light/dark patterns tuned for real documentation work.
+          </p>
+        </div>
+
+        <div class="flex flex-wrap gap-4">
+          <a
+            href="{{ "docs/getting-started/quick-start/" | relURL }}"
+            class="inline-flex items-center gap-3 rounded-2xl bg-brand-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-500/30 transition hover:scale-[1.01] hover:bg-brand-400"
+          >
+            Start with `pixora()`
+            <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+          </a>
+          <a
+            href="{{ "docs/examples/space-invaders/" | relURL }}"
+            class="inline-flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-6 py-3 text-sm font-semibold text-slate-100 transition hover:border-brand-500/40 hover:text-brand-300"
+          >
+            Explore the reference game
+            <span class="material-symbols-outlined text-[18px]">stadia_controller</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="docs-panel overflow-hidden border-white/10 bg-white/6 shadow-2xl shadow-black/30 dark:bg-white/6">
+        <div class="flex items-center justify-between border-b border-white/10 px-5 py-4">
+          <div class="flex items-center gap-2">
+            <span class="size-2.5 rounded-full bg-slate-600"></span>
+            <span class="size-2.5 rounded-full bg-slate-600"></span>
+            <span class="size-2.5 rounded-full bg-slate-600"></span>
+          </div>
+          <span class="font-mono text-[11px] uppercase tracking-[0.28em] text-slate-500">quick-start.ts</span>
+        </div>
+        <div class="space-y-3 bg-black/20 p-6 font-mono text-sm leading-7 text-slate-200">
+          <div><span class="text-slate-500">1</span> <span class="text-brand-300">import</span> { <span class="text-white">pixora</span> } <span class="text-brand-300">from</span> <span class="text-emerald-300">'pixora'</span>;</div>
+          <div><span class="text-slate-500">2</span> <span class="text-brand-300">import</span> { <span class="text-white">heroScene</span> } <span class="text-brand-300">from</span> <span class="text-emerald-300">'./scenes/hero.scene'</span>;</div>
+          <div><span class="text-slate-500">3</span></div>
+          <div><span class="text-slate-500">4</span> <span class="text-brand-300">const</span> <span class="text-white">runtime</span> = <span class="text-violet-300">await</span> <span class="text-white">pixora</span>({</div>
+          <div><span class="text-slate-500">5</span>   <span class="text-slate-400">mount:</span> <span class="text-white">document</span>.<span class="text-sky-300">querySelector</span>(<span class="text-emerald-300">'#app'</span>)!,</div>
+          <div><span class="text-slate-500">6</span>   <span class="text-slate-400">initialScene:</span> <span class="text-emerald-300">'hero'</span>,</div>
+          <div><span class="text-slate-500">7</span>   <span class="text-slate-400">scenes:</span> [<span class="text-white">heroScene</span>],</div>
+          <div><span class="text-slate-500">8</span> });</div>
+          <div><span class="text-slate-500">9</span></div>
+          <div><span class="text-slate-500">10</span> <span class="text-violet-300">await</span> <span class="text-white">runtime</span>.<span class="text-sky-300">start</span>();</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mx-auto grid max-w-7xl gap-4 px-6 pb-8 md:grid-cols-3">
+      <div class="docs-panel border-white/10 bg-white/6 p-6">
+        <p class="docs-kicker text-brand-300">Docs tracks</p>
+        <p class="mt-4 font-display text-4xl font-bold text-white">{{ len $docs.Sections }}</p>
+        <p class="mt-3 text-sm leading-7 text-slate-300">Getting Started, Guides, API Reference, and Examples stay organized as product-grade docs surfaces.</p>
+      </div>
+      <div class="docs-panel border-white/10 bg-white/6 p-6">
+        <p class="docs-kicker text-brand-300">API modules</p>
+        <p class="mt-4 font-display text-4xl font-bold text-white">{{ len $api.RegularPages }}</p>
+        <p class="mt-3 text-sm leading-7 text-slate-300">Core runtime modules are navigable from a dense sidebar and polished reference layout inspired by the Stitch API screen.</p>
+      </div>
+      <div class="docs-panel border-white/10 bg-white/6 p-6">
+        <p class="docs-kicker text-brand-300">Live example</p>
+        <p class="mt-4 font-display text-4xl font-bold text-white">1</p>
+        <p class="mt-3 text-sm leading-7 text-slate-300">The Space Invaders build ships inside the docs output so readers can move between guides and a real game without leaving the site.</p>
+      </div>
+    </section>
+
+    <section class="mx-auto grid max-w-7xl gap-8 px-6 py-16 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-start">
+      <div class="docs-panel border-white/10 bg-white/6 p-8">
+        <p class="docs-kicker text-brand-300">Live reference example</p>
+        <h2 class="mt-4 font-display text-4xl font-bold tracking-tight text-white">The docs artifact now feels like the product.</h2>
+        <p class="mt-4 text-base leading-8 text-slate-300">
+          The landing page, documentation shell, and embedded example all follow the same visual grammar: framed surfaces, glowing purple accents, dense side navigation, and a theme toggle that carries the design into light mode.
+        </p>
+        <ul class="mt-8 space-y-4 text-sm leading-7 text-slate-300">
+          <li class="flex gap-3"><span class="material-symbols-outlined mt-1 text-[18px] text-brand-300">check_circle</span><span>Class-based theme switching aligned with the Stitch dark and light screens.</span></li>
+          <li class="flex gap-3"><span class="material-symbols-outlined mt-1 text-[18px] text-brand-300">check_circle</span><span>Tailwind CLI compilation folded directly into the Nx-driven Hugo build and serve flow.</span></li>
+          <li class="flex gap-3"><span class="material-symbols-outlined mt-1 text-[18px] text-brand-300">check_circle</span><span>Reusable cards and prose styles that make markdown content look intentionally designed instead of merely skinned.</span></li>
+        </ul>
+        <div class="mt-8 flex flex-wrap gap-4">
+          <a href="{{ "examples/space-invaders/" | relURL }}" class="inline-flex items-center gap-3 rounded-2xl bg-brand-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-brand-400">
+            Open standalone build
+            <span class="material-symbols-outlined text-[18px]">open_in_new</span>
+          </a>
+          <a href="{{ "docs/examples/space-invaders/" | relURL }}" class="inline-flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-slate-100 transition hover:border-brand-500/40 hover:text-brand-300">
+            Read the walkthrough
+            <span class="material-symbols-outlined text-[18px]">description</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="docs-panel border-white/10 bg-black/30 p-4">
+        <iframe
+          src="{{ "examples/space-invaders/" | relURL }}"
+          class="demo-frame min-h-[540px] border-white/10"
+          title="Space Invaders demo built with Pixora"
+          loading="lazy"
+        ></iframe>
+      </div>
+    </section>
+
+    <section class="mx-auto max-w-7xl px-6 py-6">
+      <div class="flex flex-col gap-4">
+        <p class="docs-kicker text-brand-300">Why teams start here</p>
+        <h2 class="font-display text-4xl font-bold tracking-tight text-white">A docs site shaped like the framework itself.</h2>
+        <p class="max-w-3xl text-base leading-8 text-slate-300">
+          The refreshed site highlights how Pixora works: declarative scene orchestration, layout-aware UI, and production-ready examples that keep implementation and documentation in the same flow.
+        </p>
+      </div>
+
+      <div class="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+        <article class="docs-panel border-white/10 bg-white/6 p-6">
+          <span class="material-symbols-outlined text-[20px] text-brand-300">schema</span>
+          <h3 class="mt-5 font-display text-2xl font-semibold text-white">Declarative scenes</h3>
+          <p class="mt-3 text-sm leading-7 text-slate-300">Compose screens from render functions and scene transitions instead of building deep imperative state machines first.</p>
+        </article>
+        <article class="docs-panel border-white/10 bg-white/6 p-6">
+          <span class="material-symbols-outlined text-[20px] text-brand-300">instant_mix</span>
+          <h3 class="mt-5 font-display text-2xl font-semibold text-white">Reactive state</h3>
+          <p class="mt-3 text-sm leading-7 text-slate-300">Keep HUD state, overlays, and gameplay signals close to the scene that owns them with Pixora's runtime primitives.</p>
+        </article>
+        <article class="docs-panel border-white/10 bg-white/6 p-6">
+          <span class="material-symbols-outlined text-[20px] text-brand-300">view_quilt</span>
+          <h3 class="mt-5 font-display text-2xl font-semibold text-white">Layout-aware UI</h3>
+          <p class="mt-3 text-sm leading-7 text-slate-300">Use flex and percent layout helpers to build menus, overlays, and score surfaces without detaching from the rendering engine.</p>
+        </article>
+        <article class="docs-panel border-white/10 bg-white/6 p-6">
+          <span class="material-symbols-outlined text-[20px] text-brand-300">rocket_launch</span>
+          <h3 class="mt-5 font-display text-2xl font-semibold text-white">Deployable examples</h3>
+          <p class="mt-3 text-sm leading-7 text-slate-300">Docs and demos ship together so a guide, API page, and working example remain part of one hosted artifact.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="mx-auto max-w-7xl px-6 py-20">
+      <div class="flex flex-col gap-4">
+        <p class="docs-kicker text-brand-300">Explore the docs</p>
+        <h2 class="font-display text-4xl font-bold tracking-tight text-white">Choose a path through Pixora.</h2>
+      </div>
+
+      <div class="mt-10 grid gap-6 lg:grid-cols-2">
+        {{ range $section := $docs.Sections.ByWeight }}
+        <a
+          href="{{ $section.RelPermalink }}"
+          class="group docs-panel border-white/10 bg-white/6 p-8 transition hover:-translate-y-1 hover:border-brand-500/40 hover:bg-white/8"
+        >
+          <div class="flex items-center justify-between gap-6">
+            <div>
+              <p class="docs-kicker text-brand-300">{{ len $section.RegularPages }} pages</p>
+              <h3 class="mt-4 font-display text-3xl font-semibold tracking-tight text-white">{{ $section.Title }}</h3>
+              <p class="mt-4 max-w-xl text-sm leading-7 text-slate-300">{{ $section.Description }}</p>
+            </div>
+            <span class="material-symbols-outlined text-[28px] text-slate-500 transition group-hover:text-brand-300">arrow_forward</span>
+          </div>
+        </a>
+        {{ end }}
+      </div>
+    </section>
+
+    <section class="mx-auto max-w-7xl px-6 pb-24">
+      <div class="overflow-hidden rounded-[2rem] border border-white/10 bg-brand-500/10 px-8 py-14 text-center backdrop-blur sm:px-12">
+        <p class="docs-kicker text-brand-300">Ready to build?</p>
+        <h2 class="mt-4 font-display text-4xl font-bold tracking-tight text-white sm:text-5xl">Move from first scene to shipped example without leaving the docs.</h2>
+        <p class="mx-auto mt-4 max-w-2xl text-base leading-8 text-slate-300">
+          Start with installation, learn the declarative runtime, then inspect the example app and API modules inside the same polished surface.
+        </p>
+        <div class="mt-8 flex flex-wrap justify-center gap-4">
+          <a href="{{ "docs/getting-started/installation/" | relURL }}" class="inline-flex items-center gap-3 rounded-2xl bg-white px-6 py-3 text-sm font-semibold text-slate-950 transition hover:bg-slate-100">
+            Install Pixora
+            <span class="material-symbols-outlined text-[18px]">download</span>
+          </a>
+          <a href="{{ "docs/api/" | relURL }}" class="inline-flex items-center gap-3 rounded-2xl border border-white/15 bg-white/5 px-6 py-3 text-sm font-semibold text-white transition hover:border-white/30">
+            Browse the API
+            <span class="material-symbols-outlined text-[18px]">api</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
 </div>
 {{ end }}

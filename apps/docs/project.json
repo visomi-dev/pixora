@@ -4,13 +4,25 @@
   "projectType": "application",
   "sourceRoot": "apps/docs",
   "targets": {
+    "styles": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm exec tailwindcss -i apps/docs/styles/tailwind.css -o apps/docs/themes/pixora-docs/static/css/styles.css --minify"
+      }
+    },
+    "styles-watch": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm exec tailwindcss -i apps/docs/styles/tailwind.css -o apps/docs/themes/pixora-docs/static/css/styles.css --watch=always"
+      }
+    },
     "build": {
       "executor": "nx:run-commands",
       "options": {
         "command": "hugo -d ../../dist/apps/docs --gc --minify",
         "cwd": "apps/docs"
       },
-      "dependsOn": ["api", "build-example"]
+      "dependsOn": ["styles", "api", "build-example"]
     },
     "build-pages": {
       "executor": "nx:run-commands",
@@ -18,7 +30,7 @@
         "command": "sh -c 'hugo -d ../../dist/apps/docs --gc --minify --baseURL \"$PAGES_BASE_URL\"'",
         "cwd": "apps/docs"
       },
-      "dependsOn": ["api", "build-example"]
+      "dependsOn": ["styles", "api", "build-example"]
     },
     "build-example": {
       "executor": "nx:run-commands",
@@ -30,11 +42,14 @@
     "serve": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "hugo server -D",
+        "commands": [
+          "pnpm exec tailwindcss -i apps/docs/styles/tailwind.css -o apps/docs/themes/pixora-docs/static/css/styles.css --watch=always",
+          "hugo server -D"
+        ],
         "cwd": "apps/docs",
-        "port": 1313
+        "parallel": true
       },
-      "dependsOn": ["api", "build-example"]
+      "dependsOn": ["styles", "api", "build-example"]
     },
     "preview": {
       "executor": "nx:run-commands",
@@ -42,7 +57,7 @@
         "command": "hugo -d ../../dist/apps/docs-preview --gc --minify --baseURL /preview/",
         "cwd": "apps/docs"
       },
-      "dependsOn": ["api", "build-example"]
+      "dependsOn": ["styles", "api", "build-example"]
     },
     "api": {
       "executor": "nx:run-commands",

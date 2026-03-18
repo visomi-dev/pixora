@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7f0df2",
+                        "background-light": "#f7f5f8",
+                        "background-dark": "#191022",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        .code-block {
+            background-color: rgba(127, 13, 242, 0.05);
+            border-left: 2px solid #7f0df2;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #7f0df244;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen">
+<div class="flex h-screen overflow-hidden">
+<!-- Sidebar Navigation -->
+<aside class="w-72 border-r border-primary/20 bg-background-light dark:bg-background-dark flex flex-col shrink-0">
+<div class="p-6 flex items-center gap-3 border-b border-primary/10">
+<div class="size-10 bg-primary rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined">auto_awesome</span>
+</div>
+<div>
+<h1 class="font-bold text-lg leading-none">Pixora</h1>
+<span class="text-xs text-primary font-medium">v2.4.0 Framework</span>
+</div>
+</div>
+<div class="p-4">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
+<input class="w-full bg-primary/5 border border-primary/20 rounded-lg py-2 pl-9 pr-4 text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all" placeholder="Quick search..." type="text"/>
+</div>
+</div>
+<nav class="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-6">
+<div>
+<h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3 px-3">Getting Started</h3>
+<ul class="space-y-1">
+<li><a class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm hover:bg-primary/10 transition-colors" href="#"><span class="material-symbols-outlined text-sm">info</span> Introduction</a></li>
+<li><a class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm hover:bg-primary/10 transition-colors" href="#"><span class="material-symbols-outlined text-sm">rocket_launch</span> Installation</a></li>
+<li><a class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm hover:bg-primary/10 transition-colors" href="#"><span class="material-symbols-outlined text-sm">key</span> Authentication</a></li>
+</ul>
+</div>
+<div>
+<h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3 px-3">Core API</h3>
+<ul class="space-y-1">
+<li><a class="flex items-center justify-between px-3 py-2 rounded-lg text-sm bg-primary/20 text-primary font-medium group" href="#">
+<span class="flex items-center gap-3"><span class="material-symbols-outlined text-sm">api</span> Endpoints</span>
+<span class="material-symbols-outlined text-xs">chevron_right</span>
+</a></li>
+<li><a class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm hover:bg-primary/10 transition-colors text-slate-400" href="#"><span class="material-symbols-outlined text-sm">database</span> Models</a></li>
+<li><a class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm hover:bg-primary/10 transition-colors text-slate-400" href="#"><span class="material-symbols-outlined text-sm">bolt</span> Webhooks</a></li>
+<li><a class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm hover:bg-primary/10 transition-colors text-slate-400" href="#"><span class="material-symbols-outlined text-sm">warning</span> Error Codes</a></li>
+</ul>
+</div>
+<div>
+<h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3 px-3">Resources</h3>
+<ul class="space-y-1">
+<li><a class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm hover:bg-primary/10 transition-colors text-slate-400" href="#"><span class="material-symbols-outlined text-sm">account_tree</span> SDKs</a></li>
+<li><a class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm hover:bg-primary/10 transition-colors text-slate-400" href="#"><span class="material-symbols-outlined text-sm">forum</span> Community</a></li>
+</ul>
+</div>
+</nav>
+<div class="p-4 border-t border-primary/10">
+<button class="w-full bg-primary text-white font-bold py-2 rounded-lg text-sm flex items-center justify-center gap-2 hover:brightness-110 transition-all">
+<span class="material-symbols-outlined text-sm">terminal</span> API Console
+                </button>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col h-full bg-background-light dark:bg-background-dark overflow-hidden">
+<!-- Header -->
+<header class="h-16 border-b border-primary/10 flex items-center justify-between px-8 shrink-0">
+<div class="flex items-center gap-2 text-sm text-slate-500">
+<span>Docs</span>
+<span class="material-symbols-outlined text-xs">chevron_right</span>
+<span>API Reference</span>
+<span class="material-symbols-outlined text-xs">chevron_right</span>
+<span class="text-slate-900 dark:text-slate-100 font-medium">Endpoints</span>
+</div>
+<div class="flex items-center gap-6">
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Changelog</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Support</a>
+<div class="h-8 w-px bg-primary/20"></div>
+<div class="size-8 rounded-full overflow-hidden border border-primary/40">
+<img class="w-full h-full object-cover" data-alt="User profile avatar placeholder" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvIUL3HnID9DxsA8njOTzIQwXzjsQz5W_8OP_wFxbjNBnWftN8RLHa9bVjSDxo9YdAUDrjsPyptg-BhxlpDeMqzDXPEh3oFsXGma7-fWdmdp1uUuDwn1urZmWN1PZGZaMAgMvavCusUthhAZ5C80SpHOS3OvJTrl2IFtxG6RvUx2HvFQjep7YhXd_PzPcxGuaGaSzt6n6brPM_BcANqghAquc_lWg6txeiKD-9Obu4Zz6fDfWUa4PgA4tY-whcNY2Jv6o-tXEgIo4m"/>
+</div>
+</div>
+</header>
+<!-- Content -->
+<div class="flex-1 overflow-y-auto custom-scrollbar">
+<div class="max-w-5xl mx-auto px-8 py-12">
+<section class="mb-12">
+<div class="flex items-start justify-between mb-4">
+<div>
+<h1 class="text-4xl font-bold tracking-tight mb-4">API Reference</h1>
+<p class="text-lg text-slate-500 dark:text-slate-400 max-w-2xl">
+                                    Comprehensive guide to interacting with the Pixora Core. Integrate high-performance pixel rendering and automated asset management into your workflow.
+                                </p>
+</div>
+<button class="flex items-center gap-2 px-4 py-2 border border-primary/30 rounded-lg text-sm font-medium hover:bg-primary/10 transition-all">
+<span class="material-symbols-outlined text-sm">download</span> OpenAPI Spec
+                            </button>
+</div>
+</section>
+<div class="grid grid-cols-1 gap-16">
+<!-- Method Section: Users -->
+<section id="users">
+<div class="flex items-center gap-4 mb-8">
+<div class="h-px flex-1 bg-primary/10"></div>
+<h2 class="text-xl font-bold uppercase tracking-widest text-primary">Users &amp; Identity</h2>
+<div class="h-px flex-1 bg-primary/10"></div>
+</div>
+<!-- List User Endpoints -->
+<div class="space-y-12">
+<!-- Endpoint Entry -->
+<div class="flex flex-col gap-6">
+<div class="flex items-center gap-3">
+<span class="px-2 py-1 bg-green-500/10 text-green-500 text-xs font-bold rounded border border-green-500/20">GET</span>
+<code class="text-lg font-mono text-slate-900 dark:text-slate-200">/v1/users/{user_id}</code>
+</div>
+<div class="grid lg:grid-cols-2 gap-8">
+<div class="space-y-4">
+<p class="text-slate-500 dark:text-slate-400">
+                                                Retrieves the details of an existing user. You need only the unique user identifier that was returned upon creation.
+                                            </p>
+<div class="space-y-4">
+<h4 class="text-sm font-bold uppercase text-slate-400">Parameters</h4>
+<table class="w-full text-sm text-left border-collapse">
+<thead>
+<tr class="border-b border-primary/10 text-slate-400">
+<th class="py-2 font-medium">Name</th>
+<th class="py-2 font-medium">Type</th>
+<th class="py-2 font-medium">Description</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-primary/5">
+<tr>
+<td class="py-3 font-mono text-primary">user_id</td>
+<td class="py-3 text-slate-500 italic">string</td>
+<td class="py-3 text-slate-400">The unique identifier for the user.</td>
+</tr>
+<tr>
+<td class="py-3 font-mono text-primary">include_metadata</td>
+<td class="py-3 text-slate-500 italic">boolean</td>
+<td class="py-3 text-slate-400">Optionally include extended metadata fields.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex items-center justify-between">
+<h4 class="text-sm font-bold uppercase text-slate-400">Sample Response</h4>
+<span class="text-xs text-slate-500">application/json</span>
+</div>
+<div class="code-block p-4 rounded-lg font-mono text-xs leading-relaxed text-slate-300 overflow-x-auto">
+<pre>{
+  "id": "usr_94210",
+  "object": "user",
+  "name": "Jane Doe",
+  "email": "jane@pixora.io",
+  "created_at": 1672531200,
+  "metadata": {
+    "tier": "pro",
+    "region": "us-east"
+  }
+}</pre>
+</div>
+</div>
+</div>
+</div>
+<!-- Post Method -->
+<div class="flex flex-col gap-6 pt-12 border-t border-primary/5">
+<div class="flex items-center gap-3">
+<span class="px-2 py-1 bg-blue-500/10 text-blue-500 text-xs font-bold rounded border border-blue-500/20">POST</span>
+<code class="text-lg font-mono text-slate-900 dark:text-slate-200">/v1/users</code>
+</div>
+<div class="grid lg:grid-cols-2 gap-8">
+<div class="space-y-4">
+<p class="text-slate-500 dark:text-slate-400">
+                                                Creates a new user object within your workspace. Requires a valid API key with administrative permissions.
+                                            </p>
+<div class="space-y-4">
+<h4 class="text-sm font-bold uppercase text-slate-400">Request Body</h4>
+<table class="w-full text-sm text-left border-collapse">
+<thead>
+<tr class="border-b border-primary/10 text-slate-400">
+<th class="py-2 font-medium">Field</th>
+<th class="py-2 font-medium">Type</th>
+<th class="py-2 font-medium">Required</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-primary/5">
+<tr>
+<td class="py-3 font-mono text-primary">email</td>
+<td class="py-3 text-slate-500 italic">string</td>
+<td class="py-3"><span class="material-symbols-outlined text-green-500 text-sm">check_circle</span></td>
+</tr>
+<tr>
+<td class="py-3 font-mono text-primary">name</td>
+<td class="py-3 text-slate-500 italic">string</td>
+<td class="py-3"><span class="material-symbols-outlined text-green-500 text-sm">check_circle</span></td>
+</tr>
+<tr>
+<td class="py-3 font-mono text-primary">avatar_url</td>
+<td class="py-3 text-slate-500 italic">string</td>
+<td class="py-3 text-slate-500">—</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex items-center justify-between">
+<h4 class="text-sm font-bold uppercase text-slate-400">cURL Example</h4>
+</div>
+<div class="code-block p-4 rounded-lg font-mono text-xs leading-relaxed text-slate-300 overflow-x-auto">
+<pre>curl https://api.pixora.io/v1/users \
+  -u &lt;test_api_key&gt;: \
+  -d email="newuser@example.com" \
+  -d name="Alex Smith"</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Method Section: Assets -->
+<section class="pt-8" id="assets">
+<div class="flex items-center gap-4 mb-8">
+<div class="h-px flex-1 bg-primary/10"></div>
+<h2 class="text-xl font-bold uppercase tracking-widest text-primary">Asset Management</h2>
+<div class="h-px flex-1 bg-primary/10"></div>
+</div>
+<div class="bg-primary/5 rounded-xl border border-primary/10 p-12 text-center">
+<span class="material-symbols-outlined text-primary text-5xl mb-4">architecture</span>
+<h3 class="text-xl font-bold mb-2">Advanced Rendering Options</h3>
+<p class="text-slate-500 dark:text-slate-400 max-w-lg mx-auto mb-6">
+                                    The Asset Management API allows for complex processing of visual data directly on the Pixora edge network.
+                                </p>
+<div class="flex items-center justify-center gap-3">
+<button class="bg-primary px-6 py-2 rounded-lg font-bold text-white text-sm">Explore Assets API</button>
+<button class="px-6 py-2 rounded-lg font-bold text-primary text-sm border border-primary/20 hover:bg-primary/5 transition-all">Read Case Studies</button>
+</div>
+</div>
+</section>
+</div>
+<!-- Footer for main area -->
+<footer class="mt-24 pt-12 border-t border-primary/10 flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="flex items-center gap-4">
+<div class="size-8 bg-slate-800 rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-sm text-slate-400">code</span>
+</div>
+<p class="text-sm text-slate-500">© 2024 Pixora Technologies. All rights reserved.</p>
+</div>
+<div class="flex items-center gap-8 text-sm font-medium text-slate-500">
+<a class="hover:text-primary transition-colors" href="#">Security</a>
+<a class="hover:text-primary transition-colors" href="#">Privacy</a>
+<a class="hover:text-primary transition-colors" href="#">Status</a>
+</div>
+</footer>
+</div>
+</div>
+</main>
+</div>
+</body></html>

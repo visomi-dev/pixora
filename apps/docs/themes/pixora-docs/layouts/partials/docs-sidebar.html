@@ -1,0 +1,96 @@
+{{ $docs := site.GetPage "/docs" }}
+{{ $currentSection := .CurrentSection }}
+
+<aside class="docs-shell hidden lg:flex lg:sticky lg:top-0 lg:h-screen lg:flex-col">
+  <div class="border-b border-slate-200/80 p-6 dark:border-ink-800">
+    <a href="{{ site.Home.RelPermalink }}" class="group flex items-center gap-4">
+      <div class="flex size-11 items-center justify-center rounded-2xl bg-brand-500 text-white shadow-lg shadow-brand-500/30 transition group-hover:scale-105">
+        <span class="material-symbols-outlined text-[22px]">deployed_code</span>
+      </div>
+      <div>
+        <p class="font-display text-lg font-bold tracking-tight text-slate-950 dark:text-white">{{ site.Title }}</p>
+        <p class="mt-1 text-xs font-semibold uppercase tracking-[0.28em] text-brand-500">Docs system</p>
+      </div>
+    </a>
+  </div>
+
+  <div class="border-b border-slate-200/80 p-4 dark:border-ink-800">
+    <a
+      href="{{ $docs.RelPermalink }}"
+      class="flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-semibold transition {{ if eq .RelPermalink $docs.RelPermalink }}bg-brand-500 text-white shadow-lg shadow-brand-500/20{{ else }}bg-slate-100/80 text-slate-700 hover:bg-brand-500/10 hover:text-brand-600 dark:bg-white/5 dark:text-slate-200 dark:hover:bg-brand-500/12 dark:hover:text-brand-300{{ end }}"
+    >
+      <span class="flex items-center gap-3">
+        <span class="material-symbols-outlined text-[18px]">dashboard</span>
+        <span>Documentation hub</span>
+      </span>
+      <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+    </a>
+  </div>
+
+  <nav class="flex-1 space-y-8 overflow-y-auto px-4 py-6">
+    {{ range $section := $docs.Sections.ByWeight }}
+    {{ $sectionActive := or (eq $.RelPermalink $section.RelPermalink) (and $currentSection (eq $currentSection.RelPermalink $section.RelPermalink)) }}
+    <section class="space-y-3">
+      <div class="flex items-center justify-between px-3">
+        <p class="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400 dark:text-slate-500">{{ $section.Title }}</p>
+        <span class="rounded-full bg-brand-500/10 px-2 py-1 text-[11px] font-semibold text-brand-600 dark:text-brand-300">{{ len $section.RegularPages }}</span>
+      </div>
+      <div class="space-y-1">
+        <a
+          href="{{ $section.RelPermalink }}"
+          class="flex items-center justify-between rounded-2xl px-3 py-2.5 text-sm font-medium transition {{ if $sectionActive }}bg-brand-500/12 text-brand-700 dark:bg-brand-500/12 dark:text-brand-300{{ else }}text-slate-600 hover:bg-slate-100 hover:text-slate-950 dark:text-slate-400 dark:hover:bg-white/5 dark:hover:text-white{{ end }}"
+        >
+          <span class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-[18px]">{{ if eq $section.Title "Getting Started" }}rocket_launch{{ else if eq $section.Title "API Reference" }}api{{ else if eq $section.Title "Examples" }}sports_esports{{ else }}auto_stories{{ end }}</span>
+            <span>{{ $section.Title }} overview</span>
+          </span>
+          <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+        </a>
+
+        {{ range $page := $section.RegularPages.ByWeight }}
+        {{ $pageActive := eq $.RelPermalink $page.RelPermalink }}
+        <a
+          href="{{ $page.RelPermalink }}"
+          class="flex items-start gap-3 rounded-2xl px-3 py-2.5 text-sm transition {{ if $pageActive }}bg-slate-950 text-white shadow-lg shadow-slate-950/10 dark:bg-white dark:text-slate-950{{ else }}text-slate-500 hover:bg-slate-100 hover:text-slate-950 dark:text-slate-400 dark:hover:bg-white/5 dark:hover:text-white{{ end }}"
+        >
+          <span class="mt-0.5 inline-flex size-6 flex-none items-center justify-center rounded-full border {{ if $pageActive }}border-white/20 bg-white/10 dark:border-slate-300/30 dark:bg-slate-200/20{{ else }}border-slate-200 bg-white dark:border-ink-700 dark:bg-ink-800{{ end }}">
+            <span class="material-symbols-outlined text-[14px]">{{ if in (lower $page.Title) "quick" }}bolt{{ else if in (lower $page.Title) "install" }}download{{ else if in (lower $page.Title) "space invaders" }}joystick{{ else }}description{{ end }}</span>
+          </span>
+          <span class="min-w-0">
+            <span class="block font-medium">{{ $page.Title }}</span>
+            {{ with $page.Description }}
+            <span class="mt-1 block text-xs leading-5 {{ if $pageActive }}text-white/70 dark:text-slate-700{{ else }}text-slate-400 dark:text-slate-500{{ end }}">{{ . }}</span>
+            {{ end }}
+          </span>
+        </a>
+        {{ end }}
+      </div>
+    </section>
+    {{ end }}
+  </nav>
+
+  <div class="space-y-3 border-t border-slate-200/80 p-4 dark:border-ink-800">
+    <a
+      href="{{ "examples/space-invaders/" | relURL }}"
+      class="flex items-center justify-between rounded-2xl bg-slate-950 px-4 py-3 text-sm font-semibold text-white transition hover:scale-[1.01] dark:bg-brand-500 dark:hover:bg-brand-400"
+    >
+      <span class="flex items-center gap-3">
+        <span class="material-symbols-outlined text-[18px]">stadia_controller</span>
+        <span>Run live example</span>
+      </span>
+      <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+    </a>
+
+    <button
+      type="button"
+      data-theme-toggle
+      class="flex w-full items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-brand-500/40 hover:text-brand-600 dark:border-ink-700 dark:bg-white/5 dark:text-slate-200 dark:hover:text-brand-300"
+    >
+      <span class="flex items-center gap-3">
+        <span class="material-symbols-outlined text-[18px]" data-theme-icon>dark_mode</span>
+        <span data-theme-label>Dark mode</span>
+      </span>
+      <span class="material-symbols-outlined text-[16px]">sync</span>
+    </button>
+  </div>
+</aside>

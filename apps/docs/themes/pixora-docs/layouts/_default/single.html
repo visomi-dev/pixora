@@ -1,21 +1,70 @@
 {{ define "main" }}
-<article class="page">
-  <header class="page-header">
-    <h1>{{ .Title }}</h1>
-    {{ with.Description }}
-    <p class="description">{{ . }}</p>
-    {{ end }}
-  </header>
-  <div class="page-content">
-    {{ .Content }}
-  </div>
-  <footer class="page-footer">
-    {{ with.PrevInSection }}
-    <a href="{{ .Permalink }}" class="prev">&larr; {{ .Title }}</a>
-    {{ end }}
-    {{ with.NextInSection }}
-    <a href="{{ .Permalink }}" class="next">{{ .Title }} &rarr;</a>
-    {{ end }}
-  </footer>
-</article>
+<div class="mx-auto grid max-w-7xl gap-8 xl:grid-cols-[minmax(0,1fr)_18rem]">
+  <article class="min-w-0 space-y-8">
+    <header class="docs-panel overflow-hidden">
+      <div class="grid gap-6 p-8 lg:grid-cols-[minmax(0,1fr)_14rem] lg:p-10">
+        <div>
+          <p class="docs-kicker">{{ .CurrentSection.Title }}</p>
+          <h1 class="mt-4 font-display text-4xl font-bold tracking-tight text-slate-950 dark:text-white sm:text-5xl">{{ .Title }}</h1>
+          {{ with .Description }}
+          <p class="docs-muted mt-4 max-w-3xl text-lg leading-8">{{ . }}</p>
+          {{ end }}
+        </div>
+
+        <div class="rounded-[1.75rem] border border-slate-200/80 bg-slate-50/90 p-6 dark:border-ink-800 dark:bg-black/20">
+          <p class="docs-kicker">Article focus</p>
+          <div class="mt-5 space-y-4 text-sm leading-7 text-slate-600 dark:text-slate-400">
+            <p>Reference-ready documentation with a dedicated table of contents and structured prose styling.</p>
+            <p class="rounded-2xl border border-brand-500/20 bg-brand-500/8 px-4 py-3 font-medium text-brand-600 dark:text-brand-300">Updated for the Stitch dark/light doc patterns.</p>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section class="docs-panel p-8 sm:p-10">
+      <div class="docs-prose max-w-none">
+        {{ .Content }}
+      </div>
+    </section>
+
+    <footer class="grid gap-4 md:grid-cols-2">
+      {{ with .PrevInSection }}
+      <a href="{{ .RelPermalink }}" class="docs-panel group flex h-full flex-col gap-3 p-6 transition hover:-translate-y-0.5">
+        <span class="docs-kicker">Previous</span>
+        <span class="font-display text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">{{ .Title }}</span>
+        {{ with .Description }}
+        <span class="docs-muted text-sm leading-7">{{ . }}</span>
+        {{ end }}
+        <span class="mt-auto inline-flex items-center gap-2 text-sm font-semibold text-brand-600 dark:text-brand-300">
+          <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+          Continue
+        </span>
+      </a>
+      {{ end }}
+
+      {{ with .NextInSection }}
+      <a href="{{ .RelPermalink }}" class="docs-panel group flex h-full flex-col gap-3 p-6 transition hover:-translate-y-0.5 {{ if not $.PrevInSection }}md:col-start-2{{ end }}">
+        <span class="docs-kicker">Next</span>
+        <span class="font-display text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">{{ .Title }}</span>
+        {{ with .Description }}
+        <span class="docs-muted text-sm leading-7">{{ . }}</span>
+        {{ end }}
+        <span class="mt-auto inline-flex items-center gap-2 text-sm font-semibold text-brand-600 dark:text-brand-300">
+          Continue
+          <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+        </span>
+      </a>
+      {{ end }}
+    </footer>
+  </article>
+
+  <aside class="hidden xl:block">
+    <div class="docs-panel sticky top-28 p-6">
+      <p class="docs-kicker">On this page</p>
+      <div class="docs-toc mt-5">
+        {{ .TableOfContents }}
+      </div>
+    </div>
+  </aside>
+</div>
 {{ end }}

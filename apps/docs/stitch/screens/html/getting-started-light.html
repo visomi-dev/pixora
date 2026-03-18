@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7f0df2",
+                        "background-light": "#ffffff",
+                        "background-dark": "#0a070e",
+                        "surface-light": "#f8f9fa",
+                        "border-light": "#e9ecef",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #e9ecef;
+            border-radius: 10px;
+        }
+        .code-block {
+            background: #fafafa;
+            border: 1px solid #e9ecef;
+        }
+    </style>
+</head>
+<body class="bg-background-light text-slate-900 antialiased">
+<div class="flex h-screen overflow-hidden">
+<!-- Sidebar -->
+<aside class="w-72 flex-shrink-0 border-r border-border-light bg-surface-light flex flex-col">
+<div class="p-6 border-b border-border-light flex items-center gap-3">
+<div class="w-8 h-8 bg-primary rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-xl">deployed_code</span>
+</div>
+<div>
+<h1 class="font-bold text-lg leading-none">Pixora</h1>
+<p class="text-[10px] text-primary font-bold uppercase tracking-widest mt-1">Engine v2.4.0</p>
+</div>
+</div>
+<nav class="flex-1 overflow-y-auto p-4 custom-scrollbar space-y-6">
+<div>
+<p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-2">Framework</p>
+<div class="space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 hover:text-primary hover:bg-primary/5 transition-colors" href="#">
+<span class="material-symbols-outlined text-sm">info</span>
+<span class="text-sm font-medium">Introduction</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 text-primary border border-primary/20" href="#">
+<span class="material-symbols-outlined text-sm">rocket_launch</span>
+<span class="text-sm font-medium">Getting Started</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 hover:text-primary hover:bg-primary/5 transition-colors" href="#">
+<span class="material-symbols-outlined text-sm">download</span>
+<span class="text-sm font-medium">Installation</span>
+</a>
+</div>
+</div>
+<div>
+<p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-2">Development</p>
+<div class="space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 hover:text-primary hover:bg-primary/5 transition-colors" href="#">
+<span class="material-symbols-outlined text-sm">settings_input_component</span>
+<span class="text-sm font-medium">Core Architecture</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 hover:text-primary hover:bg-primary/5 transition-colors" href="#">
+<span class="material-symbols-outlined text-sm">terminal</span>
+<span class="text-sm font-medium">CLI Interface</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 hover:text-primary hover:bg-primary/5 transition-colors" href="#">
+<span class="material-symbols-outlined text-sm">auto_fix_high</span>
+<span class="text-sm font-medium">Shaders &amp; FX</span>
+</a>
+</div>
+</div>
+<div>
+<p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-2">Resources</p>
+<div class="space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 hover:text-primary hover:bg-primary/5 transition-colors" href="#">
+<span class="material-symbols-outlined text-sm">menu_book</span>
+<span class="text-sm font-medium">API Reference</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 hover:text-primary hover:bg-primary/5 transition-colors" href="#">
+<span class="material-symbols-outlined text-sm">forum</span>
+<span class="text-sm font-medium">Community</span>
+</a>
+</div>
+</div>
+</nav>
+<div class="p-4 mt-auto border-t border-border-light">
+<button class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-2.5 rounded-lg text-sm flex items-center justify-center gap-2 transition-all">
+<span class="material-symbols-outlined text-sm">favorite</span>
+                    Support Us
+                </button>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 overflow-y-auto bg-white custom-scrollbar">
+<!-- Header Nav -->
+<header class="sticky top-0 z-10 bg-white/80 backdrop-blur-md border-b border-border-light px-8 py-4 flex items-center justify-between">
+<div class="flex items-center gap-2 text-xs font-medium text-slate-400">
+<a class="hover:text-primary transition-colors" href="#">Documentation</a>
+<span class="material-symbols-outlined text-[10px]">chevron_right</span>
+<span class="text-slate-900">Getting Started</span>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+<input class="bg-surface-light border border-border-light rounded-lg pl-10 pr-4 py-1.5 text-sm focus:ring-1 focus:ring-primary focus:border-primary w-64 text-slate-900 placeholder:text-slate-400" placeholder="Search documentation..." type="text"/>
+</div>
+<div class="flex items-center gap-2 border-l border-border-light pl-6">
+<button class="p-2 text-slate-400 hover:text-primary hover:bg-primary/5 rounded-lg transition-colors">
+<span class="material-symbols-outlined">light_mode</span>
+</button>
+<button class="p-2 text-slate-400 hover:text-primary hover:bg-primary/5 rounded-lg transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-primary/10 border border-primary/20 ml-2" data-alt="User profile placeholder avatar"></div>
+</div>
+</div>
+</header>
+<!-- Documentation Content -->
+<div class="max-w-4xl mx-auto px-8 py-12">
+<div class="mb-12">
+<h1 class="text-5xl font-black tracking-tight mb-4 text-slate-900">Getting Started</h1>
+<p class="text-xl text-slate-500 leading-relaxed font-light">
+                        Follow this guide to initialize the Pixora rendering pipeline and bootstrap your first high-performance graphics application.
+                    </p>
+</div>
+<div class="space-y-16">
+<!-- Step 1 -->
+<section>
+<div class="flex items-center gap-4 mb-6">
+<div class="w-10 h-10 rounded bg-surface-light flex items-center justify-center text-primary font-bold border border-primary/20">01</div>
+<h2 class="text-2xl font-bold text-slate-900">System Requirements</h2>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="p-4 rounded-xl bg-surface-light border border-border-light">
+<p class="text-xs font-bold text-primary uppercase mb-2">Hardware</p>
+<p class="text-sm text-slate-600">Vulkan 1.2+ capable GPU or Apple M-series</p>
+</div>
+<div class="p-4 rounded-xl bg-surface-light border border-border-light">
+<p class="text-xs font-bold text-primary uppercase mb-2">Software</p>
+<p class="text-sm text-slate-600">Node.js 18.x or Rust 1.70+</p>
+</div>
+</div>
+</section>
+<!-- Step 2 -->
+<section>
+<div class="flex items-center gap-4 mb-6">
+<div class="w-10 h-10 rounded bg-surface-light flex items-center justify-center text-primary font-bold border border-primary/20">02</div>
+<h2 class="text-2xl font-bold text-slate-900">Installation</h2>
+</div>
+<p class="text-slate-500 mb-6">Use our CLI tool to scaffold a new project with all the necessary shader configurations and build hooks.</p>
+<div class="code-block rounded-xl overflow-hidden mb-4">
+<div class="bg-slate-100/50 px-4 py-2 flex items-center justify-between border-b border-border-light">
+<span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Terminal</span>
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-sm">content_copy</span>
+</button>
+</div>
+<div class="p-6 font-mono text-sm">
+<div class="flex gap-4">
+<span class="text-slate-400 select-none">$</span>
+<span class="text-slate-800">npm install -g <span class="text-primary">@pixora/cli</span></span>
+</div>
+<div class="flex gap-4 mt-2">
+<span class="text-slate-400 select-none">$</span>
+<span class="text-slate-800">pixora init <span class="text-green-600">my-renderer</span></span>
+</div>
+</div>
+</div>
+</section>
+<!-- Step 3 -->
+<section>
+<div class="flex items-center gap-4 mb-6">
+<div class="w-10 h-10 rounded bg-surface-light flex items-center justify-center text-primary font-bold border border-primary/20">03</div>
+<h2 class="text-2xl font-bold text-slate-900">First Rendering Pipeline</h2>
+</div>
+<p class="text-slate-500 mb-6">The core of Pixora is the Pipeline object. Create a basic scene by defining your entry point in <code class="text-primary bg-primary/10 px-1.5 py-0.5 rounded text-sm font-mono">index.px</code>.</p>
+<div class="code-block rounded-xl overflow-hidden">
+<div class="bg-slate-100/50 px-4 py-2 flex items-center justify-between border-b border-border-light">
+<span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">src/index.px</span>
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-sm">content_copy</span>
+</button>
+</div>
+<div class="p-6 font-mono text-sm leading-relaxed">
+<div class="text-slate-400 italic">// Initialize engine context</div>
+<div><span class="text-purple-600">import</span> { Scene, Camera } <span class="text-purple-600">from</span> <span class="text-green-600">'@pixora/core'</span>;</div>
+<div class="mt-4"><span class="text-purple-600">const</span> <span class="text-blue-600">scene</span> = <span class="text-purple-600">new</span> <span class="text-yellow-600">Scene</span>({ antialiasing: <span class="text-orange-600">true</span> });</div>
+<div><span class="text-purple-600">const</span> <span class="text-blue-600">camera</span> = <span class="text-purple-600">new</span> <span class="text-yellow-600">Camera</span>({ fov: <span class="text-orange-600">75</span> });</div>
+<div class="mt-4 text-slate-400 italic">// Mount to DOM</div>
+<div><span class="text-blue-600">scene</span>.<span class="text-yellow-600">mount</span>(<span class="text-blue-600">document</span>.<span class="text-yellow-600">querySelector</span>(<span class="text-green-600">'#viewport'</span>));</div>
+<div class="mt-4"><span class="text-blue-600">scene</span>.<span class="text-yellow-600">onRender</span>(() =&gt; {</div>
+<div class="pl-4"><span class="text-blue-600">camera</span>.<span class="text-yellow-600">rotate</span>(<span class="text-orange-600">0.01</span>);</div>
+<div>});</div>
+</div>
+</div>
+</section>
+<!-- Next Steps Info Card -->
+<div class="bg-primary/5 border border-primary/20 rounded-2xl p-8 flex items-start gap-6">
+<div class="w-12 h-12 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-white">lightbulb</span>
+</div>
+<div>
+<h4 class="text-lg font-bold mb-2 text-slate-900">Ready to explore more?</h4>
+<p class="text-slate-500 mb-6">Now that you have your first pipeline running, you can start exploring advanced shader effects, light physics, and geometry instancing.</p>
+<div class="flex gap-4">
+<a class="px-6 py-2 bg-primary rounded-lg text-white font-bold text-sm hover:scale-[1.02] active:scale-95 transition-all" href="#">Explore API</a>
+<a class="px-6 py-2 bg-white border border-border-light rounded-lg text-slate-900 font-bold text-sm hover:bg-slate-50 transition-all" href="#">Join Discord</a>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<footer class="mt-24 pt-8 border-t border-border-light flex justify-between items-center text-slate-400 text-xs">
+<p>© 2024 Pixora Engine Team. Built for the next generation of real-time graphics.</p>
+<div class="flex gap-6">
+<a class="hover:text-primary" href="#">Twitter</a>
+<a class="hover:text-primary" href="#">GitHub</a>
+<a class="hover:text-primary" href="#">Legal</a>
+</div>
+</footer>
+</div>
+</main>
+</div>
+</body></html>

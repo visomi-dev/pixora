@@ -1,0 +1,242 @@
+@import 'tailwindcss';
+
+@source '../content/**/*.{md,html}';
+@source '../layouts/**/*.html';
+@source '../themes/pixora-docs/layouts/**/*.html';
+@source '../stitch/screens/html/**/*.html';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-brand-200: #e6ccff;
+  --color-brand-300: #c993ff;
+  --color-brand-400: #a855f7;
+  --color-brand-500: #7f0df2;
+  --color-brand-600: #6b0ed0;
+  --color-brand-700: #5409a3;
+
+  --color-ink-950: #0a070e;
+  --color-ink-900: #130d1b;
+  --color-ink-850: #181022;
+  --color-ink-800: #241733;
+  --color-ink-700: #312146;
+
+  --color-mist-50: #fbf9fe;
+  --color-mist-100: #f5f1fb;
+  --color-mist-200: #ebe3f6;
+  --color-mist-300: #d6c9e8;
+  --color-mist-400: #a89bbc;
+
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Space Grotesk', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --shadow-panel: 0 20px 60px rgba(10, 7, 14, 0.08);
+  --shadow-panel-dark: 0 24px 70px rgba(0, 0, 0, 0.38);
+}
+
+@utility grid-pattern {
+  background-image: radial-gradient(circle at 1px 1px, rgba(127, 13, 242, 0.12) 1px, transparent 0);
+  background-size: 36px 36px;
+}
+
+@utility hero-spotlight {
+  background-image:
+    radial-gradient(circle at top, rgba(127, 13, 242, 0.22), transparent 42%),
+    radial-gradient(circle at 80% 20%, rgba(168, 85, 247, 0.12), transparent 28%);
+}
+
+@utility docs-shell {
+  @apply border-r border-slate-200/80 bg-white/85 backdrop-blur-xl dark:border-ink-800 dark:bg-ink-900/88;
+}
+
+@utility docs-panel {
+  @apply rounded-3xl border border-slate-200/80 bg-white/90 shadow-[var(--shadow-panel)] backdrop-blur dark:border-ink-800 dark:bg-ink-900/88 dark:shadow-[var(--shadow-panel-dark)];
+}
+
+@utility docs-muted {
+  @apply text-slate-600 dark:text-slate-400;
+}
+
+@utility docs-kicker {
+  @apply text-xs font-semibold uppercase tracking-[0.28em] text-brand-500;
+}
+
+@utility docs-link {
+  @apply text-brand-600 underline-offset-4 transition hover:text-brand-500 hover:underline dark:text-brand-300 dark:hover:text-brand-200;
+}
+
+@layer base {
+  html {
+    @apply min-h-full scroll-smooth;
+  }
+
+  body {
+    @apply min-h-full bg-mist-50 font-sans text-slate-900 antialiased dark:bg-ink-950 dark:text-slate-100;
+  }
+
+  ::selection {
+    background: rgba(127, 13, 242, 0.24);
+  }
+
+  a {
+    @apply transition-colors;
+  }
+}
+
+@layer components {
+  .docs-prose {
+    @apply space-y-6 text-base leading-8 text-slate-700 dark:text-slate-300;
+  }
+
+  .docs-prose > :first-child {
+    @apply mt-0;
+  }
+
+  .docs-prose h2 {
+    @apply mt-14 border-t border-slate-200/80 pt-10 font-display text-3xl font-bold tracking-tight text-slate-950 dark:border-ink-800 dark:text-white;
+  }
+
+  .docs-prose h3 {
+    @apply mt-10 font-display text-2xl font-semibold tracking-tight text-slate-950 dark:text-white;
+  }
+
+  .docs-prose h4 {
+    @apply mt-8 text-lg font-semibold text-slate-900 dark:text-slate-100;
+  }
+
+  .docs-prose p,
+  .docs-prose ul,
+  .docs-prose ol,
+  .docs-prose blockquote,
+  .docs-prose table {
+    @apply my-6;
+  }
+
+  .docs-prose ul,
+  .docs-prose ol {
+    @apply space-y-3 pl-6;
+  }
+
+  .docs-prose li::marker {
+    @apply text-brand-500;
+  }
+
+  .docs-prose strong {
+    @apply font-semibold text-slate-950 dark:text-white;
+  }
+
+  .docs-prose a {
+    @apply docs-link;
+  }
+
+  .docs-prose hr {
+    @apply my-10 border-slate-200 dark:border-ink-800;
+  }
+
+  .docs-prose blockquote {
+    @apply rounded-r-2xl border-l-4 border-brand-500/60 bg-brand-500/6 px-5 py-4 text-slate-700 dark:bg-brand-500/10 dark:text-slate-200;
+  }
+
+  .docs-prose code {
+    @apply rounded-md bg-brand-500/8 px-1.5 py-0.5 font-mono text-[0.9em] text-brand-700 dark:bg-white/5 dark:text-brand-300;
+  }
+
+  .docs-prose pre {
+    @apply overflow-x-auto rounded-3xl border border-slate-200/80 bg-slate-950 px-5 py-5 text-sm leading-7 text-slate-100 shadow-xl dark:border-ink-800 dark:bg-black/30;
+  }
+
+  .docs-prose pre code {
+    @apply bg-transparent p-0 text-inherit;
+  }
+
+  .docs-prose table {
+    @apply block w-full overflow-x-auto rounded-3xl border border-slate-200/80 bg-white/60 text-sm dark:border-ink-800 dark:bg-white/3;
+  }
+
+  .docs-prose thead {
+    @apply bg-slate-100/80 dark:bg-white/5;
+  }
+
+  .docs-prose th,
+  .docs-prose td {
+    @apply border-b border-slate-200/70 px-4 py-3 text-left align-top dark:border-ink-800;
+  }
+
+  .docs-prose tbody tr:last-child td {
+    @apply border-b-0;
+  }
+
+  .docs-toc nav > ul,
+  .docs-toc nav > ol,
+  .docs-toc > ul,
+  .docs-toc > ol {
+    @apply space-y-3;
+  }
+
+  .docs-toc ul ul,
+  .docs-toc ol ol,
+  .docs-toc ul ol,
+  .docs-toc ol ul {
+    @apply mt-3 space-y-3 border-l border-slate-200 pl-4 dark:border-ink-800;
+  }
+
+  .docs-toc a {
+    @apply block text-sm font-medium text-slate-500 transition hover:text-brand-500 dark:text-slate-400 dark:hover:text-brand-300;
+  }
+
+  .example-showcase {
+    @apply space-y-6;
+  }
+
+  .example-showcase-copy,
+  .showcase-panel,
+  .stat-card,
+  .control-card,
+  .note-card {
+    @apply docs-panel;
+  }
+
+  .example-showcase-copy {
+    @apply p-8;
+  }
+
+  .example-actions {
+    @apply mt-8 flex flex-wrap gap-4;
+  }
+
+  .showcase-panel {
+    @apply overflow-hidden p-4;
+  }
+
+  .demo-frame {
+    @apply min-h-[420px] w-full rounded-[1.25rem] border border-slate-200/70 bg-ink-950 dark:border-ink-700;
+  }
+
+  .stat-grid,
+  .control-grid {
+    @apply grid gap-4 md:grid-cols-3;
+  }
+
+  .stat-card,
+  .control-card,
+  .note-card {
+    @apply p-6;
+  }
+
+  .stat-card strong,
+  .control-card strong,
+  .note-card strong {
+    @apply mb-2 block font-display text-lg font-semibold tracking-tight text-slate-950 dark:text-white;
+  }
+
+  .stat-card span,
+  .control-card span,
+  .note-card span {
+    @apply block text-sm leading-7 text-slate-600 dark:text-slate-400;
+  }
+
+  .section-label {
+    @apply docs-kicker;
+  }
+}

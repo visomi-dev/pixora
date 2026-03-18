@@ -1,24 +1,87 @@
 {{ define "main" }}
-<section class="list">
-  <header class="list-header">
-    <h1>{{ .Title }}</h1>
-    {{ with.Description }}
-    <p class="description">{{ . }}</p>
-    {{ end }}
-  </header>
-  <ul class="list-items">
-    {{
-      range.Pages
-    }}
-    <li>
-      <a href="{{ .Permalink }}">{{ .Title }}</a>
-      {{ with.Description }}
-      <p>{{ . }}</p>
+{{ $docs := site.GetPage "/docs" }}
+{{ $items := .Pages.ByWeight }}
+{{ $isDocsHub := eq .RelPermalink $docs.RelPermalink }}
+
+<div class="mx-auto flex max-w-7xl flex-col gap-8">
+  <section class="docs-panel overflow-hidden">
+    <div class="grid gap-8 p-8 lg:grid-cols-[minmax(0,1fr)_18rem] lg:p-10">
+      <div>
+        <p class="docs-kicker">{{ if $isDocsHub }}Documentation hub{{ else }}{{ .Title }} collection{{ end }}</p>
+        <h1 class="mt-4 font-display text-4xl font-bold tracking-tight text-slate-950 dark:text-white sm:text-5xl">{{ .Title }}</h1>
+        {{ with .Description }}
+        <p class="docs-muted mt-4 max-w-3xl text-lg leading-8">{{ . }}</p>
+        {{ end }}
+
+        <div class="mt-8 flex flex-wrap gap-3">
+          <span class="rounded-full border border-brand-500/20 bg-brand-500/8 px-4 py-2 text-sm font-semibold text-brand-600 dark:text-brand-300">{{ len $items }} entry points</span>
+          <span class="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-600 dark:border-ink-700 dark:bg-white/5 dark:text-slate-300">Theme-aware docs shell</span>
+          <span class="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-600 dark:border-ink-700 dark:bg-white/5 dark:text-slate-300">Tailwind-powered surfaces</span>
+        </div>
+      </div>
+
+      <div class="rounded-[1.75rem] border border-slate-200/80 bg-slate-50/90 p-6 dark:border-ink-800 dark:bg-black/20">
+        <p class="docs-kicker">Quick path</p>
+        <div class="mt-5 space-y-3">
+          {{ if $isDocsHub }}
+          <a href="{{ "docs/getting-started/installation/" | relURL }}" class="flex items-center justify-between rounded-2xl bg-white px-4 py-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:text-brand-600 dark:bg-white/5 dark:text-slate-200 dark:hover:text-brand-300">
+            <span>Install Pixora</span>
+            <span class="material-symbols-outlined text-[16px]">download</span>
+          </a>
+          <a href="{{ "docs/getting-started/quick-start/" | relURL }}" class="flex items-center justify-between rounded-2xl bg-white px-4 py-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:text-brand-600 dark:bg-white/5 dark:text-slate-200 dark:hover:text-brand-300">
+            <span>Build the first scene</span>
+            <span class="material-symbols-outlined text-[16px]">bolt</span>
+          </a>
+          <a href="{{ "docs/examples/space-invaders/" | relURL }}" class="flex items-center justify-between rounded-2xl bg-slate-950 px-4 py-3 text-sm font-semibold text-white transition hover:bg-brand-500">
+            <span>Open the live example</span>
+            <span class="material-symbols-outlined text-[16px]">stadia_controller</span>
+          </a>
+          {{ else }}
+          {{ range first 3 $items }}
+          <a href="{{ .RelPermalink }}" class="flex items-center justify-between rounded-2xl bg-white px-4 py-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:text-brand-600 dark:bg-white/5 dark:text-slate-200 dark:hover:text-brand-300">
+            <span class="truncate pr-3">{{ .Title }}</span>
+            <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+          </a>
+          {{ end }}
+          {{ end }}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+    {{ range $item := $items }}
+    {{ $isSection := eq $item.Kind "section" }}
+    <article class="docs-panel flex h-full flex-col p-7">
+      <div class="flex items-center justify-between gap-4">
+        <p class="docs-kicker">{{ if $isSection }}Section overview{{ else }}Guide page{{ end }}</p>
+        <span class="inline-flex size-11 items-center justify-center rounded-2xl bg-brand-500/10 text-brand-600 dark:text-brand-300">
+          <span class="material-symbols-outlined text-[20px]">{{ if $isSection }}folder{{ else if in (lower $item.Title) "quick" }}bolt{{ else if in (lower $item.Title) "install" }}download{{ else if in (lower $item.Title) "example" }}stadia_controller{{ else }}description{{ end }}</span>
+        </span>
+      </div>
+
+      <h2 class="mt-5 font-display text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">{{ $item.Title }}</h2>
+      {{ with $item.Description }}
+      <p class="docs-muted mt-4 flex-1 text-sm leading-7">{{ . }}</p>
       {{ end }}
-    </li>
-    {{
-      end
-    }}
-  </ul>
-</section>
+
+      <div class="mt-8 flex items-center justify-between gap-4 border-t border-slate-200 pt-5 dark:border-ink-800">
+        <span class="text-sm font-medium text-slate-500 dark:text-slate-400">{{ if $isSection }}{{ len $item.RegularPages }} child pages{{ else }}Documentation article{{ end }}</span>
+        <a href="{{ $item.RelPermalink }}" class="inline-flex items-center gap-2 text-sm font-semibold text-brand-600 transition hover:text-brand-500 dark:text-brand-300 dark:hover:text-brand-200">
+          Open
+          <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+        </a>
+      </div>
+    </article>
+    {{ end }}
+  </section>
+
+  {{ if .Content }}
+  <section class="docs-panel p-8 sm:p-10">
+    <div class="docs-prose max-w-none">
+      {{ .Content }}
+    </div>
+  </section>
+  {{ end }}
+</div>
 {{ end }}

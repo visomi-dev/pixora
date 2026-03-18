@@ -3,6 +3,9 @@ languageCode = "en-us"
 title = "Pixora"
 theme = "pixora-docs"
 
+[params]
+  description = "Pixora documentation, API reference, and live examples."
+
 [taxonomies]
   category = "categories"
   tag = "tags"

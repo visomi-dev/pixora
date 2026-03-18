@@ -1,14 +1,26 @@
 <section class="example-showcase">
   <div class="example-showcase-copy">
     <p class="section-label">Playable example</p>
-    <h2>Space Invaders ships with the docs build.</h2>
-    <p>
+    <h2 class="mt-4 font-display text-3xl font-bold tracking-tight text-slate-950 dark:text-white">Space Invaders ships with the docs build.</h2>
+    <p class="mt-4 text-sm leading-7 text-slate-600 dark:text-slate-400">
       This page embeds the exact production output that gets copied into the GitHub Pages artifact, so
       you can validate the declarative runtime and the documentation experience together.
     </p>
     <div class="example-actions">
-      <a href="{{ "examples/space-invaders/" | relURL }}" class="button primary">Open standalone build</a>
-      <a href="{{ "docs/getting-started/quick-start/" | relURL }}" class="button secondary">Read the quick start</a>
+      <a
+        href="{{ "examples/space-invaders/" | relURL }}"
+        class="inline-flex items-center gap-3 rounded-2xl bg-brand-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-brand-400"
+      >
+        Open standalone build
+        <span class="material-symbols-outlined text-[18px]">open_in_new</span>
+      </a>
+      <a
+        href="{{ "docs/getting-started/quick-start/" | relURL }}"
+        class="inline-flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:border-brand-500/40 hover:text-brand-600 dark:border-ink-700 dark:bg-white/5 dark:text-slate-200 dark:hover:text-brand-300"
+      >
+        Read the quick start
+        <span class="material-symbols-outlined text-[18px]">bolt</span>
+      </a>
     </div>
   </div>
 
