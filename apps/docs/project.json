@@ -15,7 +15,7 @@
             "command": "pnpm exec tailwindcss -i apps/docs/assets/css/styles.css -o apps/docs/static/css/styles.css --minify"
           },
           {
-            "command": "pnpm exec astro build --root apps/docs --outDir dist/apps/docs --base /"
+            "command": "pnpm exec astro build --root apps/docs --outDir ../../dist/apps/docs --base /"
           }
         ],
         "parallel": false
@@ -33,7 +33,7 @@
             "command": "pnpm exec tailwindcss -i apps/docs/assets/css/styles.css -o apps/docs/static/css/styles.css --minify"
           },
           {
-            "command": "pnpm exec astro build --root apps/docs --outDir dist/apps/docs --base /"
+            "command": "pnpm exec astro build --root apps/docs --outDir ../../dist/apps/docs --base /"
           }
         ],
         "parallel": false
@@ -76,7 +76,7 @@
             "command": "pnpm exec tailwindcss -i apps/docs/assets/css/styles.css -o apps/docs/static/css/styles.css --minify"
           },
           {
-            "command": "pnpm exec astro build --root apps/docs --outDir dist/apps/docs-preview --base /preview/"
+            "command": "pnpm exec astro build --root apps/docs --outDir ../../dist/apps/docs-preview --base /preview/"
           }
         ],
         "parallel": false

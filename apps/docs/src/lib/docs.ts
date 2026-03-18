@@ -15,7 +15,7 @@ export type DocEntry = {
   weight: number | null;
 };
 
-const docsRoot = path.resolve(process.cwd(), 'content/docs');
+const docsRoot = resolveDocsRoot();
 
 const markdown = new MarkdownIt({
   html: true,
@@ -224,4 +224,19 @@ function walkDirectory(directoryPath: string): string[] {
 
     return entryPath;
   });
+}
+
+function resolveDocsRoot(): string {
+  const candidatePaths = [
+    path.resolve(process.cwd(), 'apps/docs/content/docs'),
+    path.resolve(process.cwd(), 'content/docs'),
+  ];
+
+  const matchingPath = candidatePaths.find((candidatePath) => fs.existsSync(candidatePath));
+
+  if (!matchingPath) {
+    throw new Error('Unable to locate the documentation content directory.');
+  }
+
+  return matchingPath;
 }
