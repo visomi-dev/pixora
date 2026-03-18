@@ -80,7 +80,7 @@
     "api": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "pnpm exec typedoc",
+        "command": "pnpm exec typedoc --options typedoc.json",
         "cwd": "apps/docs"
       }
     }
