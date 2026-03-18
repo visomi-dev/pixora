@@ -9,7 +9,7 @@
       "options": {
         "commands": [
           {
-            "command": "mkdir -p static/fonts && cp -r ../../node_modules/@fontsource/space-grotesk/files/fonts/* static/fonts/ 2>/dev/null || true && cp -r ../../node_modules/@fontsource/jetbrains-mono/files/fonts/* static/fonts/ 2>/dev/null || true && cp -r ../../node_modules/@fontsource/material-symbols-outlined/files/fonts/* static/fonts/ 2>/dev/null || true"
+            "command": "rm -rf static/css/files && mkdir -p static/css/files && cp -r ../../node_modules/@fontsource/space-grotesk/files/* static/css/files/ && cp -r ../../node_modules/@fontsource/jetbrains-mono/files/* static/css/files/ && cp -r ../../node_modules/@fontsource/material-symbols-outlined/files/* static/css/files/"
           },
           {
             "command": "tailwindcss -i assets/css/styles.css -o static/css/styles.css --minify"
@@ -28,7 +28,7 @@
       "options": {
         "commands": [
           {
-            "command": "mkdir -p static/fonts && cp -r ../../node_modules/@fontsource/space-grotesk/files/fonts/* static/fonts/ 2>/dev/null || true && cp -r ../../node_modules/@fontsource/jetbrains-mono/files/fonts/* static/fonts/ 2>/dev/null || true && cp -r ../../node_modules/@fontsource/material-symbols-outlined/files/fonts/* static/fonts/ 2>/dev/null || true"
+            "command": "rm -rf static/css/files && mkdir -p static/css/files && cp -r ../../node_modules/@fontsource/space-grotesk/files/* static/css/files/ && cp -r ../../node_modules/@fontsource/jetbrains-mono/files/* static/css/files/ && cp -r ../../node_modules/@fontsource/material-symbols-outlined/files/* static/css/files/"
           },
           {
             "command": "tailwindcss -i assets/css/styles.css -o static/css/styles.css --minify"
@@ -54,7 +54,7 @@
       "options": {
         "commands": [
           {
-            "command": "mkdir -p static/fonts && cp -r ../../node_modules/@fontsource/space-grotesk/files/fonts/* static/fonts/ 2>/dev/null || true && cp -r ../../node_modules/@fontsource/jetbrains-mono/files/fonts/* static/fonts/ 2>/dev/null || true && cp -r ../../node_modules/@fontsource/material-symbols-outlined/files/fonts/* static/fonts/ 2>/dev/null || true"
+            "command": "rm -rf static/css/files && mkdir -p static/css/files && cp -r ../../node_modules/@fontsource/space-grotesk/files/* static/css/files/ && cp -r ../../node_modules/@fontsource/jetbrains-mono/files/* static/css/files/ && cp -r ../../node_modules/@fontsource/material-symbols-outlined/files/* static/css/files/"
           },
           {
             "command": "tailwindcss -i assets/css/styles.css -o static/css/styles.css --watch"
