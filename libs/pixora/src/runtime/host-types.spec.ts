@@ -7,8 +7,8 @@ import { ContainerNode } from '../components/container-node';
 import { SpriteNode } from '../components/sprite-node';
 import { TextNode } from '../components/text-node';
 import { layout } from '../layout/layout';
-import * as layoutRuntime from './layout-runtime';
 
+import * as layoutRuntime from './layout-runtime';
 import { applyCommonProps, createHostTypeRegistry } from './host-types';
 
 describe('createHostTypeRegistry', () => {
