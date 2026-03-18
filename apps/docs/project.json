@@ -9,7 +9,7 @@
       "options": {
         "commands": [
           {
-            "command": "mkdir -p apps/docs/static/css/files apps/docs/static/css/fonts && cp -r node_modules/@fontsource/space-grotesk/files/fonts/* apps/docs/static/css/files/ 2>/dev/null || true && cp -r node_modules/@fontsource/jetbrains-mono/files/fonts/* apps/docs/static/css/files/ 2>/dev/null || true && cp -r node_modules/@fontsource/material-symbols-outlined/files/fonts/* apps/docs/static/css/files/ 2>/dev/null || true && cp -r node_modules/primeicons/fonts/* apps/docs/static/css/fonts/ 2>/dev/null || true"
+            "command": "mkdir -p apps/docs/static/css/files apps/docs/static/css/fonts && cp -r node_modules/@fontsource/space-grotesk/files/* apps/docs/static/css/files/ 2>/dev/null || true && cp -r node_modules/@fontsource/jetbrains-mono/files/* apps/docs/static/css/files/ 2>/dev/null || true && cp -r node_modules/@fontsource/material-symbols-outlined/files/* apps/docs/static/css/files/ 2>/dev/null || true && cp -r node_modules/primeicons/fonts/* apps/docs/static/css/fonts/ 2>/dev/null || true"
           },
           {
             "command": "pnpm exec tailwindcss -i apps/docs/assets/css/styles.css -o apps/docs/static/css/styles.css --minify"
@@ -27,7 +27,7 @@
       "options": {
         "commands": [
           {
-            "command": "mkdir -p apps/docs/static/css/files apps/docs/static/css/fonts && cp -r node_modules/@fontsource/space-grotesk/files/fonts/* apps/docs/static/css/files/ 2>/dev/null || true && cp -r node_modules/@fontsource/jetbrains-mono/files/fonts/* apps/docs/static/css/files/ 2>/dev/null || true && cp -r node_modules/@fontsource/material-symbols-outlined/files/fonts/* apps/docs/static/css/files/ 2>/dev/null || true && cp -r node_modules/primeicons/fonts/* apps/docs/static/css/fonts/ 2>/dev/null || true"
+            "command": "mkdir -p apps/docs/static/css/files apps/docs/static/css/fonts && cp -r node_modules/@fontsource/space-grotesk/files/* apps/docs/static/css/files/ 2>/dev/null || true && cp -r node_modules/@fontsource/jetbrains-mono/files/* apps/docs/static/css/files/ 2>/dev/null || true && cp -r node_modules/@fontsource/material-symbols-outlined/files/* apps/docs/static/css/files/ 2>/dev/null || true && cp -r node_modules/primeicons/fonts/* apps/docs/static/css/fonts/ 2>/dev/null || true"
           },
           {
             "command": "pnpm exec tailwindcss -i apps/docs/assets/css/styles.css -o apps/docs/static/css/styles.css --minify"
@@ -51,7 +51,7 @@
       "options": {
         "commands": [
           {
-            "command": "mkdir -p apps/docs/static/css/files apps/docs/static/css/fonts && cp -r node_modules/@fontsource/space-grotesk/files/fonts/* apps/docs/static/css/files/ 2>/dev/null || true && cp -r node_modules/@fontsource/jetbrains-mono/files/fonts/* apps/docs/static/css/files/ 2>/dev/null || true && cp -r node_modules/@fontsource/material-symbols-outlined/files/fonts/* apps/docs/static/css/files/ 2>/dev/null || true && cp -r node_modules/primeicons/fonts/* apps/docs/static/css/fonts/ 2>/dev/null || true"
+            "command": "mkdir -p apps/docs/static/css/files apps/docs/static/css/fonts && cp -r node_modules/@fontsource/space-grotesk/files/* apps/docs/static/css/files/ 2>/dev/null || true && cp -r node_modules/@fontsource/jetbrains-mono/files/* apps/docs/static/css/files/ 2>/dev/null || true && cp -r node_modules/@fontsource/material-symbols-outlined/files/* apps/docs/static/css/files/ 2>/dev/null || true && cp -r node_modules/primeicons/fonts/* apps/docs/static/css/fonts/ 2>/dev/null || true"
           },
           {
             "command": "pnpm exec tailwindcss -i apps/docs/assets/css/styles.css -o apps/docs/static/css/styles.css --watch"
@@ -69,7 +69,7 @@
       "options": {
         "commands": [
           {
-            "command": "mkdir -p apps/docs/static/css/files apps/docs/static/css/fonts && cp -r node_modules/@fontsource/space-grotesk/files/fonts/* apps/docs/static/css/files/ 2>/dev/null || true && cp -r node_modules/@fontsource/jetbrains-mono/files/fonts/* apps/docs/static/css/files/ 2>/dev/null || true && cp -r node_modules/@fontsource/material-symbols-outlined/files/fonts/* apps/docs/static/css/files/ 2>/dev/null || true && cp -r node_modules/primeicons/fonts/* apps/docs/static/css/fonts/ 2>/dev/null || true"
+            "command": "mkdir -p apps/docs/static/css/files apps/docs/static/css/fonts && cp -r node_modules/@fontsource/space-grotesk/files/* apps/docs/static/css/files/ 2>/dev/null || true && cp -r node_modules/@fontsource/jetbrains-mono/files/* apps/docs/static/css/files/ 2>/dev/null || true && cp -r node_modules/@fontsource/material-symbols-outlined/files/* apps/docs/static/css/files/ 2>/dev/null || true && cp -r node_modules/primeicons/fonts/* apps/docs/static/css/fonts/ 2>/dev/null || true"
           },
           {
             "command": "pnpm exec tailwindcss -i apps/docs/assets/css/styles.css -o apps/docs/static/css/styles.css --minify"
