@@ -60,8 +60,7 @@
             "command": "pnpm exec astro dev --root apps/docs --host 0.0.0.0 --port 1313"
           }
         ],
-        "parallel": true,
-        "port": 1313
+        "parallel": true
       },
       "dependsOn": ["api", "build-example"]
     },
