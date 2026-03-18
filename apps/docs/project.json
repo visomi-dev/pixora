@@ -9,17 +9,16 @@
       "options": {
         "commands": [
           {
-            "command": "mkdir -p static/fonts && cp -r ../../node_modules/@fontsource/space-grotesk/files/fonts/* static/fonts/ 2>/dev/null || true && cp -r ../../node_modules/@fontsource/jetbrains-mono/files/fonts/* static/fonts/ 2>/dev/null || true && cp -r ../../node_modules/@fontsource/material-symbols-outlined/files/fonts/* static/fonts/ 2>/dev/null || true"
+            "command": "mkdir -p apps/docs/static/fonts && cp -r node_modules/@fontsource/space-grotesk/files/fonts/* apps/docs/static/fonts/ 2>/dev/null || true && cp -r node_modules/@fontsource/jetbrains-mono/files/fonts/* apps/docs/static/fonts/ 2>/dev/null || true && cp -r node_modules/@fontsource/material-symbols-outlined/files/fonts/* apps/docs/static/fonts/ 2>/dev/null || true"
           },
           {
-            "command": "tailwindcss -i assets/css/styles.css -o static/css/styles.css --minify"
+            "command": "pnpm exec tailwindcss -i apps/docs/assets/css/styles.css -o apps/docs/static/css/styles.css --minify"
           },
           {
-            "command": "pnpm exec astro build --outDir ../../dist/apps/docs --base /"
+            "command": "pnpm exec astro build --root apps/docs --outDir dist/apps/docs --base /"
           }
         ],
-        "parallel": false,
-        "cwd": "apps/docs"
+        "parallel": false
       },
       "dependsOn": ["api", "build-example"]
     },
@@ -28,25 +27,23 @@
       "options": {
         "commands": [
           {
-            "command": "mkdir -p static/fonts && cp -r ../../node_modules/@fontsource/space-grotesk/files/fonts/* static/fonts/ 2>/dev/null || true && cp -r ../../node_modules/@fontsource/jetbrains-mono/files/fonts/* static/fonts/ 2>/dev/null || true && cp -r ../../node_modules/@fontsource/material-symbols-outlined/files/fonts/* static/fonts/ 2>/dev/null || true"
+            "command": "mkdir -p apps/docs/static/fonts && cp -r node_modules/@fontsource/space-grotesk/files/fonts/* apps/docs/static/fonts/ 2>/dev/null || true && cp -r node_modules/@fontsource/jetbrains-mono/files/fonts/* apps/docs/static/fonts/ 2>/dev/null || true && cp -r node_modules/@fontsource/material-symbols-outlined/files/fonts/* apps/docs/static/fonts/ 2>/dev/null || true"
           },
           {
-            "command": "tailwindcss -i assets/css/styles.css -o static/css/styles.css --minify"
+            "command": "pnpm exec tailwindcss -i apps/docs/assets/css/styles.css -o apps/docs/static/css/styles.css --minify"
           },
           {
-            "command": "pnpm exec astro build --outDir ../../dist/apps/docs --base /"
+            "command": "pnpm exec astro build --root apps/docs --outDir dist/apps/docs --base /"
           }
         ],
-        "parallel": false,
-        "cwd": "apps/docs"
+        "parallel": false
       },
       "dependsOn": ["api", "build-example"]
     },
     "build-example": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "rm -rf static/examples/space-invaders && pnpm nx run space-invaders:build:docs --skipNxCache && mkdir -p static/examples/space-invaders && cp -r ../../dist/apps/space-invaders/* static/examples/space-invaders/ && rm -rf ../../dist/apps/space-invaders",
-        "cwd": "apps/docs"
+        "command": "rm -rf apps/docs/static/examples/space-invaders && pnpm nx run space-invaders:build:docs --skipNxCache && mkdir -p apps/docs/static/examples/space-invaders && cp -r dist/apps/space-invaders/* apps/docs/static/examples/space-invaders/ && rm -rf dist/apps/space-invaders"
       }
     },
     "serve": {
@@ -54,17 +51,16 @@
       "options": {
         "commands": [
           {
-            "command": "mkdir -p static/fonts && cp -r ../../node_modules/@fontsource/space-grotesk/files/fonts/* static/fonts/ 2>/dev/null || true && cp -r ../../node_modules/@fontsource/jetbrains-mono/files/fonts/* static/fonts/ 2>/dev/null || true && cp -r ../../node_modules/@fontsource/material-symbols-outlined/files/fonts/* static/fonts/ 2>/dev/null || true"
+            "command": "mkdir -p apps/docs/static/fonts && cp -r node_modules/@fontsource/space-grotesk/files/fonts/* apps/docs/static/fonts/ 2>/dev/null || true && cp -r node_modules/@fontsource/jetbrains-mono/files/fonts/* apps/docs/static/fonts/ 2>/dev/null || true && cp -r node_modules/@fontsource/material-symbols-outlined/files/fonts/* apps/docs/static/fonts/ 2>/dev/null || true"
           },
           {
-            "command": "tailwindcss -i assets/css/styles.css -o static/css/styles.css --watch"
+            "command": "pnpm exec tailwindcss -i apps/docs/assets/css/styles.css -o apps/docs/static/css/styles.css --watch"
           },
           {
-            "command": "pnpm exec astro dev --host 0.0.0.0 --port 1313"
+            "command": "pnpm exec astro dev --root apps/docs --host 0.0.0.0 --port 1313"
           }
         ],
         "parallel": true,
-        "cwd": "apps/docs",
         "port": 1313
       },
       "dependsOn": ["api", "build-example"]
@@ -74,32 +70,29 @@
       "options": {
         "commands": [
           {
-            "command": "mkdir -p static/fonts && cp -r ../../node_modules/@fontsource/space-grotesk/files/fonts/* static/fonts/ 2>/dev/null || true && cp -r ../../node_modules/@fontsource/jetbrains-mono/files/fonts/* static/fonts/ 2>/dev/null || true && cp -r ../../node_modules/@fontsource/material-symbols-outlined/files/fonts/* static/fonts/ 2>/dev/null || true"
+            "command": "mkdir -p apps/docs/static/fonts && cp -r node_modules/@fontsource/space-grotesk/files/fonts/* apps/docs/static/fonts/ 2>/dev/null || true && cp -r node_modules/@fontsource/jetbrains-mono/files/fonts/* apps/docs/static/fonts/ 2>/dev/null || true && cp -r node_modules/@fontsource/material-symbols-outlined/files/fonts/* apps/docs/static/fonts/ 2>/dev/null || true"
           },
           {
-            "command": "tailwindcss -i assets/css/styles.css -o static/css/styles.css --minify"
+            "command": "pnpm exec tailwindcss -i apps/docs/assets/css/styles.css -o apps/docs/static/css/styles.css --minify"
           },
           {
-            "command": "pnpm exec astro build --outDir ../../dist/apps/docs-preview --base /preview/"
+            "command": "pnpm exec astro build --root apps/docs --outDir dist/apps/docs-preview --base /preview/"
           }
         ],
-        "parallel": false,
-        "cwd": "apps/docs"
+        "parallel": false
       },
       "dependsOn": ["api", "build-example"]
     },
     "api": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "rm -rf static/docs/api/generated && pnpm exec typedoc --options typedoc.json",
-        "cwd": "apps/docs"
+        "command": "rm -rf apps/docs/static/docs/api/generated && pnpm exec typedoc --options apps/docs/typedoc.json"
       }
     },
     "typecheck": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "pnpm exec astro check",
-        "cwd": "apps/docs"
+        "command": "pnpm exec astro check --root apps/docs"
       }
     }
   }

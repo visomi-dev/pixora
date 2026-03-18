@@ -176,7 +176,90 @@ function getNavigationClasses(item: NavigationItem): string {
         </main>
       </div>
     </div>
-    <script src={withBasePath(basePath, 'js/theme-toggle.js')}></script>
-    <script src={withBasePath(basePath, 'js/copy-code.js')}></script>
+    <script is:inline>
+      (() => {
+        const html = document.documentElement;
+        const themeToggle = document.getElementById('theme-toggle');
+
+        if (!themeToggle) return;
+
+        const savedTheme = localStorage.getItem('theme');
+        const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+        if (savedTheme === 'light') {
+          html.classList.remove('dark');
+          html.classList.add('light');
+        } else if (!savedTheme && systemDark) {
+          html.classList.add('dark');
+        }
+
+        themeToggle.addEventListener('click', () => {
+          if (html.classList.contains('dark')) {
+            html.classList.remove('dark');
+            html.classList.add('light');
+            localStorage.setItem('theme', 'light');
+          } else {
+            html.classList.remove('light');
+            html.classList.add('dark');
+            localStorage.setItem('theme', 'dark');
+          }
+        });
+      })();
+    </script>
+    <script is:inline>
+      (() => {
+        function addCopyButtons() {
+          document.querySelectorAll('.chroma').forEach((block) => {
+            if (block.querySelector('.copy-btn')) return;
+
+            const code = block.querySelector('code');
+            if (!code) return;
+
+            const text = code.textContent;
+            const button = document.createElement('button');
+            button.className = 'copy-btn';
+            button.textContent = 'Copy';
+            button.setAttribute('data-code', text || '');
+            block.appendChild(button);
+          });
+        }
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', addCopyButtons);
+        } else {
+          addCopyButtons();
+        }
+
+        document.addEventListener('click', (event) => {
+          if (!(event.target instanceof HTMLElement) || !event.target.classList.contains('copy-btn')) {
+            return;
+          }
+
+          let code = event.target.getAttribute('data-code');
+
+          if (!code) {
+            const wrapper = event.target.closest('.code-block-wrapper');
+            if (wrapper) {
+              const codeElement = wrapper.querySelector('code');
+              if (codeElement) {
+                code = codeElement.textContent;
+              }
+            }
+          }
+
+          if (code) {
+            navigator.clipboard.writeText(code).then(() => {
+              const originalText = event.target.textContent;
+              event.target.textContent = 'Copied!';
+              event.target.classList.add('copied');
+              setTimeout(() => {
+                event.target.textContent = originalText;
+                event.target.classList.remove('copied');
+              }, 2000);
+            });
+          }
+        });
+      })();
+    </script>
   </body>
 </html>
