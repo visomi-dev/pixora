@@ -64,6 +64,23 @@ export function applyCommonProps(displayObject: Container, props: ContainerNodeP
   }
 }
 
+function applyLayoutProps(node: BaseNode, previous: ContainerNodeProps['layout'], next: ContainerNodeProps['layout']): void {
+  if (next === previous) {
+    return;
+  }
+
+  if (next && 'type' in next) {
+    setLayoutSpec(node, next as LayoutSpec);
+    setLayoutStyles(node, null);
+  } else if (next) {
+    setLayoutStyles(node, next as LayoutStyles);
+    setLayoutSpec(node, null);
+  } else {
+    setLayoutSpec(node, null);
+    setLayoutStyles(node, null);
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Per-type descriptors
 // ---------------------------------------------------------------------------
@@ -74,30 +91,13 @@ function createContainerDescriptor(): HostTypeDescriptor<'container'> {
       const node = new ContainerNode();
 
       applyCommonProps(node.displayObject, props);
-
-      if (props.layout) {
-        if ('type' in props.layout) {
-          setLayoutSpec(node, props.layout as LayoutSpec);
-        } else {
-          setLayoutStyles(node, props.layout as LayoutStyles);
-        }
-      }
+      applyLayoutProps(node, null, props.layout);
 
       return node;
     },
     patch(node: BaseNode, previous: ContainerNodeProps, next: ContainerNodeProps): void {
       applyCommonProps(node.displayObject, next);
-
-      if (next.layout !== previous.layout) {
-        if (next.layout && 'type' in next.layout) {
-          setLayoutSpec(node, next.layout as LayoutSpec);
-        } else if (next.layout) {
-          setLayoutStyles(node, next.layout as LayoutStyles);
-        } else {
-          setLayoutSpec(node, null);
-          setLayoutStyles(node, null);
-        }
-      }
+      applyLayoutProps(node, previous.layout, next.layout);
     },
   };
 }
@@ -109,13 +109,15 @@ function createTextDescriptor(): HostTypeDescriptor<'text'> {
       const node = new TextNode({ text: props.text, style });
 
       applyCommonProps(node.displayObject, props);
+      applyLayoutProps(node, null, props.layout);
 
       return node;
     },
-    patch(node: BaseNode, _previous: TextNodeProps, next: TextNodeProps): void {
+    patch(node: BaseNode, previous: TextNodeProps, next: TextNodeProps): void {
       const style = buildTextStyle(next);
       (node as TextNode).updateProps({ text: next.text, style });
       applyCommonProps(node.displayObject, next);
+      applyLayoutProps(node, previous.layout, next.layout);
     },
   };
 }
@@ -148,15 +150,17 @@ function createSpriteDescriptor(): HostTypeDescriptor<'sprite'> {
       const node = new SpriteNode({ texture: props.texture });
 
       applyCommonProps(node.displayObject, props);
+      applyLayoutProps(node, null, props.layout);
 
       return node;
     },
-    patch(node: BaseNode, _previous: SpriteNodeProps, next: SpriteNodeProps): void {
+    patch(node: BaseNode, previous: SpriteNodeProps, next: SpriteNodeProps): void {
       if (next.texture !== undefined) {
         (node as SpriteNode).displayObject.texture = next.texture;
       }
 
       applyCommonProps(node.displayObject, next);
+      applyLayoutProps(node, previous.layout, next.layout);
     },
   };
 }
@@ -172,10 +176,11 @@ function createBoxDescriptor(): HostTypeDescriptor<'box'> {
       });
 
       applyCommonProps(node.displayObject, props);
+      applyLayoutProps(node, null, props.layout);
 
       return node;
     },
-    patch(node: BaseNode, _previous: BoxNodeProps, next: BoxNodeProps): void {
+    patch(node: BaseNode, previous: BoxNodeProps, next: BoxNodeProps): void {
       (node as Box).updateProps({
         backgroundColor: next.backgroundColor,
         height: next.height,
@@ -183,6 +188,7 @@ function createBoxDescriptor(): HostTypeDescriptor<'box'> {
         width: next.width,
       });
       applyCommonProps(node.displayObject, next);
+      applyLayoutProps(node, previous.layout, next.layout);
     },
   };
 }
@@ -219,10 +225,11 @@ function createButtonDescriptor(): HostTypeDescriptor<'button'> {
       }
 
       applyCommonProps(node.displayObject, props);
+      applyLayoutProps(node, null, props.layout);
 
       return node;
     },
-    patch(node: BaseNode, _previous: ButtonNodeProps, next: ButtonNodeProps): void {
+    patch(node: BaseNode, previous: ButtonNodeProps, next: ButtonNodeProps): void {
       (node as Button).updateProps({
         backgroundColor: next.backgroundColor,
         disabled: next.disabled,
@@ -252,6 +259,7 @@ function createButtonDescriptor(): HostTypeDescriptor<'button'> {
       }
 
       applyCommonProps(node.displayObject, next);
+      applyLayoutProps(node, previous.layout, next.layout);
     },
   };
 }

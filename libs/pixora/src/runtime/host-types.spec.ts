@@ -5,6 +5,8 @@ import { Button } from '../components/button';
 import { ContainerNode } from '../components/container-node';
 import { SpriteNode } from '../components/sprite-node';
 import { TextNode } from '../components/text-node';
+import { layout } from '../layout/layout';
+import { runLayout } from './layout-runtime';
 
 import { applyCommonProps, createHostTypeRegistry } from './host-types';
 
@@ -47,6 +49,21 @@ describe('createHostTypeRegistry', () => {
       expect(node.displayObject).toBeInstanceOf(Text);
       expect((node.displayObject as Text).text).toBe('Hello');
     });
+
+    it('applies layout props to text nodes', () => {
+      const registry = createHostTypeRegistry();
+      const root = new ContainerNode();
+      const node = registry.text.create({
+        layout: layout.anchor({ horizontal: 'center', vertical: 'center' }),
+        text: 'Hello',
+      });
+
+      root.addChild(node);
+      runLayout(root, { aspectRatio: 2, height: 100, orientation: 'landscape', width: 200 });
+
+      expect(node.displayObject.x).toBeGreaterThan(0);
+      expect(node.displayObject.y).toBeGreaterThan(0);
+    });
   });
 
   describe('sprite descriptor', () => {
@@ -75,6 +92,22 @@ describe('createHostTypeRegistry', () => {
       const node = registry.button.create({ label: 'Click' });
 
       expect(node).toBeInstanceOf(Button);
+    });
+
+    it('applies layout props to button nodes', () => {
+      const registry = createHostTypeRegistry();
+      const root = new ContainerNode();
+      const node = registry.button.create({
+        label: 'Click',
+        layout: layout.anchor({ horizontal: 'center', vertical: 'center' }),
+        width: 120,
+      });
+
+      root.addChild(node);
+      runLayout(root, { aspectRatio: 2, height: 100, orientation: 'landscape', width: 200 });
+
+      expect(node.displayObject.x).toBe(40);
+      expect(node.displayObject.y).toBe(26);
     });
   });
 });
