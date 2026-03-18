@@ -37,13 +37,26 @@ jobs:
           submodules: true
 
       - name: Setup Hugo
-        uses: peaceiris/actions-hugo@v2
+        uses: peaceiris/actions-hugo@v3
         with:
-          hugo-version: '0.125.0'
-          extended: true
+          hugo-version: latest
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Build
-        run: hugo --minify --source apps/docs
+        run: pnpm nx build docs
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -51,7 +64,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: apps/docs/public
+          path: dist/apps/docs
 
       - name: Deploy to GitHub Pages
         id: deployment
