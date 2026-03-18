@@ -30,8 +30,9 @@ export default [
       '**/node_modules',
       '**/legacy',
       '**/examples',
+      'apps/docs/.astro/',
       'apps/docs/public/',
-      'apps/docs/content/docs/api/generated/',
+      'apps/docs/static/docs/api/generated/',
     ],
   },
 

@@ -1,0 +1,55 @@
+---
+import DocsShell from '../layouts/docs-shell.astro';
+import { renderDocBody } from '../lib/docs';
+import type { DocEntry } from '../lib/docs';
+
+type Props = {
+  currentPath: string;
+  entry: DocEntry;
+};
+
+const { currentPath, entry } = Astro.props as Props;
+const basePath = import.meta.env.BASE_URL;
+const bodyHtml = entry.body ? renderDocBody(entry.body, basePath) : '';
+---
+
+<DocsShell currentPath={currentPath} title={entry.title}>
+  {entry.isSection ? (
+    <section class="page">
+      <header class="mb-12">
+        <h1 class="mb-4 text-5xl font-black tracking-tight text-slate-900 dark:text-white">{entry.title}</h1>
+        {entry.description && (
+          <p class="text-xl leading-relaxed font-light text-slate-600 dark:text-slate-400">{entry.description}</p>
+        )}
+      </header>
+
+      {bodyHtml && <div class="prose prose-slate mb-12 max-w-none dark:prose-invert" set:html={bodyHtml}></div>}
+
+      <ul class="space-y-4">
+        <slot />
+      </ul>
+    </section>
+  ) : (
+    <article class="page">
+      <header class="mb-12">
+        <h1 class="mb-4 text-5xl font-black tracking-tight text-slate-900 dark:text-white">{entry.title}</h1>
+        {entry.description && (
+          <p class="text-xl leading-relaxed font-light text-slate-600 dark:text-slate-400">{entry.description}</p>
+        )}
+      </header>
+
+      <div class="prose prose-slate max-w-none dark:prose-invert" set:html={bodyHtml}></div>
+
+      <footer
+        class="mt-24 flex items-center justify-between border-t border-slate-200 pt-8 text-xs text-slate-500 dark:border-slate-800"
+      >
+        <p>&copy; 2026 Pixora Framework Team. Built for the next generation of real-time graphics.</p>
+        <div class="flex gap-6">
+          <a class="hover:text-primary" href="#">Twitter</a>
+          <a class="hover:text-primary" href="#">GitHub</a>
+          <a class="hover:text-primary" href="#">Legal</a>
+        </div>
+      </footer>
+    </article>
+  )}
+</DocsShell>

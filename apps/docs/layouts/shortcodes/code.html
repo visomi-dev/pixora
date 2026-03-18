@@ -1,8 +1,0 @@
-{{- $code := .Inner -}}
-{{- $lang := .Get 0 -}}
-<div class="code-block-wrapper relative group">
-  <pre><code class="language-{{ $lang }}">{{ $code | htmlEscape }}</code></pre>
-  <button class="copy-btn absolute top-2 right-2 px-3 py-1 text-xs rounded border transition-opacity opacity-0 group-hover:opacity-100" data-code="{{ $code | htmlEscape }}">
-    Copy
-  </button>
-</div>
