@@ -34,3 +34,13 @@ await runtime.start();
 
 - `pnpm nx build pixora`
 - `pnpm nx run pixora:test --run`
+
+## Gameplay scenes
+
+For gameplay-heavy scenes, prefer a stable `GameSceneShell` plus a focused `InPlay` island.
+
+- keep background, HUD, and overlays in the shell;
+- keep player and dynamic entity collections in `InPlay`;
+- use `pixora.island()` for the hot gameplay surface that owns its own Pixi state;
+- use keyed host helpers such as `pixora.keyedBox()` for bullets, enemies, and power-ups;
+- let the scene shell stay declarative while the island patches gameplay objects directly.

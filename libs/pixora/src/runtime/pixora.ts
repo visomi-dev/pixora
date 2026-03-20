@@ -4,12 +4,27 @@ import type { ApplicationContext, pixoraApp, Viewport } from '../app/types';
 import { Scene } from '../scenes/types';
 import type { SceneDefinition, SceneKey } from '../scenes/types';
 import type { ServiceDescriptor } from '../services/create-service-registry';
+import { effect } from '../state/signal';
+import type { Disposable } from '../utils/disposable';
 
 import { createScheduler, type Scheduler } from './scheduler';
+import { island } from './island';
 import type { MountedTree } from './mounted-node';
 import { mountTree, unmountTree } from './renderer';
-import type { PixoraNode } from './types';
-import { box, button, container, keyedContainer, scrollBox, sprite, text } from './create-node';
+import { updateTree } from './reconcile';
+import type { PixoraComponent, PixoraComponentProps, PixoraNode } from './types';
+import {
+  box,
+  button,
+  container,
+  keyedBox,
+  keyedContainer,
+  keyedSprite,
+  keyedText,
+  scrollBox,
+  sprite,
+  text,
+} from './create-node';
 
 // ---------------------------------------------------------------------------
 // Public types
@@ -20,6 +35,7 @@ export type DeclarativeScene = {
   key: string;
   kind?: 'overlay' | 'scene';
   render: (context: ApplicationContext) => PixoraNode;
+  updateMode?: 'frame' | 'reactive';
 };
 
 export type ImperativeSceneDefinition = {
@@ -62,16 +78,24 @@ export type PixoraComponentAPI = {
   button: typeof button;
   /** Creates a container node */
   container: typeof container;
+  /** Creates a managed island node */
+  island: typeof island;
+  /** Creates a keyed box node */
+  keyedBox: typeof keyedBox;
   /** Creates a keyed container node */
   keyedContainer: typeof keyedContainer;
+  /** Creates a keyed sprite node */
+  keyedSprite: typeof keyedSprite;
+  /** Creates a keyed text node */
+  keyedText: typeof keyedText;
   /** Creates a scroll box node */
   scrollBox: typeof scrollBox;
   /** Creates a scene definition */
   scene: (
     sceneDef:
-      | { key: string; render: (context: ApplicationContext) => PixoraNode }
+      | { key: string; render: (context: ApplicationContext) => PixoraNode; updateMode?: 'frame' | 'reactive' }
       | ((context: ApplicationContext) => PixoraNode),
-  ) => { key: string; render: (context: ApplicationContext) => PixoraNode };
+  ) => { key: string; render: (context: ApplicationContext) => PixoraNode; updateMode?: 'frame' | 'reactive' };
   /** Creates a sprite node */
   sprite: typeof sprite;
   /** Creates a text node */
@@ -82,9 +106,13 @@ export type PixoraFn = {
   (options: PixoraAppOptions): Promise<PixoraRuntime>;
   box: typeof box;
   button: typeof button;
-  component(renderFn: (context: ApplicationContext) => PixoraNode): (context: ApplicationContext) => PixoraNode;
+  component<Props extends PixoraComponentProps>(renderFn: PixoraComponent<Props>): PixoraComponent<Props>;
   container: typeof container;
+  island: typeof island;
+  keyedBox: typeof keyedBox;
   keyedContainer: typeof keyedContainer;
+  keyedSprite: typeof keyedSprite;
+  keyedText: typeof keyedText;
   scrollBox: typeof scrollBox;
   scene: PixoraComponentAPI['scene'];
   sprite: typeof sprite;
@@ -95,13 +123,17 @@ const componentAPI: PixoraComponentAPI = {
   box,
   button,
   container,
+  island,
+  keyedBox,
   keyedContainer,
+  keyedSprite,
+  keyedText,
   scrollBox,
   scene(
     sceneDef:
-      | { key: string; render: (context: ApplicationContext) => PixoraNode }
+      | { key: string; render: (context: ApplicationContext) => PixoraNode; updateMode?: 'frame' | 'reactive' }
       | ((context: ApplicationContext) => PixoraNode),
-  ): { key: string; render: (context: ApplicationContext) => PixoraNode } {
+  ): { key: string; render: (context: ApplicationContext) => PixoraNode; updateMode?: 'frame' | 'reactive' } {
     if (typeof sceneDef === 'function') {
       return { key: `scene_${Math.random().toString(36).substring(2, 9)}`, render: sceneDef };
     }
@@ -132,7 +164,13 @@ async function createPixoraAppInstance(options: PixoraAppOptions): Promise<Pixor
   const declarativeSceneDefinitions: SceneDefinition[] = declarativeScenes.map((scene) => ({
     cache: scene.cache,
     create: () => {
-      const adapter = new DeclarativeSceneAdapter(scene.key, scene.render, mountedTrees, scheduler);
+      const adapter = new DeclarativeSceneAdapter(
+        scene.key,
+        scene.render,
+        mountedTrees,
+        scheduler,
+        scene.updateMode ?? 'reactive',
+      );
       adapters.set(scene.key, adapter);
 
       return adapter;
@@ -218,13 +256,17 @@ const pixora: PixoraFn = async function (options: PixoraAppOptions): Promise<Pix
 
 pixora.box = box;
 pixora.button = button;
-pixora.component = function (
-  renderFn: (context: ApplicationContext) => PixoraNode,
-): (context: ApplicationContext) => PixoraNode {
+pixora.component = function <Props extends PixoraComponentProps>(
+  renderFn: PixoraComponent<Props>,
+): PixoraComponent<Props> {
   return renderFn;
 };
 pixora.container = container;
+pixora.island = island;
+pixora.keyedBox = keyedBox;
 pixora.keyedContainer = keyedContainer;
+pixora.keyedSprite = keyedSprite;
+pixora.keyedText = keyedText;
 pixora.scrollBox = scrollBox;
 pixora.scene = componentAPI.scene;
 pixora.sprite = sprite;
@@ -242,6 +284,7 @@ export { pixora };
  */
 class DeclarativeSceneAdapter extends Scene {
   override readonly key: SceneKey;
+  private effectSubscription: Disposable | null = null;
   private mountedTree: MountedTree | null = null;
   private isScheduled = false;
 
@@ -250,6 +293,7 @@ class DeclarativeSceneAdapter extends Scene {
     private readonly renderFn: (context: ApplicationContext) => PixoraNode,
     private readonly mountedTrees: Map<string, MountedTree>,
     private readonly scheduler: Scheduler,
+    private readonly updateMode: 'frame' | 'reactive',
   ) {
     super();
     this.key = key;
@@ -261,10 +305,20 @@ class DeclarativeSceneAdapter extends Scene {
 
     this.mountedTree = mountTree(tree, this.root, context);
     this.mountedTrees.set(this.key, this.mountedTree);
+
+    if (this.updateMode === 'reactive') {
+      this.effectSubscription = effect(() => {
+        if (!this.mountedTree) {
+          return;
+        }
+
+        updateTree(this.mountedTree, this.renderFn(context));
+      });
+    }
   }
 
   override update(_deltaMs: number): void {
-    if (!this.mountedTree || this.isScheduled) {
+    if (!this.mountedTree || this.isScheduled || this.updateMode === 'reactive') {
       return;
     }
 
@@ -309,6 +363,9 @@ class DeclarativeSceneAdapter extends Scene {
   }
 
   override destroy(): void {
+    this.effectSubscription?.dispose();
+    this.effectSubscription = null;
+
     if (this.mountedTree) {
       this.scheduler.unscheduleUpdate(this.key);
       unmountTree(this.mountedTree);

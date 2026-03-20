@@ -119,9 +119,22 @@ export type {
   TextNodeProps,
 } from './runtime/types';
 
-export { box, button, container, keyedContainer, scrollBox, sprite, text } from './runtime/create-node';
+export {
+  box,
+  button,
+  container,
+  keyedBox,
+  keyedContainer,
+  keyedSprite,
+  keyedText,
+  scrollBox,
+  sprite,
+  text,
+} from './runtime/create-node';
 
 export { imperative } from './runtime/compat';
+export { island } from './runtime/island';
+export type { IslandOptions, IslandSetupContext } from './runtime/island';
 
 export { mountTree, unmountTree } from './runtime/renderer';
 

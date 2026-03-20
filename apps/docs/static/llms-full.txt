@@ -39,6 +39,16 @@ await runtime.start();
 - `pnpm nx build pixora`
 - `pnpm nx run pixora:test --run`
 
+## Gameplay scenes
+
+For gameplay-heavy scenes, prefer a stable `GameSceneShell` plus a focused `InPlay` island.
+
+- keep background, HUD, and overlays in the shell;
+- keep player and dynamic entity collections in `InPlay`;
+- use `pixora.island()` for the hot gameplay surface that owns its own Pixi state;
+- use keyed host helpers such as `pixora.keyedBox()` for bullets, enemies, and power-ups;
+- let the scene shell stay declarative while the island patches gameplay objects directly.
+
 ---
 
 ## Section: getting-started/_index
@@ -515,57 +525,47 @@ For complete API documentation, see the [Generated API Docs](../generated/).
 
 ## Section: api/components
 
-The Components module provides the building blocks for game entities using a component-based architecture.
+The Components module in Pixora is the declarative composition layer used by scenes and gameplay islands.
 
 ## Overview
 
-Components are reusable pieces of data and behavior that can be attached to entities:
+Pixora components are plain functions that return `PixoraNode` trees.
 
-- **SpriteComponent**: Render sprites
-- **TransformComponent**: Position, rotation, scale
-- **PhysicsComponent**: Physics simulation
-- **AnimationComponent**: Play animations
-- Custom components
+- `pixora.component()` defines a reusable render function.
+- call component functions directly from scenes or other components.
+- use `pixora.island()` when a subtree should manage its own Pixi objects without changing the declarative scene tree.
+- keyed host helpers such as `pixora.keyedBox()` keep dynamic collections stable across reconciliation.
 
-## Built-in Components
+## Example
 
-```typescript
-import { Entity, SpriteComponent, TransformComponent } from 'pixora';
+```ts
+import { pixora } from 'pixora';
 
-const entity = new Entity('player');
-entity.addComponent(TransformComponent, { x: 100, y: 100 });
-entity.addComponent(SpriteComponent, { texture: 'player.png' });
+const StatusBanner = pixora.component(({ label }: { label: string }) => {
+  return pixora.text({ text: label, color: '#00ffaa', size: 18 });
+});
+
+const tree = pixora.container(
+  { x: 0, y: 0 },
+  StatusBanner({ label: 'READY' }),
+  pixora.keyedBox('player', { backgroundColor: 0x00ffaa, width: 24, height: 12, x: 200, y: 320 }),
+);
 ```
 
-## Custom Components
+## Gameplay recommendation
 
-Create custom components:
+For gameplay-heavy scenes:
 
-```typescript
-import { Component } from 'pixora';
+- keep the scene shell focused on background, HUD, and overlays;
+- move dynamic entities into an `InPlay` island;
+- key every gameplay entity by `id`;
+- let the island patch its own Pixi objects while the scene shell stays declarative.
 
-class HealthComponent extends Component {
-  health = 100;
-  maxHealth = 100;
+## Related docs
 
-  takeDamage(amount: number) {
-    this.health = Math.max(0, this.health - amount);
-    if (this.health === 0) {
-      this.entity.destroy();
-    }
-  }
-
-  heal(amount: number) {
-    this.health = Math.min(this.maxHealth, this.health + amount);
-  }
-}
-
-entity.addComponent(HealthComponent, { health: 100, maxHealth: 100 });
-```
-
-## API Reference
-
-For complete API documentation, see the [Generated API Docs](../generated/).
+- [Gameplay Entity Layers](../../guides/gameplay-entity-layers/)
+- [Space Invaders Game](../../examples/space-invaders/)
+- [Generated API Docs](../generated/)
 
 ---
 
@@ -1140,6 +1140,7 @@ Space Invaders is the reference example for Pixora's declarative-default runtime
 - Scenes stay declarative from the main menu through gameplay and post-game flows.
 - HUD updates come from runtime events and reactive state, not from ad hoc DOM wiring.
 - Layout primitives handle menu composition, overlays, and viewport-aware positioning.
+- The gameplay scene is split into a stable `GameSceneShell` and an `InPlay` island.
 
 <div class="control-grid">
   <div class="control-card">
@@ -1161,7 +1162,7 @@ Space Invaders is the reference example for Pixora's declarative-default runtime
 The game is organized into declarative scenes using `pixora.scene()`:
 
 1. **mainMenuScene** - Title screen with play button
-2. **gameScene** - The main game logic
+2. **gameScene** - A reactive gameplay shell plus the `InPlay` gameplay island
 3. **gameOverScene** - Game over screen
 4. **victoryScene** - Victory screen
 5. **instructionsScene** - Controls and tips
@@ -1223,13 +1224,24 @@ export const mainMenuScene = pixora.scene({
 });
 ```
 
+### Gameplay Structure
+
+The gameplay scene follows Pixora's recommended shell-plus-island split:
+
+- `GameSceneShell` owns the background, HUD, and pause or game-over overlays.
+- `InPlay` owns the player, bullets, enemy bullets, enemies, and power-ups.
+- `InPlay` renders through `pixora.island()` so gameplay objects update directly on the canvas.
+- Only `InPlay` reads the high-frequency gameplay signals.
+
 ## Key Pixora Features Used
 
 | Feature               | Usage                                     |
 | --------------------- | ----------------------------------------- |
 | `pixora.scene()`      | Declarative scene definition              |
 | `pixora.container()`  | Node grouping and layout root             |
+| `pixora.island()`     | Managed self-updating gameplay surface    |
 | `pixora.box()`        | Background fills                          |
+| `pixora.keyedBox()`   | Stable keyed entity rendering             |
 | `pixora.text()`       | Score labels and UI text                  |
 | `pixora.button()`     | Menu buttons with pointer event callbacks |
 | `layout.flex()`       | Flow-based component layout               |
@@ -1255,6 +1267,81 @@ export const mainMenuScene = pixora.scene({
 ## Section: guides/_index
 
 This section contains in-depth guides for common Pixora development tasks.
+
+---
+
+## Section: guides/gameplay-entity-layers
+
+# Gameplay Entity Layers
+
+Gameplay scenes do not behave like menus. HUD labels and overlays change occasionally, but bullets, enemies, and power-ups can change every frame.
+
+Pixora's recommended pattern is to split those concerns into a stable shell and a focused gameplay island.
+
+## Recommended structure
+
+1. **GameSceneShell**
+   - background
+   - HUD
+   - pause and game-over overlays
+   - `InPlay`
+2. **InPlay**
+   - player
+   - bullets
+   - enemy bullets
+   - enemies
+   - power-ups
+
+## Rules inside `InPlay`
+
+- use keyed entities by `id`;
+- keep one container per entity family when it helps layering or ownership;
+- only this island should read the high-frequency gameplay signals.
+
+## Why this split works
+
+- the shell remains easy to read and reason about;
+- keyed entity collections preserve mounted nodes across movement updates;
+- the declarative scene tree stays stable while the gameplay island patches its own Pixi objects.
+
+## Runtime recommendation
+
+For gameplay-heavy declarative scenes, let the shell stay declarative and make the fast-changing playfield a `pixora.island()`.
+
+```ts
+import { pixora } from 'pixora';
+
+function InPlay(context) {
+  return pixora.island({
+    context,
+    key: 'in-play',
+    setup: ({ root }) => {
+      // create and patch Pixi objects directly here
+    },
+  });
+}
+
+function GameSceneShell(context, viewportWidth, viewportHeight) {
+  return pixora.container(
+    { x: 0, y: 0 },
+    pixora.box({ backgroundColor: 0x0a0a1a, height: viewportHeight, width: viewportWidth, x: 0, y: 0 }),
+    InPlay(context),
+  );
+}
+
+export const gameScene = pixora.scene({
+  key: 'game',
+  render: (context) => {
+    const viewport = context.viewport.get();
+
+    return GameSceneShell(context, viewport.width, viewport.height);
+  },
+});
+```
+
+## When not to use it
+
+If the whole scene truly changes as one unit every tick, `updateMode: 'frame'` can still be appropriate. The shell-plus-island split is for scenes where only part of the tree is hot.
 
 ---
 

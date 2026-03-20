@@ -119,6 +119,7 @@ export const IMPERATIVE_MARKER: unique symbol = Symbol('pixora.imperative');
 
 export type ImperativeNodeProps = {
   readonly [IMPERATIVE_MARKER]: true;
+  readonly managed?: boolean;
   readonly node: BaseNode;
 };
 
@@ -137,13 +138,21 @@ export type PixoraChildren = readonly PixoraChild[];
  * `type` is either:
  * - A `HostType` string for built-in host elements
  * - The `IMPERATIVE_MARKER` symbol for escape-hatch imperative nodes
- * - A function component for user-defined components
+ * - No component marker; components are plain functions invoked by user code
  */
-export type PixoraNode<T extends HostType = HostType> = {
+export type PixoraNodeType = HostType | typeof IMPERATIVE_MARKER;
+
+export type PixoraNodeProps<T extends PixoraNodeType> = T extends HostType
+  ? HostPropsMap[T]
+  : T extends typeof IMPERATIVE_MARKER
+    ? ImperativeNodeProps
+    : never;
+
+export type PixoraNode<T extends PixoraNodeType = PixoraNodeType> = {
   readonly children: PixoraChildren;
   readonly key?: string | number;
-  readonly props: T extends HostType ? HostPropsMap[T] : ImperativeNodeProps;
-  readonly type: T | typeof IMPERATIVE_MARKER | AnyPixoraComponent;
+  readonly props: PixoraNodeProps<T>;
+  readonly type: T;
 };
 
 /**

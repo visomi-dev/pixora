@@ -13,6 +13,7 @@ Space Invaders is the reference example for Pixora's declarative-default runtime
 - Scenes stay declarative from the main menu through gameplay and post-game flows.
 - HUD updates come from runtime events and reactive state, not from ad hoc DOM wiring.
 - Layout primitives handle menu composition, overlays, and viewport-aware positioning.
+- The gameplay scene is split into a stable `GameSceneShell` and an `InPlay` island.
 
 <div class="control-grid">
   <div class="control-card">
@@ -34,7 +35,7 @@ Space Invaders is the reference example for Pixora's declarative-default runtime
 The game is organized into declarative scenes using `pixora.scene()`:
 
 1. **mainMenuScene** - Title screen with play button
-2. **gameScene** - The main game logic
+2. **gameScene** - A reactive gameplay shell plus the `InPlay` gameplay island
 3. **gameOverScene** - Game over screen
 4. **victoryScene** - Victory screen
 5. **instructionsScene** - Controls and tips
@@ -96,13 +97,24 @@ export const mainMenuScene = pixora.scene({
 });
 ```
 
+### Gameplay Structure
+
+The gameplay scene follows Pixora's recommended shell-plus-island split:
+
+- `GameSceneShell` owns the background, HUD, and pause or game-over overlays.
+- `InPlay` owns the player, bullets, enemy bullets, enemies, and power-ups.
+- `InPlay` renders through `pixora.island()` so gameplay objects update directly on the canvas.
+- Only `InPlay` reads the high-frequency gameplay signals.
+
 ## Key Pixora Features Used
 
 | Feature               | Usage                                     |
 | --------------------- | ----------------------------------------- |
 | `pixora.scene()`      | Declarative scene definition              |
 | `pixora.container()`  | Node grouping and layout root             |
+| `pixora.island()`     | Managed self-updating gameplay surface    |
 | `pixora.box()`        | Background fills                          |
+| `pixora.keyedBox()`   | Stable keyed entity rendering             |
 | `pixora.text()`       | Score labels and UI text                  |
 | `pixora.button()`     | Menu buttons with pointer event callbacks |
 | `layout.flex()`       | Flow-based component layout               |

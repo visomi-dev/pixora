@@ -1,4 +1,4 @@
-import { box, button, container, keyedContainer, sprite, text } from './create-node';
+import { box, button, container, keyedBox, keyedContainer, keyedSprite, keyedText, sprite, text } from './create-node';
 
 describe('node factories', () => {
   describe('container', () => {
@@ -43,6 +43,32 @@ describe('node factories', () => {
       const node = keyedContainer(0);
 
       expect(node.key).toBe(0);
+    });
+  });
+
+  describe('keyed host nodes', () => {
+    it('creates a keyed box node', () => {
+      const node = keyedBox('player', { width: 20, height: 12 });
+
+      expect(node.type).toBe('box');
+      expect(node.key).toBe('player');
+      expect(node.props).toEqual({ width: 20, height: 12 });
+    });
+
+    it('creates a keyed text node', () => {
+      const node = keyedText(42, { text: 'Combo x3' });
+
+      expect(node.type).toBe('text');
+      expect(node.key).toBe(42);
+      expect(node.props).toEqual({ text: 'Combo x3' });
+    });
+
+    it('creates a keyed sprite node', () => {
+      const node = keyedSprite('enemy-1', { x: 10, y: 20 });
+
+      expect(node.type).toBe('sprite');
+      expect(node.key).toBe('enemy-1');
+      expect(node.props).toEqual({ x: 10, y: 20 });
     });
   });
 
@@ -97,11 +123,11 @@ describe('node factories', () => {
 
   describe('button', () => {
     it('creates a button node', () => {
-      const onPress = () => undefined;
-      const node = button({ label: 'Click', onPress });
+      const onPointerTap = () => undefined;
+      const node = button({ label: 'Click', onPointerTap });
 
       expect(node.type).toBe('button');
-      expect(node.props).toEqual({ label: 'Click', onPress });
+      expect(node.props).toEqual({ label: 'Click', onPointerTap });
       expect(node.children).toEqual([]);
     });
 

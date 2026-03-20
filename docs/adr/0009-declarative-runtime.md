@@ -94,3 +94,4 @@ Negative:
 - Register custom components via `pixora.component(fn, 'name')`
 - Keep render functions pure—side effects belong in effects or imperative code
 - Use `pixora.imperative()` only for embedding existing BaseNode instances
+- For gameplay-heavy scenes, follow ADR 0011 and isolate dynamic entity collections inside a gameplay island such as `InPlay`

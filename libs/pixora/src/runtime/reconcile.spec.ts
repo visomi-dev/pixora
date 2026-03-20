@@ -6,31 +6,13 @@ import { ContainerNode } from '../components/container-node';
 import { TextNode } from '../components/text-node';
 
 import { imperative } from './compat';
-import { box, container, text } from './create-node';
+import { box, container, keyedBox, keyedText, text } from './create-node';
 import { mountTree } from './renderer';
 import { updateTree } from './reconcile';
 import type { PixoraNode } from './types';
 
 function createMockContext(): ApplicationContext {
   return {} as ApplicationContext;
-}
-
-function keyedBox(key: string | number, props: { width?: number; height?: number } = {}): PixoraNode<'box'> {
-  return Object.freeze({
-    children: Object.freeze([]),
-    key,
-    props: Object.freeze(props),
-    type: 'box' as const,
-  });
-}
-
-function keyedText(key: string | number, props: { text: string }): PixoraNode<'text'> {
-  return Object.freeze({
-    children: Object.freeze([]),
-    key,
-    props: Object.freeze(props),
-    type: 'text' as const,
-  });
 }
 
 describe('updateTree', () => {

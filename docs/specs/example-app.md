@@ -34,6 +34,13 @@ The Space Invaders game is not marketing-only. It is the integration harness tha
 - combo scoring system;
 - progressive difficulty.
 
+The gameplay scene should follow the shell-plus-playfield split from ADR 0011:
+
+- `GameSceneShell` owns background, HUD, overlays, and scene coordination;
+- `InPlay` owns player, bullets, enemy bullets, enemies, and power-ups through `pixora.island()`;
+- only `InPlay` reads the high-frequency gameplay signals;
+- dynamic gameplay entities are keyed by stable `id` values.
+
 ### Game over / Victory
 
 - display final score;
