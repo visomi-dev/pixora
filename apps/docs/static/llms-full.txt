@@ -1,0 +1,1280 @@
+# Pixora - Full Documentation
+
+## README Overview
+
+# pixora
+
+Pixora is a declarative-by-default game framework for Pixi.js and TypeScript.
+
+Start with `pixora()`, describe screens with `pixora.scene()`, and compose menus, HUD, and overlays from layout-aware nodes and reactive state. Lower-level compatibility APIs remain available when you need imperative interop or migration paths.
+
+## Install
+
+```bash
+pnpm add pixora pixi.js
+```
+
+## First runtime
+
+```ts
+import { pixora } from 'pixora';
+
+const runtime = await pixora({
+  backgroundColor: 0x0a0a1a,
+  initialScene: 'menu',
+  mount: document.querySelector('#stage'),
+  scenes: [
+    pixora.scene({
+      key: 'menu',
+      render: () => pixora.text({ text: 'Hello, Pixora!', color: '#ffffff', size: 32 }),
+    }),
+  ],
+});
+
+await runtime.start();
+```
+
+## Workspace tasks
+
+- `pnpm nx build pixora`
+- `pnpm nx run pixora:test --run`
+
+---
+
+## Section: getting-started/_index
+
+This section will guide you through installing and setting up Pixora in your project.
+
+---
+
+## Section: getting-started/installation
+
+Pixora's default authoring model is declarative: you boot a runtime with `pixora()`, provide scenes, and let the runtime manage rendering, layout, and scene transitions for you.
+
+## Prerequisites
+
+Before installing Pixora, ensure you have:
+
+- Node.js 18+
+- npm, yarn, or pnpm
+
+## Install Pixora
+
+Install Pixora and its dependencies using your preferred package manager:
+
+```bash
+npm install pixora
+# or
+yarn add pixora
+# or
+pnpm add pixora
+```
+
+## Peer Dependencies
+
+Pixora requires pixi.js as a peer dependency:
+
+```bash
+npm install pixi.js
+# or
+yarn add pixi.js
+# or
+pnpm add pixi.js
+```
+
+## TypeScript Configuration
+
+Ensure your `tsconfig.json` has the following settings:
+
+```json
+{
+  "compilerOptions": {
+    "strict": true,
+    "moduleResolution": "bundler",
+    "esModuleInterop": true
+  }
+}
+```
+
+## Verify Installation
+
+Create a simple scene to verify the installation:
+
+```typescript
+import { pixora } from 'pixora';
+
+const runtime = await pixora({
+  backgroundColor: 0x1099bb,
+  initialScene: 'hello',
+  mount: document.querySelector('#stage')!,
+  scenes: [
+    pixora.scene({
+      key: 'hello',
+      render: () => pixora.text({ text: 'Hello, Pixora!', color: '#ffffff', size: 32 }),
+    }),
+  ],
+});
+
+await runtime.start();
+```
+
+If the runtime starts without errors and renders the scene tree, Pixora is installed correctly.
+
+## Next Steps
+
+- [Quick Start Guide](../quick-start/) - Build your first declarative game scene
+- [API Reference](../../api/) - Explore the full runtime and compatibility APIs
+
+---
+
+## Section: getting-started/quick-start
+
+This tutorial walks through Pixora's declarative-default workflow: boot a runtime with `pixora()`, register scenes, and return node trees from pure render functions.
+
+## Create Your Application
+
+Every Pixora game starts with `pixora()` — an async factory that boots the renderer, loads assets, and returns a running runtime:
+
+```typescript
+import { pixora } from 'pixora';
+
+const runtime = await pixora({
+  backgroundColor: 0x1099bb,
+  initialScene: 'main-menu',
+  mount: document.querySelector('#stage')!,
+  scenes: [mainMenuScene],
+});
+
+await runtime.start();
+```
+
+## Define a Scene
+
+Scenes are created with `pixora.scene()`. Each scene has a `key` and a `render` function that returns a tree of nodes:
+
+```typescript
+import { layout, pixora } from 'pixora';
+
+export const mainMenuScene = pixora.scene({
+  key: 'main-menu',
+  render: (context) => {
+    const vp = context.viewport.get();
+
+    return pixora.container(
+      { x: 0, y: 0 },
+      pixora.box({ backgroundColor: 0x0a0a1a, width: vp.width, height: vp.height }),
+      pixora.container(
+        {
+          layout: layout.percent({ horizontal: 'center', vertical: 'center', width: 1 }),
+        },
+        pixora.container(
+          {
+            layout: layout.flex({ direction: 'vertical', justify: 'center', align: 'center', gap: 16 }),
+          },
+          pixora.text({ text: 'MY GAME', color: '#00ffaa', size: 72, weight: '900' }),
+          pixora.button({
+            label: 'START',
+            backgroundColor: 0x00ffaa,
+            width: 240,
+            height: 56,
+            onPointerTap: () => void context.scenes.goTo('game'),
+          }),
+        ),
+      ),
+    );
+  },
+});
+```
+
+## Layout System
+
+Pixora includes a flexible layout system. Use `layout.flex()` for flow-based layouts and `layout.percent()` for percentage-based positioning:
+
+```typescript
+import { layout, pixora } from 'pixora';
+
+// Flex layout — CSS-like flexbox
+pixora.container(
+  {
+    layout: layout.flex({
+      direction: 'vertical',  // or 'horizontal'
+      justify: 'space-between',
+      align: 'center',
+      gap: 16,
+      padding: 24,
+    }),
+  },
+  pixora.text({ text: 'Top' }),
+  pixora.text({ text: 'Bottom' }),
+);
+
+// Percent layout — positions relative to parent size
+pixora.container(
+  {
+    layout: layout.percent({ horizontal: 'center', vertical: 'end' }),
+  },
+  pixora.button({ label: 'Footer Button', width: 200, height: 48 }),
+);
+```
+
+## Text and Components
+
+Text nodes accept direct style properties — no helper functions needed:
+
+```typescript
+pixora.text({
+  text: 'SCORE: 1000',
+  color: '#ffffff',
+  size: 24,
+  weight: 'bold',
+  font: 'Orbitron, sans-serif',
+});
+```
+
+## Handle Input
+
+Use `createKeyboardInput` to poll keyboard state inside scene logic, or use pointer events on interactive elements for buttons and menus:
+
+```typescript
+import { createKeyboardInput, Keys, pixora } from 'pixora';
+
+const keyboard = createKeyboardInput();
+
+const gameScene = pixora.scene({
+  key: 'game',
+  render: (context) => {
+    // Update loop runs every frame via the scheduler
+    return pixora.container({ x: 0, y: 0 });
+  },
+});
+```
+
+## Complete Example
+
+Here's a minimal but complete game setup:
+
+```typescript
+import { layout, pixora } from 'pixora';
+
+const menuScene = pixora.scene({
+  key: 'menu',
+  render: (context) => {
+    const vp = context.viewport.get();
+
+    return pixora.container(
+      { x: 0, y: 0 },
+      pixora.box({ backgroundColor: 0x0a0a1a, width: vp.width, height: vp.height }),
+      pixora.container(
+        { layout: layout.percent({ horizontal: 'center', vertical: 'center', width: 1 }) },
+        pixora.container(
+          { layout: layout.flex({ direction: 'vertical', align: 'center', gap: 24 }) },
+          pixora.text({ text: 'MY GAME', color: '#00ffaa', size: 64, weight: '900' }),
+          pixora.button({
+            label: 'PLAY',
+            backgroundColor: 0x00ffaa,
+            width: 220,
+            height: 56,
+            onPointerTap: () => void context.scenes.goTo('game'),
+          }),
+        ),
+      ),
+    );
+  },
+});
+
+const runtime = await pixora({
+  backgroundColor: 0x0a0a1a,
+  initialScene: 'menu',
+  mount: document.querySelector('#stage')!,
+  scenes: [menuScene],
+});
+
+await runtime.start();
+```
+
+## Next Steps
+
+- [API Reference](../../api/) - Explore all available APIs
+- [Examples](../../examples/) - See complete examples built with the same runtime
+
+---
+
+## Section: api/_index
+
+Start with the declarative runtime APIs first. Lower-level application, scene, and compatibility helpers remain available when you need to interoperate with older code or custom engine code.
+
+## Modules
+
+| Module                     | Description                                                  |
+| -------------------------- | ------------------------------------------------------------ |
+| [App](app/)                | `pixora()`, runtime lifecycle, and mount configuration       |
+| [Scenes](scenes/)          | Declarative scene definitions and scene transitions          |
+| [Layout](layout/)          | Flex and percent layout primitives for HUD and UI            |
+| [State](state/)            | Signals, computed values, and reactive coordination          |
+| [Input](input/)            | Keyboard, mouse, and gamepad input handling                  |
+| [Animation](animation/)    | Tweens and sprite sheet animation                            |
+| [Assets](assets/)          | Asset loading and caching                                    |
+| [Events](events/)          | Runtime event bus patterns                                   |
+| [Services](services/)      | Service container and dependency registration                |
+| [Components](components/)  | Host nodes and component primitives                          |
+| [Entities](entities/)      | Lower-level entity modeling helpers                          |
+| [Utils](utils/)            | Utility functions and helpers                                |
+
+## Generated API Docs
+
+For detailed type definitions and member documentation, see the [Generated API Documentation](generated/).
+
+---
+
+## Section: api/animation
+
+The Animation module provides powerful animation capabilities including tweens and sprite sheet animations.
+
+## Overview
+
+Pixora's animation system is built around two main concepts:
+
+- **Tweens**: Interpolate values over time with easing functions
+- **Sprite Animations**: Play sprite sheet animations with frame control
+
+## Tween
+
+Create smooth animations using the Tween class:
+
+```typescript
+import { Tween, Easing } from 'pixora';
+
+const tween = new Tween(entity.position)
+  .to({ x: 400, y: 300 }, 1000, Easing.Quadratic.Out)
+  .onComplete(() => {
+    console.log('Animation complete!');
+  })
+  .start();
+```
+
+## Easing Functions
+
+Available easing functions:
+
+- `Easing.Linear`
+- `Easing.Quadratic.In`, `Easing.Quadratic.Out`, `Easing.Quadratic.InOut`
+- `Easing.Cubic.In`, `Easing.Cubic.Out`, `Easing.Cubic.InOut`
+- `Easing.Elastic.In`, `Easing.Elastic.Out`
+- And many more...
+
+## Sprite Animation
+
+Play sprite sheet animations:
+
+```typescript
+import { SpriteAnimation } from 'pixora';
+
+const animation = new SpriteAnimation(sprite, {
+  frames: 10,
+  frameRate: 12,
+  loop: true,
+});
+
+animation.play();
+```
+
+## API Reference
+
+For complete API documentation, see the [Generated API Docs](../generated/).
+
+---
+
+## Section: api/app
+
+The App module centers on `pixora()`, the declarative runtime factory. It boots Pixi, mounts the stage, wires scenes together, and returns a runtime you can start, stop, and destroy.
+
+## Overview
+
+The runtime returned by `pixora()` handles:
+
+- Stage creation and mounting
+- Scene registration and initial navigation
+- Asset loading and runtime lifecycle
+- Cleanup and teardown
+
+## Creating an Application
+
+```typescript
+import { pixora } from 'pixora';
+
+const runtime = await pixora({
+  backgroundColor: 0x1099bb,
+  initialScene: 'menu',
+  mount: document.querySelector('#stage')!,
+  scenes: [
+    pixora.scene({
+      key: 'menu',
+      render: () => pixora.text({ text: 'Hello, Pixora!', color: '#ffffff', size: 32 }),
+    }),
+  ],
+});
+
+await runtime.start();
+```
+
+## Configuration Options
+
+| Option            | Type                   | Description                                           |
+| ----------------- | ---------------------- | ----------------------------------------------------- |
+| `mount`           | `HTMLElement`          | Host element that receives the Pixi canvas            |
+| `initialScene`    | `string`               | Scene key that becomes active after startup           |
+| `scenes`          | `PixoraScene[]`        | Declarative or imperative scene definitions           |
+| `backgroundColor` | `number`               | Default background color for the renderer             |
+| `assets`          | `PixoraAssetsOptions`  | Fonts and other assets to preload before startup      |
+| `autoStart`       | `boolean`              | Whether the runtime should start immediately          |
+
+## Runtime Lifecycle
+
+The returned runtime exposes explicit lifecycle methods:
+
+```typescript
+await runtime.start();
+runtime.stop();
+await runtime.destroy();
+```
+
+## Compatibility APIs
+
+If you need lower-level control, Pixora still exports compatibility helpers such as `createPixoraApp()` for older imperative integrations. The declarative runtime remains the recommended default for new code.
+
+## API Reference
+
+For complete API documentation, see the [Generated API Docs](../generated/).
+
+---
+
+## Section: api/assets
+
+The Assets module provides efficient loading and caching of game assets including textures, sounds, and data files.
+
+## Overview
+
+Pixora's asset system handles:
+
+- Texture loading (PNG, JPG, WebP, etc.)
+- Sprite sheet loading
+- Audio loading
+- JSON data loading
+- Asset caching
+
+## Loading Assets
+
+```typescript
+import { Assets } from 'pixora';
+
+// Load a single texture
+const texture = await Assets.loadTexture('player.png');
+
+// Load multiple assets
+const assets = await Assets.load(['player.png', 'enemy.png', 'background.jpg']);
+```
+
+## Loading Sprite Sheets
+
+```typescript
+import { Assets, Spritesheet } from 'pixora';
+
+const spritesheet = await Assets.loadSpritesheet('character.json');
+```
+
+## Preloading
+
+Preload assets at game start:
+
+```typescript
+const preloader = new Preloader({
+  assets: ['player.png', 'enemy.png', 'bg.png'],
+  onProgress: (progress) => {
+    console.log(`Loading: ${progress * 100}%`);
+  },
+  onComplete: () => {
+    startGame();
+  },
+});
+```
+
+## Asset Cache
+
+Assets are cached automatically:
+
+```typescript
+// Returns cached asset if available
+const texture = Assets.get('player.png');
+```
+
+## API Reference
+
+For complete API documentation, see the [Generated API Docs](../generated/).
+
+---
+
+## Section: api/components
+
+The Components module provides the building blocks for game entities using a component-based architecture.
+
+## Overview
+
+Components are reusable pieces of data and behavior that can be attached to entities:
+
+- **SpriteComponent**: Render sprites
+- **TransformComponent**: Position, rotation, scale
+- **PhysicsComponent**: Physics simulation
+- **AnimationComponent**: Play animations
+- Custom components
+
+## Built-in Components
+
+```typescript
+import { Entity, SpriteComponent, TransformComponent } from 'pixora';
+
+const entity = new Entity('player');
+entity.addComponent(TransformComponent, { x: 100, y: 100 });
+entity.addComponent(SpriteComponent, { texture: 'player.png' });
+```
+
+## Custom Components
+
+Create custom components:
+
+```typescript
+import { Component } from 'pixora';
+
+class HealthComponent extends Component {
+  health = 100;
+  maxHealth = 100;
+
+  takeDamage(amount: number) {
+    this.health = Math.max(0, this.health - amount);
+    if (this.health === 0) {
+      this.entity.destroy();
+    }
+  }
+
+  heal(amount: number) {
+    this.health = Math.min(this.maxHealth, this.health + amount);
+  }
+}
+
+entity.addComponent(HealthComponent, { health: 100, maxHealth: 100 });
+```
+
+## API Reference
+
+For complete API documentation, see the [Generated API Docs](../generated/).
+
+---
+
+## Section: api/entities
+
+The Entities module provides the entity system for organizing game objects.
+
+## Overview
+
+Entities are the core objects in Pixora's ECS architecture:
+
+- Lightweight objects that hold components
+- Identified by name or ID
+- Can be queried and filtered
+
+## Creating Entities
+
+```typescript
+import { Entity } from 'pixora';
+
+const player = new Entity('player');
+```
+
+## Entity Lifecycle
+
+```typescript
+// Initialize
+player.onInit = () => {
+  console.log('Entity initialized');
+};
+
+// Update each frame
+player.onUpdate = (delta) => {
+  player.position.x += player.velocity.x * delta;
+};
+
+// Cleanup
+player.onDestroy = () => {
+  console.log('Entity destroyed');
+};
+```
+
+## Entity Queries
+
+Find entities by components:
+
+```typescript
+import { World } from 'pixora';
+
+const enemies = World.query(EnemyComponent, TransformComponent);
+
+for (const enemy of enemies) {
+  // Process enemy
+}
+```
+
+## API Reference
+
+For complete API documentation, see the [Generated API Docs](../generated/).
+
+---
+
+## Section: api/events
+
+The Events module provides a flexible event system for communication between game objects.
+
+## Overview
+
+Pixora's event system supports:
+
+- Custom events
+- Event bubbling
+- One-time listeners
+- Event priorities
+
+## Creating and Dispatching Events
+
+```typescript
+import { EventDispatcher, GameEvent } from 'pixora';
+
+const dispatcher = new EventDispatcher();
+
+// Create custom event
+const event = new GameEvent('playerDied', { score: 1000 });
+
+// Dispatch
+dispatcher.dispatch(event);
+```
+
+## Listening for Events
+
+```typescript
+// Listen for specific event
+dispatcher.on('playerDied', (event) => {
+  console.log('Player died with score:', event.data.score);
+});
+
+// One-time listener
+dispatcher.once('levelComplete', () => {
+  console.log('Level complete!');
+});
+
+// Remove listener
+const handler = () => console.log('Event!');
+dispatcher.on('event', handler);
+dispatcher.off('event', handler);
+```
+
+## Global Events
+
+Use the global event bus for application-wide events:
+
+```typescript
+import { Events } from 'pixora';
+
+Events.on('game:start', () => {
+  console.log('Game started!');
+});
+```
+
+## API Reference
+
+For complete API documentation, see the [Generated API Docs](../generated/).
+
+---
+
+## Section: api/input
+
+The Input module provides unified input handling for keyboard, mouse, and gamepad devices.
+
+## Overview
+
+Pixora's input system:
+
+- Keyboard state tracking
+- Mouse position and button handling
+- Gamepad support
+- Touch input support
+
+## Keyboard Input
+
+```typescript
+import { Input, Keyboard } from 'pixora';
+
+// Check key state
+if (Input.keyboard.isDown(Keyboard.Space)) {
+  // Jump!
+}
+
+// Listen for key events
+Input.keyboard.on('keydown', (event) => {
+  console.log('Key pressed:', event.code);
+});
+```
+
+## Mouse Input
+
+```typescript
+import { Input, Mouse } from 'texyn';
+
+// Get mouse position
+const x = Input.mouse.x;
+const y = Input.mouse.y;
+
+// Check mouse buttons
+if (Input.mouse.isDown(Mouse.LeftButton)) {
+  // Fire!
+}
+```
+
+## Gamepad Input
+
+```typescript
+import { Input, Gamepad } from 'pixora';
+
+// Get gamepad
+const gamepad = Input.gamepads[0];
+
+if (gamepad) {
+  const x = gamepad.axes[0];
+  const y = gamepad.axes[1];
+
+  if (gamepad.buttons[0].pressed) {
+    // A button pressed
+  }
+}
+```
+
+## API Reference
+
+For complete API documentation, see the [Generated API Docs](../generated/).
+
+---
+
+## Section: api/layout
+
+The Layout module provides layout managers for arranging UI elements.
+
+## Overview
+
+Pixora's layout system includes:
+
+- Anchor positioning
+- Grid layouts
+- Flexbox-like layouts
+- Responsive layouts
+
+## Anchor Positioning
+
+Position elements relative to their parent:
+
+```typescript
+import { Anchor } from 'pixora';
+
+sprite.anchor = {
+  x: Anchor.Center,
+  y: Anchor.Middle,
+};
+```
+
+## Layout Containers
+
+Use layout containers to arrange children:
+
+```typescript
+import { Container, GridLayout, FlexLayout } from 'pixora';
+
+const container = new Container();
+container.layout = new FlexLayout({
+  direction: 'row',
+  gap: 10,
+  align: 'center',
+});
+```
+
+## Responsive Layouts
+
+Create responsive UI that adapts to screen size:
+
+```typescript
+import { ResponsiveLayout } from 'pixora';
+
+const layout = new ResponsiveLayout({
+  mobile: { direction: 'column' },
+  tablet: { direction: 'row' },
+  desktop: { direction: 'row', gap: 20 },
+});
+```
+
+## API Reference
+
+For complete API documentation, see the [Generated API Docs](../generated/).
+
+---
+
+## Section: api/scenes
+
+The Scenes module is where Pixora's declarative-default workflow becomes tangible. Scenes describe what should render for a given game state, and the runtime handles transitions between them.
+
+## Overview
+
+Scenes typically map to the major states of your game:
+
+- Title scene
+- Game scene
+- Menu scene
+- Pause or overlay scene
+
+## Creating Scenes
+
+```typescript
+import { layout, pixora } from 'pixora';
+
+export const menuScene = pixora.scene({
+  key: 'menu',
+  render: (context) => {
+    const viewport = context.viewport.get();
+
+    return pixora.container(
+      { x: 0, y: 0 },
+      pixora.box({ backgroundColor: 0x0a0a1a, width: viewport.width, height: viewport.height }),
+      pixora.container(
+        {
+          layout: layout.percent({ horizontal: 'center', vertical: 'center', width: 1 }),
+        },
+        pixora.button({
+          label: 'Play',
+          width: 220,
+          height: 56,
+          backgroundColor: 0x00ffaa,
+          onPointerTap: () => void context.scenes.goTo('game'),
+        }),
+      ),
+    );
+  },
+});
+```
+
+## Scene Transitions
+
+```typescript
+runtime.context.scenes.goTo('game');
+```
+
+You can also respond to scene lifecycle changes through runtime events:
+
+```typescript
+runtime.context.events.on('scene.changed', (payload) => {
+  console.log(payload.nextScene);
+});
+```
+
+## Imperative Compatibility
+
+Pixora still exports `Scene` and `createSceneManager()` for migration scenarios or advanced imperative control. New examples and docs default to `pixora.scene()` because it keeps scene code closer to the UI tree and runtime state.
+
+## API Reference
+
+For complete API documentation, see the [Generated API Docs](../generated/).
+
+---
+
+## Section: api/services
+
+The Services module provides a service container for dependency injection.
+
+## Overview
+
+Services allow you to:
+
+- Share functionality across the app
+- Lazy-load heavy services
+- Manage dependencies
+
+## Registering Services
+
+```typescript
+import { Services } from 'pixora';
+
+// Register a service
+Services.register(AudioService, {
+  useClass: AudioService,
+  singleton: true,
+});
+```
+
+## Using Services
+
+```typescript
+import { Services } from 'pixora';
+
+// Get a service
+const audio = Services.get(AudioService);
+audio.play('music.mp3');
+```
+
+## Service Configuration
+
+```typescript
+// Configure with options
+Services.register(StorageService, {
+  useClass: LocalStorageService,
+  options: {
+    prefix: 'game_',
+  },
+});
+```
+
+## API Reference
+
+For complete API documentation, see the [Generated API Docs](../generated/).
+
+---
+
+## Section: api/state
+
+The State module provides reactive state management using signals.
+
+## Overview
+
+Pixora's state system:
+
+- Reactive signals
+- Computed values
+- State persistence
+- Undo/redo support
+
+## Creating State
+
+```typescript
+import { signal, computed } from 'pixora';
+
+// Create a signal
+const score = signal(0);
+
+// Create computed value
+const isHighScore = computed(() => score() >= 1000);
+
+// Update state
+score.set(100);
+score.update((s) => s + 10);
+```
+
+## Reactive Effects
+
+Run code when state changes:
+
+```typescript
+import { effect } from 'pixora';
+
+effect(() => {
+  console.log('Score:', score());
+});
+```
+
+## State Persistence
+
+Persist state to storage:
+
+```typescript
+import { persist, StorageAdapter } from 'pixora';
+
+const settings = persist(
+  'settings',
+  {
+    sound: true,
+    music: true,
+    volume: 0.8,
+  },
+  new LocalStorageAdapter(),
+);
+```
+
+## API Reference
+
+For complete API documentation, see the [Generated API Docs](../generated/).
+
+---
+
+## Section: api/utils
+
+The Utils module provides common utility functions used throughout Pixora.
+
+## Overview
+
+Utility functions include:
+
+- Math helpers
+- Color utilities
+- String helpers
+- Object utilities
+
+## Math Utilities
+
+```typescript
+import { MathUtils, Vec2, Color } from 'pixora';
+
+// Clamp values
+const clamped = MathUtils.clamp(150, 0, 100); // 100
+
+// Lerp
+const value = MathUtils.lerp(0, 100, 0.5); // 50
+
+// Random
+const random = MathUtils.randomRange(1, 10);
+```
+
+## Color Utilities
+
+```typescript
+import { Color } from 'pixora';
+
+const color = new Color(0xff5500);
+
+// Convert formats
+color.toHex(); // "#ff5500"
+color.toRgb(); // { r: 255, g: 85, b: 0 }
+color.toRgba(); // { r: 255, g: 85, b: 0, a: 1 }
+
+// Manipulate
+color.lighten(0.2);
+color.darken(0.1);
+color.setAlpha(0.5);
+```
+
+## Vector Utilities
+
+```typescript
+import { Vec2 } from 'pixora';
+
+const pos = new Vec2(100, 100);
+pos.add(new Vec2(50, 50)); // { x: 150, y: 150 }
+pos.sub(new Vec2(20, 30)); // { x: 80, y: 70 }
+pos.normalize();
+pos.length(); // distance from origin
+pos.distanceTo(other); // distance to another vector
+```
+
+## API Reference
+
+For complete API documentation, see the [Generated API Docs](../generated/).
+
+---
+
+## Section: examples/_index
+
+This section contains working examples built on the same declarative runtime documented throughout the site. Start with Space Invaders for the most complete reference implementation.
+
+## Available Examples
+
+- [Space Invaders Game](space-invaders/) - Complete shooter game packaged with the docs deploy
+- [Basic Setup](basic-setup/) - Minimal runtime bootstrapping and scene registration
+- [Scene Management](scenes/) - Move between screens with the scene runtime
+- [Input Handling](input/) - Keyboard and pointer input patterns
+- [Animation](animation/) - Tweens and sprite animations
+- [Entity System](entity-system/) - Lower-level entity and component helpers
+- [Physics](physics/) - Basic physics simulation
+
+---
+
+## Section: examples/basic-setup
+
+This example demonstrates the smallest declarative Pixora runtime you can boot.
+
+## Complete Example
+
+```typescript
+import { pixora } from 'pixora';
+
+const runtime = await pixora({
+  height: 600,
+  initialScene: 'hello',
+  mount: document.querySelector('#stage')!,
+  backgroundColor: 0x1099bb,
+  scenes: [
+    pixora.scene({
+      key: 'hello',
+      render: () => pixora.text({ text: 'Hello, Pixora!', color: '#ffffff', size: 32 }),
+    }),
+  ],
+});
+
+await runtime.start();
+```
+
+## Expected Result
+
+A blue canvas appears and renders a single declarative text node.
+
+## Running the Example
+
+1. Create a new TypeScript file
+2. Copy the code above
+3. Run with your preferred bundler (Vite, Webpack, etc.)
+
+## Next Steps
+
+- [Entity System Example](../entity-system/) - Add game objects
+- [Input Handling Example](../input/) - Add interactivity
+
+---
+
+## Section: examples/space-invaders
+
+{{< space-invaders-showcase >}}
+
+Space Invaders is the reference example for Pixora's declarative-default runtime. It demonstrates how one runtime can coordinate menus, gameplay, overlays, and HUD state without switching mental models between docs and deploy.
+
+## What this example proves
+
+- The same build publishes the documentation site and the production game output together.
+- Scenes stay declarative from the main menu through gameplay and post-game flows.
+- HUD updates come from runtime events and reactive state, not from ad hoc DOM wiring.
+- Layout primitives handle menu composition, overlays, and viewport-aware positioning.
+
+<div class="control-grid">
+  <div class="control-card">
+    <strong>Move</strong>
+    <span>Use <code>←</code> and <code>→</code> to reposition the ship.</span>
+  </div>
+  <div class="control-card">
+    <strong>Shoot</strong>
+    <span>Press <code>Space</code> to fire at the invading wave.</span>
+  </div>
+  <div class="control-card">
+    <strong>Pause</strong>
+    <span>Press <code>Escape</code> to open the pause overlay.</span>
+  </div>
+</div>
+
+## Code Overview
+
+The game is organized into declarative scenes using `pixora.scene()`:
+
+1. **mainMenuScene** - Title screen with play button
+2. **gameScene** - The main game logic
+3. **gameOverScene** - Game over screen
+4. **victoryScene** - Victory screen
+5. **instructionsScene** - Controls and tips
+
+### Main Application Setup
+
+```typescript
+import { pixora } from 'pixora';
+import { mainMenuScene } from './scenes/main-menu/main-menu.scene';
+import { gameScene } from './scenes/game/game.scene';
+
+const runtime = await pixora({
+  autoStart: false,
+  backgroundColor: 0x0a0a1a,
+  initialScene: 'main-menu',
+  mount: document.querySelector('[data-stage-host]')!,
+  scenes: [mainMenuScene, gameScene],
+});
+
+await runtime.start();
+```
+
+### Scene Structure
+
+Scenes are pure functions that return a node tree. Layout is handled declaratively with `layout.flex()` and `layout.percent()`:
+
+```typescript
+import { layout, pixora } from 'pixora';
+
+export const mainMenuScene = pixora.scene({
+  key: 'main-menu',
+  render: (context) => {
+    const vp = context.viewport.get();
+
+    return pixora.container(
+      { x: 0, y: 0 },
+      pixora.box({ backgroundColor: 0x0a0a1a, width: vp.width, height: vp.height }),
+      pixora.container(
+        {
+          layout: layout.percent({ horizontal: 'center', vertical: 'center', width: 1 }),
+        },
+        pixora.container(
+          {
+            layout: layout.flex({ direction: 'vertical', align: 'center', gap: 16 }),
+          },
+          pixora.text({ text: 'SPACE', color: '#00ffaa', size: 72, weight: '900', font: 'Orbitron, sans-serif' }),
+          pixora.text({ text: 'INVADERS', color: '#ff00aa', size: 48, weight: '700', font: 'Orbitron, sans-serif' }),
+          pixora.button({
+            label: 'START GAME',
+            backgroundColor: 0x00ffaa,
+            width: 280,
+            height: 56,
+            onPointerTap: () => void context.scenes.goTo('game'),
+          }),
+        ),
+      ),
+    );
+  },
+});
+```
+
+## Key Pixora Features Used
+
+| Feature               | Usage                                     |
+| --------------------- | ----------------------------------------- |
+| `pixora.scene()`      | Declarative scene definition              |
+| `pixora.container()`  | Node grouping and layout root             |
+| `pixora.box()`        | Background fills                          |
+| `pixora.text()`       | Score labels and UI text                  |
+| `pixora.button()`     | Menu buttons with pointer event callbacks |
+| `layout.flex()`       | Flow-based component layout               |
+| `layout.percent()`    | Percentage-based positioning              |
+| `createKeyboardInput` | Arrow keys, space bar, and pause shortcut |
+
+<div class="note-card">
+  <strong>Deployment note</strong>
+  <span>
+    The embedded iframe and the standalone example both point at the game output copied into the docs build,
+    which keeps the GitHub Pages artifact self-contained.
+  </span>
+</div>
+
+## Next Steps
+
+- [API Reference](../../api/) - Explore the full API
+- [Scene Management](../../api/scenes/) - Learn about scenes
+- [Quick Start](../../getting-started/quick-start/) - Build your own declarative scene flow
+
+---
+
+## Section: guides/_index
+
+This section contains in-depth guides for common Pixora development tasks.
+
+---
+
+## Section: _index
+
+Pixora is a declarative-by-default framework for building Pixi.js games with TypeScript. Start with `pixora()`, render scenes with `pixora.scene()`, and compose HUD, menus, and overlays with layout-aware nodes before dropping to lower-level APIs.
+
+## Why Pixora?
+
+- **Declarative runtime**: Author games from scenes, components, and render functions instead of wiring everything imperatively up front.
+- **Reactive state**: Keep gameplay state close to your scene with signals, computed values, and events.
+- **Layout-aware UI**: Build menu flows and HUD surfaces with `layout.flex()` and `layout.percent()`.
+- **Pixi escape hatches**: Reach for lower-level APIs when migrating existing systems or optimizing a hot path.
+- **Live examples**: Ship the docs and runnable games together, including the Space Invaders reference app.
+
+## Quick Navigation
+
+- [Installation Guide](getting-started/installation/)
+- [Quick Start Tutorial](getting-started/quick-start/)
+- [API Reference](api/)
+- [Examples](examples/)
+
+---

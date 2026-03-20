@@ -1,0 +1,17 @@
+{
+  "name": "@pixora/mcp",
+  "version": "0.1.0",
+  "description": "MCP server for Pixora framework documentation and context",
+  "type": "module",
+  "main": "src/index.js",
+  "bin": {
+    "pixora-mcp": "./src/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.27.1",
+    "dotenv": "^17.3.1"
+  },
+  "scripts": {
+    "start": "node src/index.js"
+  }
+}

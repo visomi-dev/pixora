@@ -15,7 +15,7 @@
             "command": "pnpm exec tailwindcss -i apps/docs/assets/css/styles.css -o apps/docs/static/css/styles.css --minify"
           },
           {
-            "command": "pnpm exec astro build --root apps/docs --outDir ../../dist/apps/docs --base /"
+            "command": "cp libs/pixora/llms.txt apps/docs/static/ && cp libs/pixora/llms-full.txt apps/docs/static/ && pnpm exec astro build --root apps/docs --outDir ../../dist/apps/docs --base /"
           }
         ],
         "parallel": false
@@ -33,7 +33,7 @@
             "command": "pnpm exec tailwindcss -i apps/docs/assets/css/styles.css -o apps/docs/static/css/styles.css --minify"
           },
           {
-            "command": "pnpm exec astro build --root apps/docs --outDir ../../dist/apps/docs --base /"
+            "command": "cp libs/pixora/llms.txt apps/docs/static/ && cp libs/pixora/llms-full.txt apps/docs/static/ && pnpm exec astro build --root apps/docs --outDir ../../dist/apps/docs --base /"
           }
         ],
         "parallel": false
@@ -54,10 +54,10 @@
             "command": "mkdir -p apps/docs/static/css/files apps/docs/static/css/fonts && cp -r node_modules/@fontsource/space-grotesk/files/* apps/docs/static/css/files/ 2>/dev/null || true && cp -r node_modules/@fontsource/jetbrains-mono/files/* apps/docs/static/css/files/ 2>/dev/null || true && cp -r node_modules/@fontsource/material-symbols-outlined/files/* apps/docs/static/css/files/ 2>/dev/null || true && cp -r node_modules/primeicons/fonts/* apps/docs/static/css/fonts/ 2>/dev/null || true"
           },
           {
-            "command": "pnpm exec tailwindcss -i apps/docs/assets/css/styles.css -o apps/docs/static/css/styles.css --watch"
+            "command": "pnpm exec tailwindcss -i apps/docs/assets/css/styles.css -o apps/docs/static/css/styles.css --minify"
           },
           {
-            "command": "pnpm exec astro dev --root apps/docs --host 0.0.0.0 --port 1313"
+            "command": "cp libs/pixora/llms.txt apps/docs/static/ && cp libs/pixora/llms-full.txt apps/docs/static/ && pnpm exec astro build --root apps/docs --outDir ../../dist/apps/docs --base /"
           }
         ],
         "parallel": true
@@ -75,7 +75,7 @@
             "command": "pnpm exec tailwindcss -i apps/docs/assets/css/styles.css -o apps/docs/static/css/styles.css --minify"
           },
           {
-            "command": "pnpm exec astro build --root apps/docs --outDir ../../dist/apps/docs-preview --base /preview/"
+            "command": "cp libs/pixora/llms.txt apps/docs/static/ && cp libs/pixora/llms-full.txt apps/docs/static/ && pnpm exec astro build --root apps/docs --outDir ../../dist/apps/docs-preview --base /preview/"
           }
         ],
         "parallel": false
