@@ -4,6 +4,7 @@ import type {
   ContainerNodeProps,
   PixoraChild,
   PixoraNode,
+  ScrollBoxNodeProps,
   SpriteNodeProps,
   TextNodeProps,
 } from './types';
@@ -85,5 +86,17 @@ export function button(props: ButtonNodeProps): PixoraNode<'button'> {
     key: undefined,
     props,
     type: 'button' as const,
+  });
+}
+
+/**
+ * Creates a declarative scroll box node.
+ */
+export function scrollBox(props: ScrollBoxNodeProps = {}, ...children: PixoraChild[]): PixoraNode<'scroll-box'> {
+  return Object.freeze({
+    children: Object.freeze(children),
+    key: undefined,
+    props,
+    type: 'scroll-box' as const,
   });
 }

@@ -23,6 +23,7 @@ export { Box } from './components/box';
 export { Button } from './components/button';
 export { ContainerNode } from './components/container-node';
 export { InteractiveComponent } from './components/interactive-component';
+export { ScrollBox } from './components/scroll-box';
 export { SpriteNode } from './components/sprite-node';
 export { TextNode } from './components/text-node';
 
@@ -113,11 +114,12 @@ export type {
   PixoraChild,
   PixoraChildren,
   PixoraNode,
+  ScrollBoxNodeProps,
   SpriteNodeProps,
   TextNodeProps,
 } from './runtime/types';
 
-export { box, button, container, keyedContainer, sprite, text } from './runtime/create-node';
+export { box, button, container, keyedContainer, scrollBox, sprite, text } from './runtime/create-node';
 
 export { imperative } from './runtime/compat';
 

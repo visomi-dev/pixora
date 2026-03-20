@@ -750,7 +750,7 @@ function renderMainMenu(context: ApplicationContext): PixoraNode {
 **After** (recommended):
 
 ```ts
-const mainMenu = pixora.component((context: ApplicationContext) => {
+const mainMenu = pixora.component((context) => {
   return pixora.container({ x: 0, y: 0 }, pixora.box({ ... }));
 }, 'mainMenu');
 

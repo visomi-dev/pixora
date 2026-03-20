@@ -24,3 +24,7 @@ apps/docs/static/css/fonts/
 apps/docs/static/fonts/
 
 apps/docs/static/examples/
+
+debug/*.png
+debug/*.log
+debug/*.md

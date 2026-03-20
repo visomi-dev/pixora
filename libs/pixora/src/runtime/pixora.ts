@@ -9,7 +9,7 @@ import { createScheduler, type Scheduler } from './scheduler';
 import type { MountedTree } from './mounted-node';
 import { mountTree, unmountTree } from './renderer';
 import type { PixoraNode } from './types';
-import { box, button, container, keyedContainer, sprite, text } from './create-node';
+import { box, button, container, keyedContainer, scrollBox, sprite, text } from './create-node';
 
 // ---------------------------------------------------------------------------
 // Public types
@@ -64,6 +64,8 @@ export type PixoraComponentAPI = {
   container: typeof container;
   /** Creates a keyed container node */
   keyedContainer: typeof keyedContainer;
+  /** Creates a scroll box node */
+  scrollBox: typeof scrollBox;
   /** Creates a scene definition */
   scene: (
     sceneDef:
@@ -83,6 +85,7 @@ export type PixoraFn = {
   component(renderFn: (context: ApplicationContext) => PixoraNode): (context: ApplicationContext) => PixoraNode;
   container: typeof container;
   keyedContainer: typeof keyedContainer;
+  scrollBox: typeof scrollBox;
   scene: PixoraComponentAPI['scene'];
   sprite: typeof sprite;
   text: typeof text;
@@ -93,6 +96,7 @@ const componentAPI: PixoraComponentAPI = {
   button,
   container,
   keyedContainer,
+  scrollBox,
   scene(
     sceneDef:
       | { key: string; render: (context: ApplicationContext) => PixoraNode }
@@ -221,6 +225,7 @@ pixora.component = function (
 };
 pixora.container = container;
 pixora.keyedContainer = keyedContainer;
+pixora.scrollBox = scrollBox;
 pixora.scene = componentAPI.scene;
 pixora.sprite = sprite;
 pixora.text = text;
@@ -305,6 +310,7 @@ class DeclarativeSceneAdapter extends Scene {
 
   override destroy(): void {
     if (this.mountedTree) {
+      this.scheduler.unscheduleUpdate(this.key);
       unmountTree(this.mountedTree);
       this.mountedTrees.delete(this.key);
       this.mountedTree = null;

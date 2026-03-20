@@ -140,6 +140,10 @@ export class Scheduler {
     return this.pendingUpdates.size > 0;
   }
 
+  unscheduleUpdate(sceneKey: string): void {
+    this.pendingUpdates.delete(sceneKey);
+  }
+
   clear(): void {
     this.pendingUpdates.clear();
     this.postUpdateCallbacks.splice(0);
@@ -147,7 +151,11 @@ export class Scheduler {
 
   destroy(): void {
     if (this.frameHandle !== null) {
-      if (this.usesAnimationFrame && typeof cancelAnimationFrame === 'function' && typeof this.frameHandle === 'number') {
+      if (
+        this.usesAnimationFrame &&
+        typeof cancelAnimationFrame === 'function' &&
+        typeof this.frameHandle === 'number'
+      ) {
         cancelAnimationFrame(this.frameHandle);
       } else {
         clearTimeout(this.frameHandle);

@@ -1,4 +1,4 @@
-import { centeredTextX, rightAlignedTextX } from '../scene-positioning';
+import { rightAlignedTextX } from '../scene-positioning';
 
 import { api as pixora, signal, createKeyboardInput, clearKeyboardFrame, Keys } from 'pixora';
 import type { ApplicationContext } from 'pixora';
@@ -130,7 +130,8 @@ function rectIntersect(a: GameObject, b: GameObject): boolean {
   return a.x < b.x + b.width && a.x + a.width > b.x && a.y < b.y + b.height && a.y + a.height > b.y;
 }
 
-function update(deltaMs: number): void {
+function update(deltaMs: number, context: ApplicationContext): void {
+  if (context.scenes.getActiveSceneKey() !== 'game') return;
   if (gameOverSignal.get() || pausedSignal.get() || !keyboard) return;
 
   const keys = keyboard.keys.get();
@@ -227,12 +228,30 @@ function updateEnemies(deltaMs: number): void {
   const drop = enemyDropAmountSignal.get();
   const direction = enemyDirectionSignal.get();
 
+  let bulletsFired = false;
+  const enemyBullets = [...enemyBulletsSignal.get()];
+  const level = levelSignal.get();
+
   for (const e of enemies) {
     e.x += e.vx * direction * deltaMs * 0.05;
     e.y += drop;
+
+    if (Math.random() < 0.0001 * deltaMs * Math.min(level, 5)) {
+      const b = createGameObject(4, 12, 0xff4444, e.type === 'tank' ? 'tank' : 'enemy-bullet');
+      b.x = e.x + e.width / 2 - 2;
+      b.y = e.y + e.height;
+      b.vy = 0.4 + Math.min(level, 5) * 0.05;
+      enemyBullets.push(b);
+      bulletsFired = true;
+    }
   }
+
   enemiesSignal.set(enemies);
   enemyDropAmountSignal.set(0);
+
+  if (bulletsFired) {
+    enemyBulletsSignal.set(enemyBullets);
+  }
 
   if (player && enemies.some((e: GameObject) => e.y > player.y - 20)) loseLife();
 }
@@ -365,7 +384,7 @@ export function resetGame(): void {
 
 export const gameScene = pixora.scene({
   key: 'game',
-  render: (context: ApplicationContext) => {
+  render: (context) => {
     const viewport = context.viewport.get();
     viewportWidthSignal.set(viewport.width);
     viewportHeightSignal.set(viewport.height);
@@ -375,7 +394,7 @@ export const gameScene = pixora.scene({
       initGame();
       initializedSignal.set(true);
 
-      tickerCallback = () => update(context.app.ticker.deltaMS);
+      tickerCallback = () => update(context.app.ticker.deltaMS, context);
       context.app.ticker.add(tickerCallback as never);
     }
 
@@ -397,8 +416,6 @@ export const gameScene = pixora.scene({
     const levelText = `LEVEL: ${level}`;
     const livesStr = 'LIVES:' + ' ♥'.repeat(lives);
     const comboText = combo > 1 ? `COMBO x${Math.min(Math.floor(combo / 5) + 1, 5)} (${combo})` : '';
-    const comboX = centeredTextX(viewport.width, comboText, 16, 0.56);
-    const levelX = centeredTextX(viewport.width, levelText, 20, 0.56);
     const livesX = rightAlignedTextX(viewport.width, livesStr, 18, 20, 0.58);
 
     return pixora.container(
@@ -413,16 +430,18 @@ export const gameScene = pixora.scene({
           y: 16,
         }),
         pixora.text({
+          anchor: { x: 0.5, y: 0 },
           style: { fill: '#ff00aa', fontFamily: 'Orbitron, monospace', fontSize: 20, fontWeight: 'bold' },
           text: levelText,
-          x: levelX,
+          x: viewport.width / 2,
           y: 16,
         }),
         pixora.text({
+          anchor: { x: 0.5, y: 0 },
           style: { fill: '#ffff00', fontFamily: 'Orbitron, monospace', fontSize: 16, fontWeight: 'bold' },
           text: comboText,
-          x: comboX,
-          y: 20,
+          x: viewport.width / 2,
+          y: 40,
         }),
         pixora.text({
           style: { fill: '#ff6644', fontFamily: 'Orbitron, monospace', fontSize: 18 },
@@ -435,6 +454,7 @@ export const gameScene = pixora.scene({
         ? pixora.container(
             { x: 0, y: 0 },
             pixora.text({
+              anchor: { x: 0.5, y: 0 },
               style: { fill: '#ffffff', fontFamily: 'Orbitron, monospace', fontSize: 48, fontWeight: 'bold' },
               text: 'PAUSED',
               x: viewport.width / 2,
@@ -464,6 +484,7 @@ export const gameScene = pixora.scene({
         ? pixora.container(
             { x: 0, y: 0 },
             pixora.text({
+              anchor: { x: 0.5, y: 0 },
               style: { fill: '#ff4444', fontFamily: 'Orbitron, sans-serif', fontSize: 72, fontWeight: '900' },
               text: 'GAME OVER',
               x: viewport.width / 2,
@@ -493,7 +514,13 @@ export const gameScene = pixora.scene({
           )
         : null,
       player
-        ? pixora.box({ backgroundColor: 0x00ffaa, height: player.height, width: player.width, x: player.x, y: player.y })
+        ? pixora.box({
+            backgroundColor: 0x00ffaa,
+            height: player.height,
+            width: player.width,
+            x: player.x,
+            y: player.y,
+          })
         : null,
       ...bullets.map((b: GameObject) =>
         pixora.box({ backgroundColor: 0x00ffaa, height: b.height, width: b.width, x: b.x, y: b.y }),

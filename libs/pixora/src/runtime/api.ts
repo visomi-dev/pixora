@@ -12,7 +12,7 @@ import {
 } from '../layout/layout';
 import type { ApplicationContext } from '../app/types';
 
-import { box, button, container, keyedContainer, sprite, text } from './create-node';
+import { box, button, container, keyedContainer, scrollBox, sprite, text } from './create-node';
 import { imperative } from './compat';
 import { registerComponent } from './components';
 import { createScheduler, getScheduler, Scheduler } from './scheduler';
@@ -37,6 +37,7 @@ import {
   PixoraChild,
   PixoraComponent,
   PixoraComponentProps,
+  ScrollBoxNodeProps,
   SpriteNodeProps,
   TextNodeProps,
 } from './types';
@@ -45,7 +46,7 @@ import { pixora } from './pixora';
 
 export { pixora };
 export { isPixoraNode };
-export { box, button, container, keyedContainer, sprite, text };
+export { box, button, container, keyedContainer, scrollBox, sprite, text };
 export { imperative };
 export { mountTree, unmountTree };
 export { updateTree };
@@ -123,6 +124,7 @@ export type {
   SpriteNodeProps,
   BoxNodeProps,
   ButtonNodeProps,
+  ScrollBoxNodeProps,
   PixoraChild,
 };
 
@@ -145,6 +147,10 @@ export const api = {
 
   button(props: ButtonNodeProps) {
     return button(props);
+  },
+
+  scrollBox(props?: ScrollBoxNodeProps, ...children: PixoraChild[]) {
+    return scrollBox(props, ...children);
   },
 
   keyedContainer(key: string | number, props?: ContainerNodeProps, ...children: PixoraChild[]) {

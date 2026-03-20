@@ -4,6 +4,7 @@ import type { BaseNode } from '../components/base-node';
 import { Box } from '../components/box';
 import { Button } from '../components/button';
 import { ContainerNode } from '../components/container-node';
+import { ScrollBox } from '../components/scroll-box';
 import { SpriteNode } from '../components/sprite-node';
 import { TextNode } from '../components/text-node';
 import type { LayoutSpec } from '../layout/layout';
@@ -15,6 +16,7 @@ import type {
   ContainerNodeProps,
   HostPropsMap,
   HostType,
+  ScrollBoxNodeProps,
   SpriteNodeProps,
   TextNodeProps,
 } from './types';
@@ -64,7 +66,11 @@ export function applyCommonProps(displayObject: Container, props: ContainerNodeP
   }
 }
 
-function applyLayoutProps(node: BaseNode, previous: ContainerNodeProps['layout'], next: ContainerNodeProps['layout']): void {
+function applyLayoutProps(
+  node: BaseNode,
+  previous: ContainerNodeProps['layout'],
+  next: ContainerNodeProps['layout'],
+): void {
   if (next === previous) {
     return;
   }
@@ -109,6 +115,13 @@ function createTextDescriptor(): HostTypeDescriptor<'text'> {
       const node = new TextNode({ text: props.text, style });
 
       applyCommonProps(node.displayObject, props);
+      if (props.anchor !== undefined) {
+        if (typeof props.anchor === 'number') {
+          node.displayObject.anchor.set(props.anchor);
+        } else {
+          node.displayObject.anchor.set(props.anchor.x, props.anchor.y);
+        }
+      }
       applyLayoutProps(node, null, props.layout);
 
       return node;
@@ -117,6 +130,13 @@ function createTextDescriptor(): HostTypeDescriptor<'text'> {
       const style = buildTextStyle(next);
       (node as TextNode).updateProps({ text: next.text, style });
       applyCommonProps(node.displayObject, next);
+      if (next.anchor !== undefined) {
+        if (typeof next.anchor === 'number') {
+          (node.displayObject as any).anchor.set(next.anchor);
+        } else {
+          (node.displayObject as any).anchor.set(next.anchor.x, next.anchor.y);
+        }
+      }
       applyLayoutProps(node, previous.layout, next.layout);
     },
   };
@@ -150,6 +170,13 @@ function createSpriteDescriptor(): HostTypeDescriptor<'sprite'> {
       const node = new SpriteNode({ texture: props.texture });
 
       applyCommonProps(node.displayObject, props);
+      if (props.anchor !== undefined) {
+        if (typeof props.anchor === 'number') {
+          node.displayObject.anchor.set(props.anchor);
+        } else {
+          node.displayObject.anchor.set(props.anchor.x, props.anchor.y);
+        }
+      }
       applyLayoutProps(node, null, props.layout);
 
       return node;
@@ -159,6 +186,37 @@ function createSpriteDescriptor(): HostTypeDescriptor<'sprite'> {
         (node as SpriteNode).displayObject.texture = next.texture;
       }
 
+      applyCommonProps(node.displayObject, next);
+      if (next.anchor !== undefined) {
+        if (typeof next.anchor === 'number') {
+          (node.displayObject as any).anchor.set(next.anchor);
+        } else {
+          (node.displayObject as any).anchor.set(next.anchor.x, next.anchor.y);
+        }
+      }
+      applyLayoutProps(node, previous.layout, next.layout);
+    },
+  };
+}
+
+function createScrollBoxDescriptor(): HostTypeDescriptor<'scroll-box'> {
+  return {
+    create(props: ScrollBoxNodeProps): BaseNode {
+      const node = new ScrollBox({
+        height: props.height,
+        width: props.width,
+      });
+
+      applyCommonProps(node.displayObject, props);
+      applyLayoutProps(node, null, props.layout);
+
+      return node;
+    },
+    patch(node: BaseNode, previous: ScrollBoxNodeProps, next: ScrollBoxNodeProps): void {
+      (node as ScrollBox).updateProps({
+        height: next.height,
+        width: next.width,
+      });
       applyCommonProps(node.displayObject, next);
       applyLayoutProps(node, previous.layout, next.layout);
     },
@@ -273,6 +331,7 @@ export function createHostTypeRegistry(): HostTypeRegistry {
     box: createBoxDescriptor(),
     button: createButtonDescriptor(),
     container: createContainerDescriptor(),
+    'scroll-box': createScrollBoxDescriptor(),
     sprite: createSpriteDescriptor(),
     text: createTextDescriptor(),
   };

@@ -8,7 +8,7 @@ import type { BaseNode } from '../components/base-node';
 // Host types
 // ---------------------------------------------------------------------------
 
-export type HostType = 'box' | 'button' | 'container' | 'sprite' | 'text';
+export type HostType = 'box' | 'button' | 'container' | 'scroll-box' | 'sprite' | 'text';
 
 // ---------------------------------------------------------------------------
 // Functional component types
@@ -49,7 +49,13 @@ export type ContainerNodeProps = {
   y?: number;
 };
 
+export type ScrollBoxNodeProps = ContainerNodeProps & {
+  height?: number;
+  width?: number;
+};
+
 export type TextNodeProps = ContainerNodeProps & {
+  anchor?: number | { x: number; y: number };
   color?: string;
   font?: string;
   size?: number;
@@ -59,6 +65,7 @@ export type TextNodeProps = ContainerNodeProps & {
 };
 
 export type SpriteNodeProps = ContainerNodeProps & {
+  anchor?: number | { x: number; y: number };
   asset?: string;
   texture?: Texture;
 };
@@ -94,6 +101,7 @@ export type HostPropsMap = {
   box: BoxNodeProps;
   button: ButtonNodeProps;
   container: ContainerNodeProps;
+  'scroll-box': ScrollBoxNodeProps;
   sprite: SpriteNodeProps;
   text: TextNodeProps;
 };

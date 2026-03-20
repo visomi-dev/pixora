@@ -1,4 +1,4 @@
-import { centeredBoxX, centeredTextX } from '../scene-positioning';
+import { centeredBoxX } from '../scene-positioning';
 
 import { pixora } from 'pixora';
 
@@ -13,28 +13,31 @@ export const victoryScene = pixora.scene({
       { x: 0, y: 0 },
       pixora.box({ backgroundColor: 0x0a0a1a, height: vp.height, width: vp.width, x: 0, y: 0 }),
       pixora.text({
+        anchor: { x: 0.5, y: 0 },
         color: '#00ffaa',
         font: 'Orbitron, sans-serif',
         size: 72,
         text: 'VICTORY!',
         weight: '900',
-        x: centeredTextX(vp.width, 'VICTORY!', 72, 0.62),
+        x: vp.width / 2,
         y: headingY,
       }),
       pixora.text({
+        anchor: { x: 0.5, y: 0 },
         color: '#ff00aa',
         font: 'Orbitron, sans-serif',
         size: 28,
         text: 'GALAXY DEFENDED!',
-        x: centeredTextX(vp.width, 'GALAXY DEFENDED!', 28, 0.58),
+        x: vp.width / 2,
         y: headingY + 105,
       }),
       pixora.text({
+        anchor: { x: 0.5, y: 0 },
         color: '#ffffff',
         font: 'Orbitron, sans-serif',
         size: 32,
         text: 'FINAL SCORE: 0',
-        x: centeredTextX(vp.width, 'FINAL SCORE: 0', 32, 0.56),
+        x: vp.width / 2,
         y: headingY + 160,
       }),
       pixora.button({
