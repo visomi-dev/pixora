@@ -186,4 +186,45 @@ describe('imperative bridge in renderer', () => {
     // We can verify by checking its displayObject is accessible.
     expect(existingNode.displayObject).toBeDefined();
   });
+
+  it('mounts a raw PixoraNode object as child', () => {
+    const parent = new Container();
+    const rawChild: PixoraNode = {
+      type: 'text',
+      props: { text: 'raw text' },
+      children: [],
+      key: undefined,
+    };
+    const definition: PixoraNode<'container'> = {
+      type: 'container',
+      props: {},
+      children: [rawChild],
+      key: undefined,
+    };
+
+    const tree = mountTree(definition, parent, createMockContext());
+
+    expect(tree.root.children).toHaveLength(1);
+    expect((tree.root.children[0].hostNode.displayObject as Text).text).toBe('raw text');
+  });
+
+  it('normalizes mixed array children including raw PixoraNodes', () => {
+    const parent = new Container();
+    const rawNode: PixoraNode = {
+      type: 'box',
+      props: { width: 10, height: 10 },
+      children: [],
+      key: undefined,
+    };
+    const definition: PixoraNode<'container'> = {
+      type: 'container',
+      props: {},
+      children: ['string child', [rawNode], text({ text: 'helper child' })],
+      key: undefined,
+    };
+
+    const tree = mountTree(definition, parent, createMockContext());
+
+    expect(tree.root.children).toHaveLength(3);
+  });
 });

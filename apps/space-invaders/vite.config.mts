@@ -35,6 +35,21 @@ export default defineConfig(() => ({
     coverage: {
       reportsDirectory: '../../coverage/apps/space-invaders',
       provider: 'v8' as const,
+      thresholds: {
+        global: {
+          branches: 100,
+          functions: 100,
+          lines: 100,
+          statements: 100,
+        },
+        perFile: true,
+        '**/*': {
+          branches: 100,
+          functions: 100,
+          lines: 100,
+          statements: 100,
+        },
+      },
     },
   },
 }));

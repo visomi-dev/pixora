@@ -60,6 +60,21 @@ export default defineConfig(({ command }) => ({
     coverage: {
       reportsDirectory: '../../coverage/libs/pixora',
       provider: 'v8' as const,
+      thresholds: {
+        global: {
+          branches: 55,
+          functions: 60,
+          lines: 56,
+          statements: 56,
+        },
+        perFile: true,
+        '**/*': {
+          branches: 0,
+          functions: 0,
+          lines: 0,
+          statements: 0,
+        },
+      },
     },
   },
 }));
