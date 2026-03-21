@@ -62,7 +62,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: pnpm nx release
+        run: pnpm nx release --yes
 
       - name: Build Docs
         run: pnpm nx build docs
