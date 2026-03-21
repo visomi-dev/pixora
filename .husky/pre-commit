@@ -1,7 +1,7 @@
+# Validate docs version matches library version BEFORE running other checks
+pnpm run version:bump -- --validate-only
+
 pnpm affected -t lint
 pnpm affected -t typecheck
 # pnpm affected -t test
 # pnpm affected -t build
-
-# Run version bump if library files were modified
-pnpm run version:bump
