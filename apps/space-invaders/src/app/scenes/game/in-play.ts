@@ -7,7 +7,7 @@ import type { ApplicationContext, PixoraNode } from 'pixora';
 
 const inPlayNodes = new WeakMap<ApplicationContext, PixoraNode>();
 
-export function InPlay(context: ApplicationContext): PixoraNode {
+export function inPlay(context: ApplicationContext): PixoraNode {
   const existing = inPlayNodes.get(context);
 
   if (existing) {
