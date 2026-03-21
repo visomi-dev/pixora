@@ -99,7 +99,7 @@ function getNavigationClasses(item: NavigationItem): string {
           </div>
           <div>
             <h1 class="text-lg leading-none font-bold">Pixora</h1>
-            <p class="text-primary mt-1 text-[10px] font-bold tracking-widest uppercase">Engine v2.4.0</p>
+            <p class="text-primary mt-1 text-[10px] font-bold tracking-widest uppercase">Engine v0.7.0</p>
           </div>
         </div>
         <nav class="custom-scrollbar flex-1 space-y-6 overflow-y-auto p-4">
@@ -151,23 +151,15 @@ function getNavigationClasses(item: NavigationItem): string {
                 type="text"
               />
             </div>
-            <div class="border-border-muted dark:border-border-dark flex items-center gap-2 border-l pl-6">
+            <div class="border-border-muted dark:border-border-dark flex items-center gap-4 border-l pl-6">
               <button
                 aria-label="Toggle theme"
-                class="hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg p-2 text-slate-500 transition-colors hover:text-slate-900 dark:hover:text-white"
+                class="bg-slate-200 dark:bg-slate-700 relative h-6 w-11 rounded-full transition-colors"
                 id="theme-toggle"
                 type="button"
               >
-                <span class="material-symbols-outlined dark:hidden">dark_mode</span>
-                <span class="material-symbols-outlined hidden dark:block">light_mode</span>
+                <span class="bg-white dark:bg-slate-400 absolute top-0.5 left-0.5 h-5 w-5 rounded-full transition-transform shadow-sm"></span>
               </button>
-              <button
-                class="hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg p-2 text-slate-500 transition-colors hover:text-slate-900 dark:hover:text-white"
-                type="button"
-              >
-                <span class="material-symbols-outlined">notifications</span>
-              </button>
-              <div class="bg-primary/20 border-primary/30 ml-2 h-8 w-8 rounded-full border"></div>
             </div>
           </div>
         </header>
@@ -189,19 +181,27 @@ function getNavigationClasses(item: NavigationItem): string {
         if (savedTheme === 'light') {
           html.classList.remove('dark');
           html.classList.add('light');
+          themeToggle.querySelector('span')?.classList.remove('dark:translate-x-5');
         } else if (!savedTheme && systemDark) {
           html.classList.add('dark');
+          themeToggle.querySelector('span')?.classList.add('dark:translate-x-5');
+        } else if (savedTheme === 'dark' || (!savedTheme && !systemDark)) {
+          html.classList.add('dark');
+          themeToggle.querySelector('span')?.classList.add('dark:translate-x-5');
         }
 
         themeToggle.addEventListener('click', () => {
+          const toggleIndicator = themeToggle.querySelector('span');
           if (html.classList.contains('dark')) {
             html.classList.remove('dark');
             html.classList.add('light');
             localStorage.setItem('theme', 'light');
+            toggleIndicator?.classList.remove('dark:translate-x-5');
           } else {
             html.classList.remove('light');
             html.classList.add('dark');
             localStorage.setItem('theme', 'dark');
+            toggleIndicator?.classList.add('dark:translate-x-5');
           }
         });
       })();
