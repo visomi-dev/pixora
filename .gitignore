@@ -11,10 +11,6 @@ node_modules/
 dist/
 coverage/
 
-pnpm-workspace.yaml
-
-coverage/
-
 apps/docs/static/examples/game/
 apps/docs/static/docs/api/generated/
 apps/docs/.astro/
