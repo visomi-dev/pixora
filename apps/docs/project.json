@@ -15,7 +15,7 @@
             "command": "pnpm exec tailwindcss -i apps/docs/assets/css/styles.css -o apps/docs/static/css/styles.css --minify"
           },
           {
-            "command": "cp libs/pixora/llms.txt apps/docs/static/ && cp libs/pixora/llms-full.txt apps/docs/static/ && pnpm exec astro build --root apps/docs --outDir ../../dist/apps/docs --base /"
+            "command": "cp libs/pixora/llms.txt apps/docs/static/ && cp libs/pixora/llms-full.txt apps/docs/static/ && pnpm exec astro build --root apps/docs --outDir ../../dist/apps/docs"
           }
         ],
         "parallel": false
@@ -33,7 +33,7 @@
             "command": "pnpm exec tailwindcss -i apps/docs/assets/css/styles.css -o apps/docs/static/css/styles.css --minify"
           },
           {
-            "command": "cp libs/pixora/llms.txt apps/docs/static/ && cp libs/pixora/llms-full.txt apps/docs/static/ && pnpm exec astro build --root apps/docs --outDir ../../dist/apps/docs --base /"
+            "command": "cp libs/pixora/llms.txt apps/docs/static/ && cp libs/pixora/llms-full.txt apps/docs/static/ && pnpm exec astro build --root apps/docs --outDir ../../dist/apps/docs"
           }
         ],
         "parallel": false
@@ -43,7 +43,7 @@
     "build-example": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "rm -rf apps/docs/static/examples/space-invaders && pnpm nx run space-invaders:build:docs --skipNxCache && mkdir -p apps/docs/static/examples/space-invaders && cp -r dist/apps/space-invaders/* apps/docs/static/examples/space-invaders/ && rm -rf dist/apps/space-invaders"
+        "command": "rm -rf apps/docs/static/examples/space-invaders && pnpm nx run space-invaders:build --configuration=docs --skipNxCache && mkdir -p apps/docs/static/examples/space-invaders && cp -r dist/apps/space-invaders/* apps/docs/static/examples/space-invaders/ && rm -rf dist/apps/space-invaders"
       }
     },
     "serve": {
@@ -57,7 +57,7 @@
             "command": "pnpm exec tailwindcss -i apps/docs/assets/css/styles.css -o apps/docs/static/css/styles.css --minify"
           },
           {
-            "command": "cp libs/pixora/llms.txt apps/docs/static/ && cp libs/pixora/llms-full.txt apps/docs/static/ && pnpm exec astro build --root apps/docs --outDir ../../dist/apps/docs --base /"
+            "command": "cp libs/pixora/llms.txt apps/docs/static/ && cp libs/pixora/llms-full.txt apps/docs/static/ && pnpm exec astro build --root apps/docs --outDir ../../dist/apps/docs"
           }
         ],
         "parallel": true
@@ -75,7 +75,7 @@
             "command": "pnpm exec tailwindcss -i apps/docs/assets/css/styles.css -o apps/docs/static/css/styles.css --minify"
           },
           {
-            "command": "cp libs/pixora/llms.txt apps/docs/static/ && cp libs/pixora/llms-full.txt apps/docs/static/ && pnpm exec astro build --root apps/docs --outDir ../../dist/apps/docs-preview --base /preview/"
+            "command": "cp libs/pixora/llms.txt apps/docs/static/ && cp libs/pixora/llms-full.txt apps/docs/static/ && BASE_URL=/preview/ pnpm exec astro build --root apps/docs --outDir ../../dist/apps/docs-preview"
           }
         ],
         "parallel": false
