@@ -12,6 +12,15 @@
   },
   "tags": [],
   "targets": {
+    "generate-llmstxt": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/scripts/generate-llmstxt.mjs"
+      }
+    },
+    "build": {
+      "dependsOn": ["generate-llmstxt"]
+    },
     "nx-release-publish": {
       "options": {
         "packageRoot": "dist/{projectRoot}"

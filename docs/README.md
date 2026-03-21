@@ -42,6 +42,9 @@ Read the documents in this order:
 - `docs/adr/0006-entity-model.md`
 - `docs/adr/0007-animation-strategy.md`
 - `docs/adr/0008-asset-strategy.md`
+- `docs/adr/0009-declarative-runtime.md`
+- `docs/adr/0010-unified-pixora-api.md`
+- `docs/adr/0011-gameplay-subtree-boundaries.md`
 
 ### Module specs
 

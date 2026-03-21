@@ -1,56 +1,46 @@
 ---
 title: Components Module
-description: Entity component system
+description: Declarative component composition and keyed gameplay nodes
 ---
 
-The Components module provides the building blocks for game entities using a component-based architecture.
+The Components module in Pixora is the declarative composition layer used by scenes and gameplay islands.
 
 ## Overview
 
-Components are reusable pieces of data and behavior that can be attached to entities:
+Pixora components are plain functions that return `PixoraNode` trees.
 
-- **SpriteComponent**: Render sprites
-- **TransformComponent**: Position, rotation, scale
-- **PhysicsComponent**: Physics simulation
-- **AnimationComponent**: Play animations
-- Custom components
+- `pixora.component()` defines a reusable render function.
+- call component functions directly from scenes or other components.
+- use `pixora.island()` when a subtree should manage its own Pixi objects without changing the declarative scene tree.
+- keyed host helpers such as `pixora.keyedBox()` keep dynamic collections stable across reconciliation.
 
-## Built-in Components
+## Example
 
-```typescript
-import { Entity, SpriteComponent, TransformComponent } from 'pixora';
+```ts
+import { pixora } from 'pixora';
 
-const entity = new Entity('player');
-entity.addComponent(TransformComponent, { x: 100, y: 100 });
-entity.addComponent(SpriteComponent, { texture: 'player.png' });
+const StatusBanner = pixora.component(({ label }: { label: string }) => {
+  return pixora.text({ text: label, color: '#00ffaa', size: 18 });
+});
+
+const tree = pixora.container(
+  { x: 0, y: 0 },
+  StatusBanner({ label: 'READY' }),
+  pixora.keyedBox('player', { backgroundColor: 0x00ffaa, width: 24, height: 12, x: 200, y: 320 }),
+);
 ```
 
-## Custom Components
+## Gameplay recommendation
 
-Create custom components:
+For gameplay-heavy scenes:
 
-```typescript
-import { Component } from 'pixora';
+- keep the scene shell focused on background, HUD, and overlays;
+- move dynamic entities into an `InPlay` island;
+- key every gameplay entity by `id`;
+- let the island patch its own Pixi objects while the scene shell stays declarative.
 
-class HealthComponent extends Component {
-  health = 100;
-  maxHealth = 100;
+## Related docs
 
-  takeDamage(amount: number) {
-    this.health = Math.max(0, this.health - amount);
-    if (this.health === 0) {
-      this.entity.destroy();
-    }
-  }
-
-  heal(amount: number) {
-    this.health = Math.min(this.maxHealth, this.health + amount);
-  }
-}
-
-entity.addComponent(HealthComponent, { health: 100, maxHealth: 100 });
-```
-
-## API Reference
-
-For complete API documentation, see the [Generated API Docs](../generated/).
+- [Gameplay Entity Layers](../../guides/gameplay-entity-layers/)
+- [Space Invaders Game](../../examples/space-invaders/)
+- [Generated API Docs](../generated/)

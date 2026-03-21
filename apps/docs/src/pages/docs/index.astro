@@ -1,0 +1,29 @@
+---
+import DocPage from '../../components/doc-page.astro';
+import { getDocBySlug, getSectionChildren, withBasePath } from '../../lib/docs';
+
+const entry = getDocBySlug('');
+const basePath = import.meta.env.BASE_URL;
+
+if (!entry) {
+  throw new Error('The root documentation page is missing.');
+}
+
+const children = getSectionChildren('');
+---
+
+<DocPage currentPath={Astro.url.pathname} entry={entry}>
+  {
+    children.map((child) => (
+      <li>
+        <a
+          class="hover:border-primary/50 dark:border-slate-800 dark:hover:bg-white/5 block rounded-xl border border-slate-200 p-4 transition-all hover:bg-slate-50"
+          href={withBasePath(basePath, child.href)}
+        >
+          <h2 class="mb-2 text-lg font-bold text-slate-900 dark:text-white">{child.title}</h2>
+          {child.description && <p class="text-sm text-slate-600 dark:text-slate-400">{child.description}</p>}
+        </a>
+      </li>
+    ))
+  }
+</DocPage>

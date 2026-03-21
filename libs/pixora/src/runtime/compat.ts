@@ -15,6 +15,7 @@ import { IMPERATIVE_MARKER, type ImperativeNodeProps, type PixoraNode } from './
 export function imperative(node: BaseNode, key?: string | number): PixoraNode {
   const props: ImperativeNodeProps = {
     [IMPERATIVE_MARKER]: true,
+    managed: false,
     node,
   };
 

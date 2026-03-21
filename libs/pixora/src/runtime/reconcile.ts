@@ -1,10 +1,8 @@
 import type { BaseNode } from '../components/base-node';
 
-import { resolveComponent } from './components';
 import { createHostTypeRegistry, type HostTypeRegistry } from './host-types';
 import type { MountedNode, MountedTree } from './mounted-node';
 import { normalizeChildren } from './normalize';
-import { createReactiveSubtreeEffect } from './reactive';
 import { IMPERATIVE_MARKER, type HostType, type PixoraNode } from './types';
 
 export type ReconcileResult = {
@@ -16,71 +14,30 @@ function isImperativeType(type: unknown): boolean {
   return type === IMPERATIVE_MARKER;
 }
 
-function resolveFunctionalNode(definition: PixoraNode): PixoraNode {
-  const type = definition.type;
-
-  if (typeof type === 'function') {
-    return type(definition.props as Record<string, unknown>);
-  }
-
-  if (typeof type === 'symbol' || typeof type === 'string') {
-    const resolved = resolveComponent(type);
-
-    if (resolved) {
-      return resolved(definition.props as Record<string, unknown>);
-    }
-  }
-
-  return definition;
-}
-
 function reconcileNode(oldNode: MountedNode, newDefinition: PixoraNode, registry: HostTypeRegistry): ReconcileResult {
   if (oldNode.isImperative) {
     return reconcileImperativeNode(oldNode, newDefinition, registry);
   }
 
-  const resolvedDefinition = resolveFunctionalNode(newDefinition);
   const oldDefinition = oldNode.definition;
 
-  if (isImperativeType(oldDefinition.type) !== isImperativeType(resolvedDefinition.type)) {
-    return replaceNode(oldNode, resolvedDefinition, registry);
+  if (isImperativeType(oldDefinition.type) !== isImperativeType(newDefinition.type)) {
+    return replaceNode(oldNode, newDefinition, registry);
   }
 
-  if (isImperativeType(resolvedDefinition.type)) {
-    return reconcileImperativeNode(oldNode, resolvedDefinition, registry);
+  if (isImperativeType(newDefinition.type)) {
+    return reconcileImperativeNode(oldNode, newDefinition, registry);
   }
 
-  const oldOriginalType = oldDefinition.type;
-  const newOriginalType = newDefinition.type;
-  const wasFunctionalComponent = typeof oldOriginalType === 'function';
-  const isFunctionalComponent = typeof newOriginalType === 'function';
-
-  if (wasFunctionalComponent && currentTree) {
-    if (oldNode.reactiveContext) {
-      oldNode.reactiveContext.dispose();
-      oldNode.reactiveContext = undefined;
-    }
-
-    if (isFunctionalComponent) {
-      const reactiveCtx = createReactiveSubtreeEffect(
-        newOriginalType as never,
-        newDefinition.props as Record<string, unknown>,
-        oldNode,
-        currentTree,
-      );
-
-      oldNode.reactiveContext = reactiveCtx;
-    }
-  }
-
-  patchNode(oldNode, oldDefinition, resolvedDefinition, registry);
+  patchNode(oldNode, oldDefinition, newDefinition, registry);
 
   const oldChildren = oldNode.children;
-  const newChildren = normalizeChildren(resolvedDefinition.children);
+  const newChildren = normalizeChildren(newDefinition.children);
+  validateChildKeys(newDefinition, newChildren);
 
   reconcileChildren(oldNode, oldChildren, newChildren, registry);
 
-  oldNode.definition = resolvedDefinition;
+  oldNode.definition = newDefinition;
 
   return { mounted: oldNode, action: 'patch' };
 }
@@ -99,7 +56,7 @@ function patchNode(
 
   const descriptor = registry[hostType];
 
-  if (descriptor) {
+  if (descriptor && oldNode.hostNode.displayObject) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (descriptor.patch as any)(oldNode.hostNode, oldDefinition.props, newDefinition.props);
   }
@@ -307,45 +264,29 @@ function shouldReuseByType(oldDef: PixoraNode, newDef: PixoraNode): boolean {
 }
 
 function mountNode(definition: PixoraNode, parentMounted: MountedNode | null, registry: HostTypeRegistry): MountedNode {
-  const resolved = resolveFunctionalNode(definition);
-
-  if (isImperativeType(resolved.type)) {
-    return mountImperativeNode(resolved, parentMounted);
+  if (isImperativeType(definition.type)) {
+    return mountImperativeNode(definition, parentMounted);
   }
 
-  const hostType = resolved.type as HostType;
+  const hostType = definition.type as HostType;
   const descriptor = registry[hostType];
 
   if (!descriptor) {
     throw new Error(
-      `Unknown host type: "${String(resolved.type)}". Valid types: container, text, sprite, box, button.`,
+      `Unknown host type: "${String(definition.type)}". Valid types: container, text, sprite, box, button.`,
     );
   }
 
-  const hostNode = (descriptor.create as (props: unknown) => BaseNode)(resolved.props);
-  const normalizedChildren = normalizeChildren(resolved.children);
+  const hostNode = (descriptor.create as (props: unknown) => BaseNode)(definition.props);
+  const normalizedChildren = normalizeChildren(definition.children);
 
   const mounted: MountedNode = {
     children: [],
-    definition: resolved,
+    definition,
     hostNode,
     isImperative: false,
     parent: parentMounted,
   };
-
-  const originalType = definition.type;
-  const isFunctionalComponent = typeof originalType === 'function';
-
-  if (isFunctionalComponent && currentTree) {
-    const reactiveCtx = createReactiveSubtreeEffect(
-      originalType as never,
-      definition.props as Record<string, unknown>,
-      mounted,
-      currentTree,
-    );
-
-    mounted.reactiveContext = reactiveCtx;
-  }
 
   for (const child of normalizedChildren) {
     const mountedChild = mountNode(child, mounted, registry);
@@ -370,11 +311,6 @@ function mountImperativeNode(definition: PixoraNode, parentMounted: MountedNode 
 }
 
 function unmountNode(mounted: MountedNode): void {
-  if (mounted.reactiveContext) {
-    mounted.reactiveContext.dispose();
-    mounted.reactiveContext = undefined;
-  }
-
   for (const child of mounted.children) {
     unmountNode(child);
   }
@@ -382,10 +318,18 @@ function unmountNode(mounted: MountedNode): void {
   mounted.children.length = 0;
 
   if (mounted.isImperative) {
+    const imperativeProps = mounted.definition.props as {
+      readonly [IMPERATIVE_MARKER]: true;
+      readonly managed?: boolean;
+    };
     const parentDisplay = mounted.hostNode.displayObject.parent;
 
     if (parentDisplay) {
       parentDisplay.removeChild(mounted.hostNode.displayObject);
+    }
+
+    if (imperativeProps.managed) {
+      mounted.hostNode.destroy();
     }
   } else {
     mounted.hostNode.destroy();
@@ -393,7 +337,6 @@ function unmountNode(mounted: MountedNode): void {
 }
 
 let registryInstance: HostTypeRegistry | null = null;
-let currentTree: MountedTree | null = null;
 
 function getRegistry(): HostTypeRegistry {
   if (!registryInstance) {
@@ -405,11 +348,21 @@ function getRegistry(): HostTypeRegistry {
 
 export function updateTree(tree: MountedTree, newDefinition: PixoraNode): void {
   const reg = getRegistry();
-  currentTree = tree;
+  reconcileNode(tree.root, newDefinition, reg);
+}
 
-  try {
-    reconcileNode(tree.root, newDefinition, reg);
-  } finally {
-    currentTree = null;
+function validateChildKeys(parent: PixoraNode, children: readonly PixoraNode[]): void {
+  const seenKeys = new Set<string | number>();
+
+  for (const child of children) {
+    if (child.key === undefined) {
+      continue;
+    }
+
+    if (seenKeys.has(child.key)) {
+      throw new Error(`Duplicate child key "${child.key}" found under "${String(parent.type)}".`);
+    }
+
+    seenKeys.add(child.key);
   }
 }

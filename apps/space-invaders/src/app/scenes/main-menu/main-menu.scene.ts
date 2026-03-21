@@ -1,4 +1,4 @@
-import { centeredBoxX, centeredTextX } from '../scene-positioning';
+import { centeredBoxX } from '../scene-positioning';
 
 import { pixora } from 'pixora';
 
@@ -24,21 +24,23 @@ export const mainMenuScene = pixora.scene({
       { x: 0, y: 0 },
       pixora.box({ backgroundColor: 0x0a0a1a, height: vp.height, width: vp.width, x: 0, y: 0 }),
       pixora.text({
+        anchor: { x: 0.5, y: 0 },
         color: '#00ffaa',
         font: 'Orbitron, sans-serif',
         size: 72,
         text: 'SPACE',
         weight: '900',
-        x: centeredTextX(vp.width, 'SPACE', 72, 0.62),
+        x: vp.width / 2,
         y: titleY,
       }),
       pixora.text({
+        anchor: { x: 0.5, y: 0 },
         color: '#ff00aa',
         font: 'Orbitron, sans-serif',
         size: 48,
         text: 'INVADERS',
         weight: '700',
-        x: centeredTextX(vp.width, 'INVADERS', 48, 0.58),
+        x: vp.width / 2,
         y: titleY + 76,
       }),
       pixora.button({
@@ -60,12 +62,13 @@ export const mainMenuScene = pixora.scene({
         y: menuY + 80,
       }),
       pixora.text({
+        anchor: { x: 0.5, y: 0 },
         text: highScoreText,
         color: '#666688',
         size: 14,
         font: 'JetBrains Mono, monospace',
         style: { align: 'center' },
-        x: centeredTextX(vp.width, highScoreText, 14, 0.6),
+        x: vp.width / 2,
         y: vp.height - 36,
       }),
     );

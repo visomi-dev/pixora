@@ -1,0 +1,265 @@
+---
+import { withBasePath } from '../lib/docs';
+
+type NavigationItem = {
+  href: string;
+  icon: string;
+  label: string;
+  match: 'exact' | 'prefix';
+};
+
+type NavigationSection = {
+  items: NavigationItem[];
+  title: string;
+};
+
+type Props = {
+  currentPath: string;
+  title: string;
+};
+
+const { currentPath, title } = Astro.props as Props;
+const basePath = import.meta.env.BASE_URL;
+const normalizedPath = currentPath.endsWith('/') ? currentPath : `${currentPath}/`;
+
+const navigationSections: NavigationSection[] = [
+  {
+    title: 'Getting Started',
+    items: [
+      { href: withBasePath(basePath, 'docs/'), icon: 'info', label: 'Introduction', match: 'exact' },
+      {
+        href: withBasePath(basePath, 'docs/getting-started/'),
+        icon: 'rocket_launch',
+        label: 'Getting Started',
+        match: 'prefix',
+      },
+      {
+        href: withBasePath(basePath, 'docs/getting-started/installation/'),
+        icon: 'download',
+        label: 'Installation',
+        match: 'exact',
+      },
+    ],
+  },
+  {
+    title: 'Core API',
+    items: [
+      { href: withBasePath(basePath, 'docs/api/'), icon: 'api', label: 'API Reference', match: 'prefix' },
+      { href: withBasePath(basePath, 'docs/guides/'), icon: 'auto_fix_high', label: 'Guides', match: 'prefix' },
+    ],
+  },
+  {
+    title: 'Resources',
+    items: [
+      { href: withBasePath(basePath, 'docs/examples/'), icon: 'menu_book', label: 'Examples', match: 'prefix' },
+      { href: '#', icon: 'forum', label: 'Community', match: 'exact' },
+    ],
+  },
+];
+
+function isActive(item: NavigationItem): boolean {
+  if (item.href === '#') {
+    return false;
+  }
+
+  return item.match === 'exact' ? normalizedPath === item.href : normalizedPath.startsWith(item.href);
+}
+
+function getNavigationClasses(item: NavigationItem): string {
+  const baseClasses =
+    'flex items-center gap-3 px-3 py-2 rounded-lg border transition-colors text-sm font-medium';
+
+  if (isActive(item)) {
+    return `${baseClasses} border-primary/20 bg-primary/10 text-primary`;
+  }
+
+  return `${baseClasses} border-transparent text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-white/5 dark:hover:text-white`;
+}
+---
+
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title === 'Pixora' ? 'Pixora' : `${title} | Pixora`}</title>
+    <meta name="description" content="Declarative-by-default game framework for Pixi.js and TypeScript" />
+    <link href={withBasePath(basePath, 'css/styles.css')} rel="stylesheet" />
+  </head>
+  <body
+    class="bg-background-light text-slate-900 antialiased dark:bg-background-dark dark:text-slate-100 font-sans"
+  >
+    <div class="flex min-h-screen">
+      <aside
+        class="bg-surface-light border-border-muted dark:border-border-dark dark:bg-surface-dark flex w-72 shrink-0 flex-col border-r"
+      >
+        <div class="border-border-muted dark:border-border-dark flex items-center gap-3 border-b p-6">
+          <div class="bg-primary flex h-8 w-8 items-center justify-center rounded">
+            <span class="material-symbols-outlined text-xl text-white">deployed_code</span>
+          </div>
+          <div>
+            <h1 class="text-lg leading-none font-bold">Pixora</h1>
+            <p class="text-primary mt-1 text-[10px] font-bold tracking-widest uppercase">Engine v2.4.0</p>
+          </div>
+        </div>
+        <nav class="custom-scrollbar flex-1 space-y-6 overflow-y-auto p-4">
+          {
+            navigationSections.map((section) => (
+              <div>
+                <p class="mb-2 px-3 text-[10px] font-bold tracking-widest text-slate-500 uppercase">
+                  {section.title}
+                </p>
+                <div class="space-y-1">
+                  {section.items.map((item) => (
+                    <a class={getNavigationClasses(item)} href={item.href}>
+                      <span class="material-symbols-outlined text-sm">{item.icon}</span>
+                      <span>{item.label}</span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            ))
+          }
+        </nav>
+        <div class="border-border-muted dark:border-border-dark mt-auto border-t p-4">
+          <button
+            class="bg-primary hover:bg-primary/90 flex w-full items-center justify-center gap-2 rounded-lg py-2.5 text-sm font-bold text-white transition-all"
+            type="button"
+          >
+            <span class="material-symbols-outlined text-sm">favorite</span>
+            Support Us
+          </button>
+        </div>
+      </aside>
+      <div class="flex min-h-screen flex-1 flex-col">
+        <header
+          class="bg-background-light/80 border-border-muted dark:border-border-dark dark:bg-background-dark/80 sticky top-0 z-10 flex items-center justify-between border-b px-8 py-4 backdrop-blur-md"
+        >
+          <div class="flex items-center gap-2 text-xs font-medium text-slate-500">
+            <a class="hover:text-primary transition-colors" href={withBasePath(basePath, 'docs/')}>Documentation</a>
+            <span class="material-symbols-outlined text-[10px]">chevron_right</span>
+            <span class="text-slate-700 dark:text-slate-200">{title}</span>
+          </div>
+          <div class="flex items-center gap-6">
+            <div class="relative">
+              <span class="material-symbols-outlined absolute top-1/2 left-3 -translate-y-1/2 text-lg text-slate-500">
+                search
+              </span>
+              <input
+                class="bg-white border-border-muted dark:border-border-dark dark:bg-surface-dark w-64 rounded-lg border py-1.5 pr-4 pl-10 text-sm text-slate-900 placeholder:text-slate-400 focus:border-primary focus:ring-1 focus:ring-primary dark:text-slate-100"
+                placeholder="Search documentation..."
+                type="text"
+              />
+            </div>
+            <div class="border-border-muted dark:border-border-dark flex items-center gap-2 border-l pl-6">
+              <button
+                aria-label="Toggle theme"
+                class="hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg p-2 text-slate-500 transition-colors hover:text-slate-900 dark:hover:text-white"
+                id="theme-toggle"
+                type="button"
+              >
+                <span class="material-symbols-outlined dark:hidden">dark_mode</span>
+                <span class="material-symbols-outlined hidden dark:block">light_mode</span>
+              </button>
+              <button
+                class="hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg p-2 text-slate-500 transition-colors hover:text-slate-900 dark:hover:text-white"
+                type="button"
+              >
+                <span class="material-symbols-outlined">notifications</span>
+              </button>
+              <div class="bg-primary/20 border-primary/30 ml-2 h-8 w-8 rounded-full border"></div>
+            </div>
+          </div>
+        </header>
+        <main class="custom-scrollbar mx-auto flex-1 overflow-y-auto px-8 py-12 max-w-4xl">
+          <slot />
+        </main>
+      </div>
+    </div>
+    <script is:inline>
+      (() => {
+        const html = document.documentElement;
+        const themeToggle = document.getElementById('theme-toggle');
+
+        if (!themeToggle) return;
+
+        const savedTheme = localStorage.getItem('theme');
+        const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+        if (savedTheme === 'light') {
+          html.classList.remove('dark');
+          html.classList.add('light');
+        } else if (!savedTheme && systemDark) {
+          html.classList.add('dark');
+        }
+
+        themeToggle.addEventListener('click', () => {
+          if (html.classList.contains('dark')) {
+            html.classList.remove('dark');
+            html.classList.add('light');
+            localStorage.setItem('theme', 'light');
+          } else {
+            html.classList.remove('light');
+            html.classList.add('dark');
+            localStorage.setItem('theme', 'dark');
+          }
+        });
+      })();
+    </script>
+    <script is:inline>
+      (() => {
+        function addCopyButtons() {
+          document.querySelectorAll('.chroma').forEach((block) => {
+            if (block.querySelector('.copy-btn')) return;
+
+            const code = block.querySelector('code');
+            if (!code) return;
+
+            const text = code.textContent;
+            const button = document.createElement('button');
+            button.className = 'copy-btn';
+            button.textContent = 'Copy';
+            button.setAttribute('data-code', text || '');
+            block.appendChild(button);
+          });
+        }
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', addCopyButtons);
+        } else {
+          addCopyButtons();
+        }
+
+        document.addEventListener('click', (event) => {
+          if (!(event.target instanceof HTMLElement) || !event.target.classList.contains('copy-btn')) {
+            return;
+          }
+
+          let code = event.target.getAttribute('data-code');
+
+          if (!code) {
+            const wrapper = event.target.closest('.code-block-wrapper');
+            if (wrapper) {
+              const codeElement = wrapper.querySelector('code');
+              if (codeElement) {
+                code = codeElement.textContent;
+              }
+            }
+          }
+
+          if (code) {
+            navigator.clipboard.writeText(code).then(() => {
+              const originalText = event.target.textContent;
+              event.target.textContent = 'Copied!';
+              event.target.classList.add('copied');
+              setTimeout(() => {
+                event.target.textContent = originalText;
+                event.target.classList.remove('copied');
+              }, 2000);
+            });
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>

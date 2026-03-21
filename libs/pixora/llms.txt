@@ -1,0 +1,10 @@
+# Pixora AI Documentation
+
+Pixora is a lightweight reactive 2D game framework built on PixiJS.
+
+## Full Documentation
+
+The complete, context-rich documentation for LLMs and AI agents is available at:
+[llms-full.txt](./llms-full.txt)
+
+This file contains the complete API reference, getting started guides, examples, and architecture overview of Pixora.

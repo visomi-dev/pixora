@@ -1,4 +1,4 @@
-import { centeredBoxX, centeredTextX } from '../scene-positioning';
+import { centeredBoxX } from '../scene-positioning';
 
 import { pixora } from 'pixora';
 
@@ -23,29 +23,32 @@ export const gameOverScene = pixora.scene({
       { x: 0, y: 0 },
       pixora.box({ backgroundColor: 0x0a0a1a, height: vp.height, width: vp.width, x: 0, y: 0 }),
       pixora.text({
+        anchor: { x: 0.5, y: 0 },
         color: '#ff4444',
         font: 'Orbitron, sans-serif',
         size: 72,
         text: 'GAME OVER',
         weight: '900',
-        x: centeredTextX(vp.width, 'GAME OVER', 72, 0.62),
+        x: vp.width / 2,
         y: headingY,
       }),
       pixora.text({
+        anchor: { x: 0.5, y: 0 },
         color: '#ffffff',
         font: 'Orbitron, sans-serif',
         size: 32,
         text: 'SCORE: 0',
-        x: centeredTextX(vp.width, 'SCORE: 0', 32, 0.56),
+        x: vp.width / 2,
         y: headingY + 110,
       }),
       pixora.text({
+        anchor: { x: 0.5, y: 0 },
         color: '#ffff00',
         font: 'Orbitron, sans-serif',
         size: 24,
         style: { align: 'center' },
         text: highScoreText,
-        x: centeredTextX(vp.width, highScoreText, 24, 0.56),
+        x: vp.width / 2,
         y: headingY + 160,
       }),
       pixora.button({

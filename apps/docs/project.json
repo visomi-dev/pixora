@@ -7,48 +7,91 @@
     "build": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "hugo -d ../../dist/apps/docs --gc --minify",
-        "cwd": "apps/docs"
+        "commands": [
+          {
+            "command": "mkdir -p apps/docs/static/css/files apps/docs/static/css/fonts && cp -r node_modules/@fontsource/space-grotesk/files/* apps/docs/static/css/files/ 2>/dev/null || true && cp -r node_modules/@fontsource/jetbrains-mono/files/* apps/docs/static/css/files/ 2>/dev/null || true && cp -r node_modules/@fontsource/material-symbols-outlined/files/* apps/docs/static/css/files/ 2>/dev/null || true && cp -r node_modules/primeicons/fonts/* apps/docs/static/css/fonts/ 2>/dev/null || true"
+          },
+          {
+            "command": "pnpm exec tailwindcss -i apps/docs/assets/css/styles.css -o apps/docs/static/css/styles.css --minify"
+          },
+          {
+            "command": "cp libs/pixora/llms.txt apps/docs/static/ && cp libs/pixora/llms-full.txt apps/docs/static/ && pnpm exec astro build --root apps/docs --outDir ../../dist/apps/docs --base /"
+          }
+        ],
+        "parallel": false
       },
       "dependsOn": ["api", "build-example"]
     },
     "build-pages": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "sh -c 'hugo -d ../../dist/apps/docs --gc --minify --baseURL \"$PAGES_BASE_URL\"'",
-        "cwd": "apps/docs"
+        "commands": [
+          {
+            "command": "mkdir -p apps/docs/static/css/files apps/docs/static/css/fonts && cp -r node_modules/@fontsource/space-grotesk/files/* apps/docs/static/css/files/ 2>/dev/null || true && cp -r node_modules/@fontsource/jetbrains-mono/files/* apps/docs/static/css/files/ 2>/dev/null || true && cp -r node_modules/@fontsource/material-symbols-outlined/files/* apps/docs/static/css/files/ 2>/dev/null || true && cp -r node_modules/primeicons/fonts/* apps/docs/static/css/fonts/ 2>/dev/null || true"
+          },
+          {
+            "command": "pnpm exec tailwindcss -i apps/docs/assets/css/styles.css -o apps/docs/static/css/styles.css --minify"
+          },
+          {
+            "command": "cp libs/pixora/llms.txt apps/docs/static/ && cp libs/pixora/llms-full.txt apps/docs/static/ && pnpm exec astro build --root apps/docs --outDir ../../dist/apps/docs --base /"
+          }
+        ],
+        "parallel": false
       },
       "dependsOn": ["api", "build-example"]
     },
     "build-example": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "rm -rf static/examples/space-invaders && pnpm nx run space-invaders:build:docs --skipNxCache && mkdir -p static/examples/space-invaders && cp -r ../../dist/apps/space-invaders/* static/examples/space-invaders/ && rm -rf ../../dist/apps/space-invaders",
-        "cwd": "apps/docs"
+        "command": "rm -rf apps/docs/static/examples/space-invaders && pnpm nx run space-invaders:build:docs --skipNxCache && mkdir -p apps/docs/static/examples/space-invaders && cp -r dist/apps/space-invaders/* apps/docs/static/examples/space-invaders/ && rm -rf dist/apps/space-invaders"
       }
     },
     "serve": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "hugo server -D",
-        "cwd": "apps/docs",
-        "port": 1313
+        "commands": [
+          {
+            "command": "mkdir -p apps/docs/static/css/files apps/docs/static/css/fonts && cp -r node_modules/@fontsource/space-grotesk/files/* apps/docs/static/css/files/ 2>/dev/null || true && cp -r node_modules/@fontsource/jetbrains-mono/files/* apps/docs/static/css/files/ 2>/dev/null || true && cp -r node_modules/@fontsource/material-symbols-outlined/files/* apps/docs/static/css/files/ 2>/dev/null || true && cp -r node_modules/primeicons/fonts/* apps/docs/static/css/fonts/ 2>/dev/null || true"
+          },
+          {
+            "command": "pnpm exec tailwindcss -i apps/docs/assets/css/styles.css -o apps/docs/static/css/styles.css --minify"
+          },
+          {
+            "command": "cp libs/pixora/llms.txt apps/docs/static/ && cp libs/pixora/llms-full.txt apps/docs/static/ && pnpm exec astro build --root apps/docs --outDir ../../dist/apps/docs --base /"
+          }
+        ],
+        "parallel": true
       },
       "dependsOn": ["api", "build-example"]
     },
     "preview": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "hugo -d ../../dist/apps/docs-preview --gc --minify --baseURL /preview/",
-        "cwd": "apps/docs"
+        "commands": [
+          {
+            "command": "mkdir -p apps/docs/static/css/files apps/docs/static/css/fonts && cp -r node_modules/@fontsource/space-grotesk/files/* apps/docs/static/css/files/ 2>/dev/null || true && cp -r node_modules/@fontsource/jetbrains-mono/files/* apps/docs/static/css/files/ 2>/dev/null || true && cp -r node_modules/@fontsource/material-symbols-outlined/files/* apps/docs/static/css/files/ 2>/dev/null || true && cp -r node_modules/primeicons/fonts/* apps/docs/static/css/fonts/ 2>/dev/null || true"
+          },
+          {
+            "command": "pnpm exec tailwindcss -i apps/docs/assets/css/styles.css -o apps/docs/static/css/styles.css --minify"
+          },
+          {
+            "command": "cp libs/pixora/llms.txt apps/docs/static/ && cp libs/pixora/llms-full.txt apps/docs/static/ && pnpm exec astro build --root apps/docs --outDir ../../dist/apps/docs-preview --base /preview/"
+          }
+        ],
+        "parallel": false
       },
       "dependsOn": ["api", "build-example"]
     },
     "api": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "pnpm exec typedoc",
-        "cwd": "apps/docs"
+        "command": "rm -rf apps/docs/static/docs/api/generated && pnpm exec typedoc --options apps/docs/typedoc.json"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm exec astro check --root apps/docs"
       }
     }
   }

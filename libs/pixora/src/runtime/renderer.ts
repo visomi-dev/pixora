@@ -69,6 +69,7 @@ function mountNode(definition: PixoraNode, parentMounted: MountedNode | null, re
   // but TS cannot narrow a mapped-type lookup through a runtime variable.
   const hostNode = (descriptor.create as (props: unknown) => BaseNode)(definition.props);
   const normalizedChildren = normalizeChildren(definition.children);
+  validateChildKeys(definition, normalizedChildren);
 
   const mounted: MountedNode = {
     children: [],
@@ -86,6 +87,22 @@ function mountNode(definition: PixoraNode, parentMounted: MountedNode | null, re
   }
 
   return mounted;
+}
+
+function validateChildKeys(parent: PixoraNode, children: readonly PixoraNode[]): void {
+  const seenKeys = new Set<string | number>();
+
+  for (const child of children) {
+    if (child.key === undefined) {
+      continue;
+    }
+
+    if (seenKeys.has(child.key)) {
+      throw new Error(`Duplicate child key "${child.key}" found under "${String(parent.type)}".`);
+    }
+
+    seenKeys.add(child.key);
+  }
 }
 
 function mountImperativeNode(definition: PixoraNode, parentMounted: MountedNode | null): MountedNode {
@@ -108,11 +125,15 @@ function unmountNode(mounted: MountedNode): void {
   mounted.children.length = 0;
 
   if (mounted.isImperative) {
-    // Detach from parent but do NOT destroy — consumer owns the lifecycle.
+    const imperativeProps = mounted.definition.props as ImperativeNodeProps;
     const parentDisplay = mounted.hostNode.displayObject.parent;
 
     if (parentDisplay) {
       parentDisplay.removeChild(mounted.hostNode.displayObject);
+    }
+
+    if (imperativeProps.managed) {
+      mounted.hostNode.destroy();
     }
   } else {
     mounted.hostNode.destroy();

@@ -71,3 +71,28 @@ const playButton = new Button({
 - container composition;
 - local lifecycle cleanup;
 - signal and store binding support for basic properties.
+
+## Gameplay island pattern
+
+For gameplay-heavy scenes, pixora components should be split between a stable scene shell and a fast-changing playfield island.
+
+Recommended structure:
+
+1. `GameSceneShell`
+   - background
+   - HUD
+   - pause or game-over overlays
+   - `InPlay`
+2. `InPlay`
+   - player
+   - bullets
+   - enemy bullets
+   - enemies
+   - power-ups
+
+Rules:
+
+- only `InPlay` should read high-frequency gameplay signals;
+- dynamic entity nodes should be keyed by stable `id` values;
+- one container per entity family is recommended when it improves layering or reconciliation clarity;
+- `pixora.island()` should be preferred for hot gameplay rendering so the scene tree can stay stable while the island patches its own Pixi objects.

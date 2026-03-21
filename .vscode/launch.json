@@ -2,17 +2,17 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Launch Example on Chrome",
+      "name": "Launch Chrome against 4200",
       "type": "chrome",
       "request": "launch",
       "url": "http://localhost:4200/",
       "runtimeArgs": ["--auto-open-devtools-for-tabs"]
     },
     {
-      "name": "Launch Hugo on Chrome",
+      "name": "Launch Chrome against 8080",
       "type": "chrome",
       "request": "launch",
-      "url": "http://localhost:1313/",
+      "url": "http://localhost:8080/",
       "runtimeArgs": ["--auto-open-devtools-for-tabs"]
     },
     {

@@ -28,7 +28,7 @@ GOOD:
 import { api as pixora, pixora as createPixoraApp } from 'pixora';
 import type { ApplicationContext, PixoraNode, TextNodeProps } from 'pixora';
 
-const mainMenu = pixora.component((context: ApplicationContext) => {
+const mainMenu = pixora.component((context) => {
     // ...
   
   return pixora.container(

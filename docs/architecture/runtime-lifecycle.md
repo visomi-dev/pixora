@@ -46,6 +46,14 @@ Each ticker tick runs in this order:
 
 The update loop should remain deterministic and must avoid allocating unnecessary work every frame.
 
+### Declarative scene update guidance
+
+- Declarative scenes may use `updateMode: 'frame'` when the full scene must be regenerated each tick.
+- The default scene mode is `reactive`, so signal reads in the scene render function re-run only when those reads change.
+- Gameplay-heavy scenes should keep the shell declarative and move hot rendering into a `pixora.island()`.
+- Islands keep the declarative scene tree stable while patching their own Pixi objects directly.
+- The recommended gameplay split is a stable `GameSceneShell` plus an `InPlay` island for entity collections.
+
 ## Resize flow
 
 When the host or viewport size changes:

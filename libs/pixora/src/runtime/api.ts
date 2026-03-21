@@ -12,8 +12,20 @@ import {
 } from '../layout/layout';
 import type { ApplicationContext } from '../app/types';
 
-import { box, button, container, keyedContainer, sprite, text } from './create-node';
+import {
+  box,
+  button,
+  container,
+  keyedBox,
+  keyedContainer,
+  keyedSprite,
+  keyedText,
+  scrollBox,
+  sprite,
+  text,
+} from './create-node';
 import { imperative } from './compat';
+import { island, type IslandOptions, type IslandSetupContext } from './island';
 import { registerComponent } from './components';
 import { createScheduler, getScheduler, Scheduler } from './scheduler';
 import {
@@ -37,6 +49,7 @@ import {
   PixoraChild,
   PixoraComponent,
   PixoraComponentProps,
+  ScrollBoxNodeProps,
   SpriteNodeProps,
   TextNodeProps,
 } from './types';
@@ -45,8 +58,9 @@ import { pixora } from './pixora';
 
 export { pixora };
 export { isPixoraNode };
-export { box, button, container, keyedContainer, sprite, text };
+export { box, button, container, keyedBox, keyedContainer, keyedSprite, keyedText, scrollBox, sprite, text };
 export { imperative };
+export { island };
 export { mountTree, unmountTree };
 export { updateTree };
 export { Scheduler, createScheduler, getScheduler };
@@ -123,8 +137,10 @@ export type {
   SpriteNodeProps,
   BoxNodeProps,
   ButtonNodeProps,
+  ScrollBoxNodeProps,
   PixoraChild,
 };
+export type { IslandOptions, IslandSetupContext };
 
 export const api = {
   container(props?: ContainerNodeProps, ...children: PixoraChild[]) {
@@ -143,13 +159,23 @@ export const api = {
     return box(props, ...children);
   },
 
+  keyedBox,
+
   button(props: ButtonNodeProps) {
     return button(props);
+  },
+
+  scrollBox(props?: ScrollBoxNodeProps, ...children: PixoraChild[]) {
+    return scrollBox(props, ...children);
   },
 
   keyedContainer(key: string | number, props?: ContainerNodeProps, ...children: PixoraChild[]) {
     return keyedContainer(key, props, ...children);
   },
+
+  keyedSprite,
+
+  keyedText,
 
   component<Props extends PixoraComponentProps>(
     renderFn: PixoraComponent<Props>,
@@ -173,6 +199,8 @@ export const api = {
   },
 
   imperative,
+
+  island,
 
   layout: {
     apply: applyLayout,

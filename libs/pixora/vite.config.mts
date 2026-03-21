@@ -10,9 +10,15 @@ export default defineConfig(({ command }) => ({
   cacheDir: '../../node_modules/.vite/libs/pixora',
   plugins: [
     nxViteTsPaths(),
-    nxCopyAssetsPlugin(['*.md']),
+    nxCopyAssetsPlugin(['*.md', '*.txt']),
     ...(command === 'build'
-      ? [dts({ entryRoot: 'src', tsconfigPath: path.join(import.meta.dirname, 'tsconfig.lib.json'), pathsToAliases: false })]
+      ? [
+          dts({
+            entryRoot: 'src',
+            tsconfigPath: path.join(import.meta.dirname, 'tsconfig.lib.json'),
+            pathsToAliases: false,
+          }),
+        ]
       : []),
   ],
   // Uncomment this if you are using workers.
