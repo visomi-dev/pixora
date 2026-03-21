@@ -9,6 +9,7 @@ import {
   levelSignal,
   livesSignal,
   pausedSignal,
+  resetGame,
   scoreSignal,
   syncViewport,
   updateGame,
