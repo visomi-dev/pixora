@@ -4,6 +4,13 @@ on:
   push:
     branches:
       - main
+    tags-ignore:
+      - 'v*'
+    paths:
+      - 'libs/pixora/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'nx.json'
   workflow_dispatch:
 
 concurrency:
@@ -49,7 +56,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '24'
-          registry-url: 'https://registry.npmjs.org'
           cache: ${{ steps.detect-package-manager.outputs.manager }}
 
       - name: Install dependencies
@@ -58,11 +64,10 @@ jobs:
       - name: Build
         run: pnpm nx run-many -t build --exclude=docs
 
-      - name: Release
+      - name: Version bump
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: pnpm nx release --yes
+        run: pnpm nx release --skip-publish --yes
 
       - name: Build Docs
         run: pnpm nx build docs
