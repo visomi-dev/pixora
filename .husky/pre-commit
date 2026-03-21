@@ -1,4 +1,5 @@
 pnpm affected -t lint
+pnpm affected -t typecheck
 # pnpm affected -t test
 # pnpm affected -t build
 
