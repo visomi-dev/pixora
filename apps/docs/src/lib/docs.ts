@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
+import hljs from 'highlight.js';
 import matter from 'gray-matter';
 import MarkdownIt from 'markdown-it';
 
@@ -22,14 +23,20 @@ const markdown = new MarkdownIt({
   linkify: true,
   langPrefix: 'language-',
   highlight(code, language) {
-    const escapedCode = escapeHtml(code);
     const escapedAttributeCode = escapeAttribute(code);
-    const escapedLanguage = escapeHtml(language || 'text');
+    const validLanguage = language && hljs.getLanguage(language) ? language : 'plaintext';
+
+    let highlighted: string;
+    try {
+      highlighted = hljs.highlight(code, { language: validLanguage }).value;
+    } catch {
+      highlighted = escapeHtml(code);
+    }
 
     return [
       '<div class="code-block-wrapper not-prose relative group my-6">',
-      `<pre class="overflow-x-auto rounded-2xl border border-slate-200 bg-slate-950 p-4 text-sm text-slate-100 dark:border-slate-800"><code class="language-${escapedLanguage}">${escapedCode}</code></pre>`,
-      `<button class="copy-btn absolute top-2 right-2 rounded border px-3 py-1 text-xs transition-opacity opacity-0 group-hover:opacity-100" data-code="${escapedAttributeCode}">Copy</button>`,
+      `<pre class="chroma overflow-x-auto rounded-2xl border border-slate-200 bg-[#0d1117] p-4 text-sm text-slate-100 dark:border-slate-800"><code class="language-${validLanguage}">${highlighted}</code></pre>`,
+      `<button class="copy-btn absolute top-2 right-2 rounded border border-slate-700 bg-slate-800 px-3 py-1 text-xs text-slate-300 transition-opacity opacity-0 group-hover:opacity-100 hover:bg-slate-700" data-code="${escapedAttributeCode}">Copy</button>`,
       '</div>',
     ].join('');
   },
