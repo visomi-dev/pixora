@@ -1,52 +1,146 @@
-import { Container } from 'pixi.js';
+import { describe, expect, it } from 'vitest';
 
-import type { ApplicationContext } from '../app/types';
+import {
+  registerComponent,
+  getComponent,
+  hasComponent,
+  unregisterComponent,
+  clearComponents,
+  resolveComponent,
+  isComponentType,
+  createComponent,
+} from './components';
+import type { PixoraComponent, PixoraComponentProps, PixoraNode  } from './types';
 
-import { container, text } from './create-node';
-import { mountTree } from './renderer';
-import { updateTree } from './reconcile';
+// Helper to create properly typed PixoraNode components
+const makeComponent = (node: PixoraNode): PixoraComponent<PixoraComponentProps> => {
+  return () => node;
+};
 
-function createMockContext(): ApplicationContext {
-  return {} as ApplicationContext;
-}
-
-describe('functional components', () => {
-  it('resolves functional components during mount', () => {
-    const MyComponent = (props: { label: string }) => text({ text: props.label });
-
-    const parent = new Container();
-    const definition = container({}, MyComponent({ label: 'Hello' }));
-
-    const tree = mountTree(definition, parent, createMockContext());
-
-    expect(tree.root.children).toHaveLength(1);
+describe('components', () => {
+  afterEach(() => {
+    clearComponents();
   });
 
-  it('resolves functional components during update', () => {
-    const MyComponent = (props: { label: string }) => text({ text: props.label });
+  describe('registerComponent', () => {
+    it('registers a component under a name', () => {
+      const component = makeComponent({ type: 'container', props: {}, children: [] });
+      registerComponent('MyComponent', component);
 
-    const parent = new Container();
-    const definition = container({}, MyComponent({ label: 'First' }));
-
-    const tree = mountTree(definition, parent, createMockContext());
-
-    const newDefinition = container({}, MyComponent({ label: 'Updated' }));
-
-    updateTree(tree, newDefinition);
-
-    expect(tree.root.children).toHaveLength(1);
+      expect(hasComponent('MyComponent')).toBe(true);
+    });
   });
 
-  it('handles nested functional components', () => {
-    const Inner = () => text({ text: 'inner' });
-    const Outer = () => container({}, Inner());
+  describe('getComponent', () => {
+    it('retrieves a registered component', () => {
+      const component = makeComponent({ type: 'container', props: {}, children: [] });
+      registerComponent('MyComponent', component);
 
-    const parent = new Container();
-    const definition = container({}, Outer());
+      expect(getComponent('MyComponent')).toBe(component);
+    });
 
-    const tree = mountTree(definition, parent, createMockContext());
+    it('returns undefined for unregistered component', () => {
+      expect(getComponent('NonExistent')).toBeUndefined();
+    });
+  });
 
-    expect(tree.root.children).toHaveLength(1);
-    expect(tree.root.children[0].children).toHaveLength(1);
+  describe('hasComponent', () => {
+    it('returns true for registered component', () => {
+      const component = makeComponent({ type: 'container', props: {}, children: [] });
+      registerComponent('MyComponent', component);
+
+      expect(hasComponent('MyComponent')).toBe(true);
+    });
+
+    it('returns false for unregistered component', () => {
+      expect(hasComponent('NonExistent')).toBe(false);
+    });
+  });
+
+  describe('unregisterComponent', () => {
+    it('removes a registered component', () => {
+      const component = makeComponent({ type: 'container', props: {}, children: [] });
+      registerComponent('MyComponent', component);
+
+      expect(unregisterComponent('MyComponent')).toBe(true);
+      expect(hasComponent('MyComponent')).toBe(false);
+    });
+
+    it('returns false for unregistered component', () => {
+      expect(unregisterComponent('NonExistent')).toBe(false);
+    });
+
+    it('works with symbol keys', () => {
+      const sym = Symbol('my-symbol');
+      const component = makeComponent({ type: 'container', props: {}, children: [] });
+      registerComponent(sym, component);
+
+      expect(hasComponent(sym)).toBe(true);
+      expect(unregisterComponent(sym)).toBe(true);
+      expect(hasComponent(sym)).toBe(false);
+    });
+  });
+
+  describe('clearComponents', () => {
+    it('removes all registered components', () => {
+      const component = makeComponent({ type: 'container', props: {}, children: [] });
+      registerComponent('Comp1', component);
+      registerComponent('Comp2', component);
+
+      clearComponents();
+
+      expect(hasComponent('Comp1')).toBe(false);
+      expect(hasComponent('Comp2')).toBe(false);
+    });
+  });
+
+  describe('resolveComponent', () => {
+    it('returns the component as-is if it is a function', () => {
+      const component = makeComponent({ type: 'container', props: {}, children: [] });
+
+      expect(resolveComponent(component)).toBe(component);
+    });
+
+    it('looks up string keys in the registry', () => {
+      const component = makeComponent({ type: 'container', props: {}, children: [] });
+      registerComponent('MyComp', component);
+
+      expect(resolveComponent('MyComp')).toBe(component);
+    });
+
+    it('looks up symbol keys in the registry', () => {
+      const sym = Symbol('sym-comp');
+      const component = makeComponent({ type: 'container', props: {}, children: [] });
+      registerComponent(sym, component);
+
+      expect(resolveComponent(sym)).toBe(component);
+    });
+
+    it('returns undefined for unknown string keys', () => {
+      expect(resolveComponent('Unknown')).toBeUndefined();
+    });
+  });
+
+  describe('isComponentType', () => {
+    it('returns true for functions', () => {
+      const component = makeComponent({ type: 'container', props: {}, children: [] });
+
+      expect(isComponentType(component)).toBe(true);
+    });
+
+    it('returns false for non-function types', () => {
+      expect(isComponentType('container')).toBe(false);
+      expect(isComponentType(123)).toBe(false);
+      expect(isComponentType(null)).toBe(false);
+      expect(isComponentType({})).toBe(false);
+    });
+  });
+
+  describe('createComponent', () => {
+    it('returns the component as-is', () => {
+      const component = makeComponent({ type: 'container', props: {}, children: [] });
+
+      expect(createComponent(component)).toBe(component);
+    });
   });
 });

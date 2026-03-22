@@ -1,7 +1,12 @@
 {
   "name": "pixora",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/visomi-dev/pixora"
+  },
+  "homepage": "https://visomi-dev.github.io/pixora/",
   "exports": {
     ".": {
       "types": "./index.d.ts",

@@ -119,6 +119,23 @@ describe('lifecycle', () => {
 
       expect(hasDirtyDescendants(parent)).toBe(false);
     });
+
+    it('returns false for a node with no children and no dirty flags', () => {
+      const node = createMockLifecycleNode();
+
+      expect(hasDirtyDescendants(node)).toBe(false);
+    });
+
+    it('returns true when grandchild is dirty', () => {
+      const parent = createMockLifecycleNode();
+      const child = createMockLifecycleNode();
+      const grandchild = createMockLifecycleNode();
+      parent.children = [child];
+      child.children = [grandchild];
+      markLayoutDirty(grandchild);
+
+      expect(hasDirtyDescendants(parent)).toBe(true);
+    });
   });
 });
 

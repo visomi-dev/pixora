@@ -84,4 +84,18 @@ describe('normalizeChildren', () => {
     expect(result[0].type).toBe('text');
     expect(result[0].props).toEqual({ text: 'deep' });
   });
+
+  it('silently drops objects that are not PixoraNodes', () => {
+    const notANode = { type: 'text' };
+    const result = normalizeChildren([notANode as any]);
+
+    expect(result).toHaveLength(0);
+  });
+
+  it('silently drops objects missing children property', () => {
+    const missingChildren = { type: 'text', props: {} };
+    const result = normalizeChildren([missingChildren as any]);
+
+    expect(result).toHaveLength(0);
+  });
 });

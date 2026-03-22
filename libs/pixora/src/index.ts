@@ -67,9 +67,20 @@ export type { ComputedLayout, ComputedPixiLayout, LayoutBounds } from './layout/
 
 export { bindInteractive } from './input/bind-interactive';
 export { createKeyboardInput, clearKeyboardFrame, Keys } from './input/create-keyboard-input';
+export { createVirtualGamepad } from './input/create-virtual-gamepad';
+export { createTouchGestureInput } from './input/create-touch-gesture-input';
+export { createDeviceMotion } from './input/create-device-motion';
 
 export type { BindInteractiveOptions, ButtonState, InteractionState } from './input/bind-interactive';
 export type { KeyboardState } from './input/create-keyboard-input';
+export type {
+  VirtualGamepadOptions,
+  VirtualGamepadState,
+  JoystickDirection,
+  GamepadButton,
+} from './input/create-virtual-gamepad';
+export type { TouchGestureState, GestureType, GestureEvent } from './input/create-touch-gesture-input';
+export type { DeviceMotionState, Acceleration, RotationRate, Orientation } from './input/create-device-motion';
 
 export { createTransition, createTween } from './animation/create-tween';
 
