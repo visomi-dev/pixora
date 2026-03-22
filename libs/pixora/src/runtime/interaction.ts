@@ -1,5 +1,4 @@
 import type { Container, FederatedPointerEvent } from 'pixi.js';
-
 import type { Disposable } from '../utils/disposable';
 
 export type InteractionEventType = 'pointerdown' | 'pointerup' | 'pointerover' | 'pointerout' | 'pointertap';

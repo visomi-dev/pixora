@@ -1,7 +1,9 @@
 import { vi } from 'vitest';
-import type { FederatedPointerEvent } from 'pixi.js';
 
 import { createTouchGestureInput } from './create-touch-gesture-input';
+
+import type { FederatedPointerEvent } from 'pixi.js';
+
 
 function createMockPointerEvent(type: string, pointerId: number, x: number, y: number): Partial<FederatedPointerEvent> {
   return {

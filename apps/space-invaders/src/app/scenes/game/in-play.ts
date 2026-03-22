@@ -1,8 +1,9 @@
+import { Box, ContainerNode, effect, pixora } from 'pixora';
+
 import { bulletsSignal, enemiesSignal, enemyBulletsSignal, playerSignal, powerUpsSignal } from './game-state';
 import { getEnemyBulletColor, getEnemyColor, getPowerUpColor } from './game.types';
-import type { GameObject, PowerUp } from './game.types';
 
-import { Box, ContainerNode, effect, pixora } from 'pixora';
+import type { GameObject, PowerUp } from './game.types';
 import type { ApplicationContext, PixoraNode } from 'pixora';
 
 const inPlayNodes = new WeakMap<ApplicationContext, PixoraNode>();

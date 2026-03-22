@@ -1,5 +1,6 @@
-import type { ReadonlySignal } from '../state/signal';
 import { signal } from '../state/signal';
+
+import type { ReadonlySignal } from '../state/signal';
 
 export type KeyboardState = {
   readonly keys: ReadonlySignal<Record<string, boolean>>;

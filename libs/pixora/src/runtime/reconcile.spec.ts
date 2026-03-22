@@ -1,6 +1,5 @@
 import { Container, Text } from 'pixi.js';
 
-import type { ApplicationContext } from '../app/types';
 import { Box } from '../components/box';
 import { ContainerNode } from '../components/container-node';
 import { TextNode } from '../components/text-node';
@@ -9,6 +8,8 @@ import { imperative } from './compat';
 import { box, container, keyedBox, keyedText, text } from './create-node';
 import { mountTree } from './renderer';
 import { updateTree } from './reconcile';
+
+import type { ApplicationContext } from '../app/types';
 import type { PixoraNode } from './types';
 
 function createMockContext(): ApplicationContext {

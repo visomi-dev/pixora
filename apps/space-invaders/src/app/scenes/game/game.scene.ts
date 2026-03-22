@@ -1,3 +1,5 @@
+import { createKeyboardInput, pixora } from 'pixora';
+
 import { rightAlignedTextX } from '../scene-positioning';
 
 import {
@@ -17,7 +19,6 @@ import {
 import { inPlay } from './in-play';
 
 import type { KeyboardState } from 'pixora';
-import { createKeyboardInput, pixora } from 'pixora';
 
 let keyboard: KeyboardState | null = null;
 

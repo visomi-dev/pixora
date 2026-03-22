@@ -1,3 +1,5 @@
+import { Sprite, Texture } from 'pixi.js';
+
 import { Button } from './button';
 
 describe('Button', () => {
@@ -19,5 +21,65 @@ describe('Button', () => {
 
     button.updateProps({ label: 'Clicked' });
     expect(button.label.getProps().text).toBe('Clicked');
+  });
+
+  it('creates sprite background when textures are provided', () => {
+    const idleTexture = Texture.WHITE;
+    const button = new Button({
+      label: 'Sprite',
+      textures: { idle: idleTexture },
+    });
+
+    const sprite = button.background.displayObject as Sprite;
+    expect(sprite.texture).toBe(idleTexture);
+  });
+
+  it('swaps texture on state change', () => {
+    const idleTexture = Texture.WHITE;
+    const hoveredTexture = Texture.from('hovered');
+    const pressedTexture = Texture.from('pressed');
+
+    const button = new Button({
+      label: 'Sprite',
+      textures: {
+        idle: idleTexture,
+        hovered: hoveredTexture,
+        pressed: pressedTexture,
+      },
+    });
+
+    const sprite = button.background.displayObject as Sprite;
+    expect(sprite.texture).toBe(idleTexture);
+
+    button.setDisabled(true);
+    expect(sprite.texture).toBe(idleTexture);
+
+    button.setDisabled(false);
+    button.updateProps({ disabled: false });
+  });
+
+  it('falls back to idle texture when state texture is missing', () => {
+    const idleTexture = Texture.WHITE;
+
+    const button = new Button({
+      label: 'Sprite',
+      textures: { idle: idleTexture },
+    });
+
+    const sprite = button.background.displayObject as Sprite;
+    expect(sprite.texture).toBe(idleTexture);
+
+    button.setDisabled(true);
+    expect(sprite.texture).toBe(idleTexture);
+  });
+
+  it('disposes tweens when button is disposed', () => {
+    const button = new Button({
+      animation: { durationMs: 100 },
+      label: 'Test',
+    });
+
+    button.setDisabled(true);
+    button.dispose();
   });
 });

@@ -6,6 +6,7 @@ import { createSceneManager, type SceneManager } from '../scenes/scene-manager';
 import { createServiceRegistry, type ServiceRegistry } from '../services/create-service-registry';
 
 import { createViewportManager } from './create-viewport-manager';
+
 import type { ApplicationContext, pixoraApp, pixoraAppOptions } from './types';
 
 let devtoolsInitialized = false;

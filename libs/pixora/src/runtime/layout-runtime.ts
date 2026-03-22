@@ -1,10 +1,10 @@
-import type { Container } from 'pixi.js';
+import { applyLayout } from '../layout/apply-layout';
 
+import type { Container } from 'pixi.js';
 import type { Viewport } from '../app/types';
 import type { BaseNode } from '../components/base-node';
 import type { LayoutSpec } from '../layout/layout';
 import type { LayoutStyles } from '../layout/layout-types';
-import { applyLayout } from '../layout/apply-layout';
 
 export type LayoutNode = {
   hostNode: BaseNode;

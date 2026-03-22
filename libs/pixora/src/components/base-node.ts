@@ -1,9 +1,9 @@
-import type { Container } from 'pixi.js';
+import { setLayoutSpec, setLayoutStyles, markSubtreeLayoutDirty, getLayoutStyles } from '../runtime/layout-runtime';
 
+import type { Container } from 'pixi.js';
 import type { Disposable } from '../utils/disposable';
 import type { LayoutStyles } from '../layout/layout-types';
 import type { LayoutSpec } from '../layout/layout';
-import { setLayoutSpec, setLayoutStyles, markSubtreeLayoutDirty, getLayoutStyles } from '../runtime/layout-runtime';
 
 export class BaseNode<TDisplayObject extends Container = Container> implements Disposable {
   protected readonly children = new Set<BaseNode>();

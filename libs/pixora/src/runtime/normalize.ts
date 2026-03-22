@@ -1,5 +1,6 @@
-import type { PixoraChild, PixoraNode } from './types';
 import { isPixoraNode } from './types';
+
+import type { PixoraChild, PixoraNode } from './types';
 
 /**
  * Normalizes a flexible children input into a flat array of `PixoraNode` objects.

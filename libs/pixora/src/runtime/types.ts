@@ -1,5 +1,4 @@
 import type { Texture, TextStyleOptions } from 'pixi.js';
-
 import type { LayoutSpec } from '../layout/layout';
 import type { LayoutStyles } from '../layout/layout-types';
 import type { BaseNode } from '../components/base-node';
@@ -77,7 +76,20 @@ export type BoxNodeProps = ContainerNodeProps & {
   width?: number;
 };
 
+export type ButtonTextures = {
+  disabled?: Texture;
+  hovered?: Texture;
+  idle: Texture;
+  pressed?: Texture;
+};
+
+export type ButtonAnimationConfig = {
+  durationMs?: number;
+  easing?: 'ease-in' | 'ease-out' | 'ease-in-out' | 'linear';
+};
+
 export type ButtonNodeProps = ContainerNodeProps & {
+  animation?: ButtonAnimationConfig;
   backgroundColor?: number;
   disabled?: boolean;
   height?: number;
@@ -88,6 +100,7 @@ export type ButtonNodeProps = ContainerNodeProps & {
   onPointerTap?: (event: PixoraInteractionEvent) => void;
   onPointerUp?: (event: PixoraInteractionEvent) => void;
   radius?: number;
+  textures?: ButtonTextures;
   width?: number;
 };
 

@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { ApplicationContext } from '../app/types';
 
 import { InvalidationFlag } from './lifecycle';
 import { Scheduler, createScheduler } from './scheduler';
 import { container } from './create-node';
+
+import type { ApplicationContext } from '../app/types';
 
 describe('Scheduler', () => {
   let scheduler: Scheduler;

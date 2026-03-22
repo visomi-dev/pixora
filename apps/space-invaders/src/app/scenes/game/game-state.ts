@@ -1,6 +1,6 @@
-import type { GameObject, PowerUp } from './game.types';
-
 import { clearKeyboardFrame, Keys, signal } from 'pixora';
+
+import type { GameObject, PowerUp } from './game.types';
 import type { ApplicationContext, KeyboardState } from 'pixora';
 
 export const scoreSignal = signal(0);

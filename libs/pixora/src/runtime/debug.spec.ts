@@ -3,6 +3,7 @@ import { Container } from 'pixi.js';
 import { container, keyedContainer, text } from './create-node';
 import { inspectNode, inspectTree, getTreeStats, formatTree, findNodeByKey, findNodesByType } from './debug';
 import { mountTree } from './renderer';
+
 import type { MountedTree } from './mounted-node';
 
 function createMockContext() {

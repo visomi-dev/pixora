@@ -9,6 +9,13 @@
       "runtimeArgs": ["--auto-open-devtools-for-tabs"]
     },
     {
+      "name": "Launch Chrome against 4201",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:4201/",
+      "runtimeArgs": ["--auto-open-devtools-for-tabs"]
+    },
+    {
       "name": "Launch Chrome against 8080",
       "type": "chrome",
       "request": "launch",

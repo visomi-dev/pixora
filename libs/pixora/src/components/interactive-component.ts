@@ -1,9 +1,10 @@
-import type { Container } from 'pixi.js';
-
 import { bindInteractive, type BindInteractiveOptions } from '../input/bind-interactive';
-import type { Disposable } from '../utils/disposable';
 
 import { BaseComponent } from './base-component';
+
+import type { Container } from 'pixi.js';
+import type { Disposable } from '../utils/disposable';
+
 
 type InteractiveProps = {
   disabled?: boolean;

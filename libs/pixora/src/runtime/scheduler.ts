@@ -1,9 +1,10 @@
-import type { ApplicationContext } from '../app/types';
 
 import { InvalidationFlag } from './lifecycle';
-import type { MountedTree } from './mounted-node';
 import { runLayout } from './layout-runtime';
 import { updateTree } from './reconcile';
+
+import type { MountedTree } from './mounted-node';
+import type { ApplicationContext } from '../app/types';
 import type { PixoraNode } from './types';
 
 export type SchedulerTask = {

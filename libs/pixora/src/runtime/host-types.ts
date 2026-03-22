@@ -1,15 +1,16 @@
-import type { Container, TextStyleOptions } from 'pixi.js';
 
-import type { BaseNode } from '../components/base-node';
 import { Box } from '../components/box';
 import { Button } from '../components/button';
 import { ContainerNode } from '../components/container-node';
 import { ScrollBox } from '../components/scroll-box';
 import { SpriteNode } from '../components/sprite-node';
 import { TextNode } from '../components/text-node';
+
+import { bindInteractive } from './interaction';
+import { setLayoutSpec, setLayoutStyles } from './layout-runtime';
+
 import type { LayoutSpec } from '../layout/layout';
 import type { LayoutStyles } from '../layout/layout-types';
-
 import type {
   BoxNodeProps,
   ButtonNodeProps,
@@ -20,8 +21,8 @@ import type {
   SpriteNodeProps,
   TextNodeProps,
 } from './types';
-import { bindInteractive } from './interaction';
-import { setLayoutSpec, setLayoutStyles } from './layout-runtime';
+import type { BaseNode } from '../components/base-node';
+import type { Container, TextStyleOptions } from 'pixi.js';
 
 // ---------------------------------------------------------------------------
 // Host type descriptor
@@ -255,11 +256,13 @@ function createButtonDescriptor(): HostTypeDescriptor<'button'> {
   return {
     create(props: ButtonNodeProps): BaseNode {
       const node = new Button({
+        animation: props.animation,
         backgroundColor: props.backgroundColor,
         disabled: props.disabled,
         height: props.height,
         label: props.label,
         radius: props.radius,
+        textures: props.textures,
         width: props.width,
       });
 
@@ -289,11 +292,13 @@ function createButtonDescriptor(): HostTypeDescriptor<'button'> {
     },
     patch(node: BaseNode, previous: ButtonNodeProps, next: ButtonNodeProps): void {
       (node as Button).updateProps({
+        animation: next.animation,
         backgroundColor: next.backgroundColor,
         disabled: next.disabled,
         height: next.height,
         label: next.label,
         radius: next.radius,
+        textures: next.textures,
         width: next.width,
       });
 

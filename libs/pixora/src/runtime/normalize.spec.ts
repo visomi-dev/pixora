@@ -1,4 +1,5 @@
 import { normalizeChildren } from './normalize';
+
 import type { PixoraNode } from './types';
 
 describe('normalizeChildren', () => {

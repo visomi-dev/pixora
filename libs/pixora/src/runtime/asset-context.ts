@@ -1,5 +1,6 @@
-import type { ReadonlySignal, Signal } from '../state/signal';
 import { signal } from '../state/signal';
+
+import type { ReadonlySignal, Signal } from '../state/signal';
 import type { FontAsset } from '../assets/create-asset-registry';
 
 export enum AssetState {

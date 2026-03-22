@@ -1,12 +1,12 @@
-import type { Container } from 'pixi.js';
-
-import type { ApplicationContext } from '../app/types';
-import type { BaseNode } from '../components/base-node';
-
 import { createHostTypeRegistry, type HostTypeRegistry } from './host-types';
-import type { MountedNode, MountedTree } from './mounted-node';
 import { normalizeChildren } from './normalize';
 import { IMPERATIVE_MARKER, type HostType, type ImperativeNodeProps, type PixoraNode } from './types';
+
+import type { Container } from 'pixi.js';
+import type { ApplicationContext } from '../app/types';
+import type { BaseNode } from '../components/base-node';
+import type { MountedNode, MountedTree } from './mounted-node';
+
 
 // ---------------------------------------------------------------------------
 // Public API

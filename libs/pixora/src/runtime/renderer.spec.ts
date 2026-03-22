@@ -1,12 +1,13 @@
 import { Container, Text } from 'pixi.js';
 
-import type { ApplicationContext } from '../app/types';
 import { ContainerNode } from '../components/container-node';
 import { TextNode } from '../components/text-node';
 
 import { imperative } from './compat';
 import { box, button, container, text } from './create-node';
 import { mountTree, unmountTree } from './renderer';
+
+import type { ApplicationContext } from '../app/types';
 import type { PixoraNode } from './types';
 
 function createMockContext(): ApplicationContext {

@@ -1,6 +1,5 @@
 import type { Viewport } from '../app/types';
 import type { BaseNode } from '../components/base-node';
-
 import type { LayoutSpec } from './layout';
 
 type Position = { x: number; y: number };

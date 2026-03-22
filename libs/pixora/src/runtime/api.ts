@@ -10,7 +10,7 @@ import {
   type PercentLayoutSpec,
   type StackLayoutSpec,
 } from '../layout/layout';
-import type { ApplicationContext } from '../app/types';
+
 
 import {
   box,
@@ -37,7 +37,6 @@ import {
   isVisuallyDirty,
   isLayoutDirty,
 } from './lifecycle';
-import type { MountedNode, MountedTree } from './mounted-node';
 import { mountTree, unmountTree } from './renderer';
 import { updateTree } from './reconcile';
 import {
@@ -55,6 +54,9 @@ import {
 } from './types';
 import { clearSharedCache, createAssetContext } from './asset-context';
 import { pixora } from './pixora';
+
+import type { MountedNode, MountedTree } from './mounted-node';
+import type { ApplicationContext } from '../app/types';
 
 export { pixora };
 export { isPixoraNode };

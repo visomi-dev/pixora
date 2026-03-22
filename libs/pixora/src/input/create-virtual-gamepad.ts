@@ -1,6 +1,7 @@
 import { Container, Graphics, Text, type FederatedPointerEvent } from 'pixi.js';
 
 import { signal } from '../state/signal';
+
 import type { ReadonlySignal } from '../state/signal';
 
 export type VirtualGamepadOptions = {

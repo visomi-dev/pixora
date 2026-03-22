@@ -1,9 +1,11 @@
-import type { ApplicationContext } from '../app/types';
 import { ContainerNode } from '../components/container-node';
-import type { Disposable } from '../utils/disposable';
 
-import type { PixoraNode } from './types';
 import { IMPERATIVE_MARKER } from './types';
+
+import type { ApplicationContext } from '../app/types';
+import type { Disposable } from '../utils/disposable';
+import type { PixoraNode } from './types';
+
 
 type Cleanup = Disposable | (() => void) | void;
 

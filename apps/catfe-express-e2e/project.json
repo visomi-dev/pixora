@@ -1,0 +1,10 @@
+{
+  "name": "catfe-express-e2e",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/catfe-express-e2e/src",
+  "projectType": "application",
+  "tags": [],
+  "implicitDependencies": ["catfe-express"],
+  "// targets": "to see all targets run: nx show project catfe-express-e2e --web",
+  "targets": {}
+}

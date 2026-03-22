@@ -1,10 +1,11 @@
+import { isPixoraNode, type ApplicationContext, type ButtonNodeProps, type PixoraNode, type Viewport } from 'pixora';
+
 import { gameOverScene } from './game-over/game-over.scene';
 import { gameScene } from './game/game.scene';
 import { instructionsScene } from './instructions/instructions.scene';
 import { mainMenuScene } from './main-menu/main-menu.scene';
 import { victoryScene } from './victory/victory.scene';
 
-import { isPixoraNode, type ApplicationContext, type ButtonNodeProps, type PixoraNode, type Viewport } from 'pixora';
 
 function createContext() {
   const goTo = vi.fn();

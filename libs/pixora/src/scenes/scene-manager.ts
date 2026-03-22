@@ -1,5 +1,4 @@
 import type { ApplicationContext, Viewport } from '../app/types';
-
 import type { Scene, SceneDefinition, SceneKey, ScenePayload } from './types';
 
 export type SceneManager = {

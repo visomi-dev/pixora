@@ -1,18 +1,12 @@
-import type { AssetManifest } from '../assets/create-asset-registry';
 import { createPixoraApp } from '../app/create-pixyn-app';
-import type { ApplicationContext, pixoraApp, Viewport } from '../app/types';
 import { Scene } from '../scenes/types';
-import type { SceneDefinition, SceneKey } from '../scenes/types';
-import type { ServiceDescriptor } from '../services/create-service-registry';
 import { effect } from '../state/signal';
-import type { Disposable } from '../utils/disposable';
+
 
 import { createScheduler, type Scheduler } from './scheduler';
 import { island } from './island';
-import type { MountedTree } from './mounted-node';
 import { mountTree, unmountTree } from './renderer';
 import { updateTree } from './reconcile';
-import type { PixoraComponent, PixoraComponentProps, PixoraNode } from './types';
 import {
   box,
   button,
@@ -25,6 +19,14 @@ import {
   sprite,
   text,
 } from './create-node';
+
+import type { PixoraComponent, PixoraComponentProps, PixoraNode } from './types';
+import type { MountedTree } from './mounted-node';
+import type { Disposable } from '../utils/disposable';
+import type { ServiceDescriptor } from '../services/create-service-registry';
+import type { SceneDefinition, SceneKey } from '../scenes/types';
+import type { ApplicationContext, pixoraApp, Viewport } from '../app/types';
+import type { AssetManifest } from '../assets/create-asset-registry';
 
 // ---------------------------------------------------------------------------
 // Public types

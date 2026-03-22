@@ -1,13 +1,14 @@
 import { Container } from 'pixi.js';
 
 import { createAssetRegistry } from '../assets/create-asset-registry';
-import type { ApplicationContext, Viewport } from '../app/types';
 import { createEventBus } from '../events/create-event-bus';
 import { signal } from '../state/signal';
 import { createServiceRegistry } from '../services/create-service-registry';
 
 import { createSceneManager } from './scene-manager';
 import { Scene } from './scene';
+
+import type { ApplicationContext, Viewport } from '../app/types';
 
 class TestScene extends Scene {
   readonly key: 'alpha' | 'beta';

@@ -1,9 +1,10 @@
-import type { BaseNode } from '../components/base-node';
 
 import { createHostTypeRegistry, type HostTypeRegistry } from './host-types';
-import type { MountedNode, MountedTree } from './mounted-node';
 import { normalizeChildren } from './normalize';
 import { IMPERATIVE_MARKER, type HostType, type PixoraNode } from './types';
+
+import type { MountedNode, MountedTree } from './mounted-node';
+import type { BaseNode } from '../components/base-node';
 
 export type ReconcileResult = {
   mounted: MountedNode;

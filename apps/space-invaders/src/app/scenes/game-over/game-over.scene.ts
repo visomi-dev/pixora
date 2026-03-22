@@ -1,6 +1,7 @@
+import { pixora } from 'pixora';
+
 import { centeredBoxX } from '../scene-positioning';
 
-import { pixora } from 'pixora';
 
 export const gameOverScene = pixora.scene({
   key: 'game-over',

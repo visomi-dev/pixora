@@ -1,5 +1,4 @@
 import type { BaseNode } from '../components/base-node';
-
 import type { PixoraNode } from './types';
 
 export const enum LifecyclePhase {
