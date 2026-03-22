@@ -1,10 +1,8 @@
 name: Publish to npm
 
 on:
-  workflow_dispatch:
-  push:
-    tags:
-      - 'v*'
+  release:
+    types: [created]
 
 permissions:
   contents: read
@@ -35,50 +33,14 @@ jobs:
       - name: Build pixora
         run: pnpm nx build pixora
 
-      - name: Get version from dist
+      - name: Get version
         id: version
-        run: echo "VERSION=$(node -p \"require('./dist/libs/pixora/package.json').version\")" >> $GITHUB_OUTPUT
+        run: |
+          VERSION=$(node -p "require('./dist/libs/pixora/package.json').version")
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Publish to npm
         run: |
-          echo "Publishing @pixora/pixora@$VERSION to npm..."
+          echo "Publishing @pixora/pixora@${{ steps.version.outputs.VERSION }} to npm..."
           cd dist/libs/pixora
           npm publish --access public --provenance
-
-  build-docs:
-    needs: publish
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '24'
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-
-      - name: Build Docs
-        run: pnpm nx run docs:build
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: dist/apps/docs
-          retention-days: 1

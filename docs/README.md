@@ -1,25 +1,77 @@
-# pixora Docs
+# pixora
 
-This directory contains the phase 0 definition set for pixora.
+[![Documentation](https://img.shields.io/badge/docs-github.pages-2563eb?style=flat-square)](https://visomi.github.io/pixora/)
 
-The goal of phase 0 is to remove the biggest technical unknowns before framework code is written in `libs/pixora` and before the demo is rebuilt in `apps/example`.
+A lightweight reactive framework built on top of [PixiJS](https://pixijs.com) for 2D web games.
 
-## Source of truth
+## What is pixora?
 
-Read the documents in this order:
+pixora solves the architectural gaps of PixiJS when building full applications:
 
-1. `docs/prd.md` - product intent, goals, constraints, and MVP framing.
-2. `docs/glossary.md` - shared vocabulary used across the rest of the docs.
-3. `docs/architecture/overview.md` - system shape and workspace mapping.
-4. `docs/adr/` - final technical decisions for the first implementation.
-5. `docs/specs/` - detailed contracts for each framework module.
-6. `docs/roadmap/` - implementation order, backlog, testing, and release plan.
+- menus, UI systems, and responsive layouts
+- reactive state driving rendering
+- scene-based navigation
+- event-driven gameplay
+- lightweight animation orchestration
 
-## Current workspace status
+pixora is **not a game engine replacement** and does not compete with Unity, Godot, or Phaser. It is a structured runtime layer on top of PixiJS.
 
-- `libs/pixora` exists as a publishable Vite library but still contains scaffold code.
-- `apps/space-invaders` contains a complete Space Invaders game demo.
-- `docs/prd.md` defines the product direction, but the technical definition set was missing.
+Primary use case: powering **Catfé Express**, a cozy cat café time-management game.
+
+## Architecture
+
+```
+Layer 1 — PixiJS        Rendering (sprites, containers, text, rendering loop)
+Layer 2 — pixora Core   App bootstrap, scene lifecycle, reactive state, events
+Layer 3 — pixora UI     Declarative component model, flex layout, interaction
+Layer 4 — Game Domain   Entities, gameplay rules, services (your code)
+```
+
+## Key capabilities
+
+- **Signals/reactive state** — `signal()`, `computed()`, `effect()`, `createStore()`
+- **Scene system** — `init → mount → activate → update → resize → deactivate → destroy`
+- **Declarative UI** — `pixora.component()`, `pixora.container()`, `pixora.button()`, etc.
+- **Flex layout** — CSS-like flexbox for responsive menus and HUD
+- **Typed events** — decoupled communication between systems
+- **Hybrid model** — declarative API for UI, imperative API for complex game logic
+
+## Quick start
+
+```ts
+import { api as pixora, pixora as createApp } from 'pixora';
+
+const menu = pixora.component((ctx) => {
+  return pixora.container(
+    {
+      layout: {
+        type: 'flex',
+        direction: 'vertical',
+        justify: 'center',
+        align: 'center',
+        gap: 16,
+      },
+    },
+    pixora.text({ text: 'Welcome', color: '#ffffff', size: 32 }),
+    pixora.button({ label: 'Start', onPointerTap: () => ctx.scenes.goTo('game') }),
+  );
+}, 'menu');
+
+await createApp({
+  scenes: [pixora.scene(menu)],
+});
+```
+
+## Learn more
+
+| Document                                 | Description                                        |
+| ---------------------------------------- | -------------------------------------------------- |
+| [summary.md](./summary.md)               | Full architecture overview and all phases summary  |
+| [phases-context.md](./phases-context.md) | Implementation context and technical details       |
+| [prd.md](./prd.md)                       | Product intent, goals, and MVP framing             |
+| [roadmap/phases.md](./roadmap/phases.md) | Development phases and implementation order        |
+| [glossary.md](./glossary.md)             | Shared vocabulary                                  |
+| [architecture/](./architecture/)         | System shape, module boundaries, runtime lifecycle |
 
 ## Document map
 
@@ -68,15 +120,6 @@ Read the documents in this order:
 - `docs/roadmap/backlog.md`
 - `docs/roadmap/testing-strategy.md`
 - `docs/roadmap/release-strategy.md`
-
-## Phase 0 exit criteria
-
-Phase 0 is complete when:
-
-- the public API direction is defined;
-- the reactive model, scene lifecycle, and layout approach are no longer open questions;
-- the MVP is reduced to the exact features needed by the example app;
-- every implementation phase has inputs, outputs, and validation steps.
 
 ## Change rules
 
