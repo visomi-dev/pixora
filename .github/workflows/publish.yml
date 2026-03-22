@@ -35,9 +35,7 @@ jobs:
 
       - name: Get version
         id: version
-        run: |
-          VERSION=$(node -p "require('./dist/libs/pixora/package.json').version")
-          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(jq -r '.version' dist/libs/pixora/package.json)" >> $GITHUB_OUTPUT
 
       - name: Publish to npm
         run: |
