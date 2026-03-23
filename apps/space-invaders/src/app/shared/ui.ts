@@ -1,5 +1,7 @@
 import { pixora } from 'pixora';
 
+import { createTextStyle } from './styles';
+
 type MenuButtonOptions = {
   backgroundColor: number;
   height: number;
@@ -7,6 +9,7 @@ type MenuButtonOptions = {
   label: string;
   left: number;
   onPointerTap: () => void;
+  textOffsetY?: number;
   top: number;
   width: number;
 };
@@ -14,6 +17,7 @@ type MenuButtonOptions = {
 export function createMenuButton(options: MenuButtonOptions): ReturnType<typeof pixora.container> {
   return pixora.container({
     key: options.key,
+    label: options.key,
     onPointerTap: options.onPointerTap,
     style: {
       backgroundColor: options.backgroundColor,
@@ -30,13 +34,10 @@ export function createMenuButton(options: MenuButtonOptions): ReturnType<typeof 
         anchor: 0.5,
         content: options.label,
         style: {
-          color: '#09111d',
-          fontFamily: 'Orbitron, sans-serif',
-          fontSize: 20,
-          fontWeight: '700',
+          ...createTextStyle('#09111d', 20, '700').style,
           left: options.width / 2,
           position: 'absolute',
-          top: options.height / 2,
+          top: options.height / 2 + (options.textOffsetY ?? -2),
         },
       }),
     ],

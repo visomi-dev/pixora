@@ -1,6 +1,6 @@
 {
   "name": "pixora",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "type": "module",
   "repository": {
     "type": "git",
@@ -16,8 +16,10 @@
   "main": "./index.js",
   "types": "./index.d.ts",
   "dependencies": {
-    "pixi.js": "^8.17.0",
-    "@pixi/devtools": "^2.0.1"
+    "@pixi/devtools": "^2.0.1",
+    "@pixi/layout": "^3.2.0",
+    "@pixi/ui": "^2.3.2",
+    "pixi.js": "^8.17.1"
   },
   "devDependencies": {
     "@pixi/devtools": "^2.0.1"

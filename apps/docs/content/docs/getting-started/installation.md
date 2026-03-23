@@ -17,11 +17,11 @@ Before installing Pixora, ensure you have:
 Install Pixora and its dependencies using your preferred package manager:
 
 ```bash
-npm install pixora@0.7.1
+npm install pixora@0.7.2
 # or
-yarn add pixora@0.7.1
+yarn add pixora@0.7.2
 # or
-pnpm add pixora@0.7.1
+pnpm add pixora@0.7.2
 ```
 
 ## Peer Dependencies

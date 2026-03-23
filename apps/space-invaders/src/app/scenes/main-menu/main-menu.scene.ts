@@ -1,5 +1,6 @@
 import { pixora } from 'pixora';
 
+import { createCenteredMonoTextStyle, createCenteredTextStyle } from '../../shared/styles';
 import { centeredBoxX } from '../scene-positioning';
 import { createBackground, createMenuButton } from '../../shared/ui';
 
@@ -30,26 +31,20 @@ export const mainMenuScene = pixora.scene({
       children: [
         createBackground(vp.width, vp.height),
         pixora.text({
-          anchor: { x: 0.5, y: 0 },
+          ...createCenteredTextStyle('#00ffaa', 72, '900'),
           content: 'SPACE',
           style: {
-            color: '#00ffaa',
-            fontFamily: 'Orbitron, sans-serif',
-            fontSize: 72,
-            fontWeight: '900',
+            ...createCenteredTextStyle('#00ffaa', 72, '900').style,
             left: vp.width / 2,
             position: 'absolute',
             top: titleY,
           },
         }),
         pixora.text({
-          anchor: { x: 0.5, y: 0 },
+          ...createCenteredTextStyle('#ff00aa', 48, '700'),
           content: 'INVADERS',
           style: {
-            color: '#ff00aa',
-            fontFamily: 'Orbitron, sans-serif',
-            fontSize: 48,
-            fontWeight: '700',
+            ...createCenteredTextStyle('#ff00aa', 48, '700').style,
             left: vp.width / 2,
             position: 'absolute',
             top: titleY + 76,
@@ -76,13 +71,11 @@ export const mainMenuScene = pixora.scene({
           width: 280,
         }),
         pixora.text({
-          anchor: { x: 0.5, y: 0 },
+          ...createCenteredMonoTextStyle('#666688', 14),
           content: highScoreText,
           style: {
             align: 'center',
-            color: '#666688',
-            fontFamily: 'JetBrains Mono, monospace',
-            fontSize: 14,
+            ...createCenteredMonoTextStyle('#666688', 14).style,
             left: vp.width / 2,
             position: 'absolute',
             top: vp.height - 36,

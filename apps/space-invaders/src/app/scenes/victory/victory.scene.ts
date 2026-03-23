@@ -1,5 +1,6 @@
 import { pixora } from 'pixora';
 
+import { createCenteredTextStyle } from '../../shared/styles';
 import { centeredBoxX } from '../scene-positioning';
 import { createBackground, createMenuButton } from '../../shared/ui';
 
@@ -19,37 +20,30 @@ export const victoryScene = pixora.scene({
       children: [
         createBackground(vp.width, vp.height),
         pixora.text({
-          anchor: { x: 0.5, y: 0 },
+          ...createCenteredTextStyle('#00ffaa', 72, '900'),
           content: 'VICTORY!',
           style: {
-            color: '#00ffaa',
-            fontFamily: 'Orbitron, sans-serif',
-            fontSize: 72,
-            fontWeight: '900',
+            ...createCenteredTextStyle('#00ffaa', 72, '900').style,
             left: vp.width / 2,
             position: 'absolute',
             top: headingY,
           },
         }),
         pixora.text({
-          anchor: { x: 0.5, y: 0 },
+          ...createCenteredTextStyle('#ff00aa', 28),
           content: 'GALAXY DEFENDED!',
           style: {
-            color: '#ff00aa',
-            fontFamily: 'Orbitron, sans-serif',
-            fontSize: 28,
+            ...createCenteredTextStyle('#ff00aa', 28).style,
             left: vp.width / 2,
             position: 'absolute',
             top: headingY + 105,
           },
         }),
         pixora.text({
-          anchor: { x: 0.5, y: 0 },
+          ...createCenteredTextStyle('#ffffff', 32),
           content: 'FINAL SCORE: 0',
           style: {
-            color: '#ffffff',
-            fontFamily: 'Orbitron, sans-serif',
-            fontSize: 32,
+            ...createCenteredTextStyle('#ffffff', 32).style,
             left: vp.width / 2,
             position: 'absolute',
             top: headingY + 160,

@@ -1,5 +1,6 @@
 import { createKeyboardInput, pixora } from 'pixora';
 
+import { createCenteredTextStyle, createMonoTextStyle, createTextStyle } from '../../shared/styles';
 import { createBackground, createMenuButton } from '../../shared/ui';
 import { rightAlignedTextX } from '../scene-positioning';
 
@@ -75,36 +76,27 @@ export const gameScene = pixora.scene({
             pixora.text({
               content: scoreText,
               style: {
-                color: '#00ffaa',
-                fontFamily: 'Orbitron, monospace',
-                fontSize: 20,
-                fontWeight: 'bold',
+                ...createTextStyle('#00ffaa', 20).style,
                 left: 20,
                 position: 'absolute',
                 top: 16,
               },
             }),
             pixora.text({
-              anchor: { x: 0.5, y: 0 },
+              ...createCenteredTextStyle('#ff00aa', 20),
               content: levelText,
               style: {
-                color: '#ff00aa',
-                fontFamily: 'Orbitron, monospace',
-                fontSize: 20,
-                fontWeight: 'bold',
+                ...createCenteredTextStyle('#ff00aa', 20).style,
                 left: viewportWidth / 2,
                 position: 'absolute',
                 top: 16,
               },
             }),
             pixora.text({
-              anchor: { x: 0.5, y: 0 },
+              ...createCenteredTextStyle('#ffff00', 16),
               content: comboText,
               style: {
-                color: '#ffff00',
-                fontFamily: 'Orbitron, monospace',
-                fontSize: 16,
-                fontWeight: 'bold',
+                ...createCenteredTextStyle('#ffff00', 16).style,
                 left: viewportWidth / 2,
                 position: 'absolute',
                 top: 40,
@@ -113,9 +105,7 @@ export const gameScene = pixora.scene({
             pixora.text({
               content: livesText,
               style: {
-                color: '#ff6644',
-                fontFamily: 'Orbitron, monospace',
-                fontSize: 18,
+                ...createMonoTextStyle('#ff6644', 18).style,
                 left: livesX,
                 position: 'absolute',
                 top: 18,
@@ -134,13 +124,10 @@ export const gameScene = pixora.scene({
               },
               children: [
                 pixora.text({
-                  anchor: { x: 0.5, y: 0 },
+                  ...createCenteredTextStyle('#ffffff', 48),
                   content: 'PAUSED',
                   style: {
-                    color: '#ffffff',
-                    fontFamily: 'Orbitron, monospace',
-                    fontSize: 48,
-                    fontWeight: 'bold',
+                    ...createCenteredTextStyle('#ffffff', 48).style,
                     left: viewportWidth / 2,
                     position: 'absolute',
                     top: viewportHeight / 2 - 40,
@@ -179,13 +166,10 @@ export const gameScene = pixora.scene({
               },
               children: [
                 pixora.text({
-                  anchor: { x: 0.5, y: 0 },
+                  ...createCenteredTextStyle('#ff4444', 72, '900'),
                   content: 'GAME OVER',
                   style: {
-                    color: '#ff4444',
-                    fontFamily: 'Orbitron, sans-serif',
-                    fontSize: 72,
-                    fontWeight: '900',
+                    ...createCenteredTextStyle('#ff4444', 72, '900').style,
                     left: viewportWidth / 2,
                     position: 'absolute',
                     top: viewportHeight / 2 - 100,

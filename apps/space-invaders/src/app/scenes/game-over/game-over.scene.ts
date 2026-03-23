@@ -1,5 +1,6 @@
 import { pixora } from 'pixora';
 
+import { createCenteredMonoTextStyle, createCenteredTextStyle } from '../../shared/styles';
 import { centeredBoxX } from '../scene-positioning';
 import { createBackground, createMenuButton } from '../../shared/ui';
 
@@ -29,38 +30,31 @@ export const gameOverScene = pixora.scene({
       children: [
         createBackground(vp.width, vp.height),
         pixora.text({
-          anchor: { x: 0.5, y: 0 },
+          ...createCenteredTextStyle('#ff4444', 72, '900'),
           content: 'GAME OVER',
           style: {
-            color: '#ff4444',
-            fontFamily: 'Orbitron, sans-serif',
-            fontSize: 72,
-            fontWeight: '900',
+            ...createCenteredTextStyle('#ff4444', 72, '900').style,
             left: vp.width / 2,
             position: 'absolute',
             top: headingY,
           },
         }),
         pixora.text({
-          anchor: { x: 0.5, y: 0 },
+          ...createCenteredTextStyle('#ffffff', 32),
           content: 'SCORE: 0',
           style: {
-            color: '#ffffff',
-            fontFamily: 'Orbitron, sans-serif',
-            fontSize: 32,
+            ...createCenteredTextStyle('#ffffff', 32).style,
             left: vp.width / 2,
             position: 'absolute',
             top: headingY + 110,
           },
         }),
         pixora.text({
-          anchor: { x: 0.5, y: 0 },
+          ...createCenteredMonoTextStyle('#ffff00', 24),
           content: highScoreText,
           style: {
             align: 'center',
-            color: '#ffff00',
-            fontFamily: 'Orbitron, sans-serif',
-            fontSize: 24,
+            ...createCenteredMonoTextStyle('#ffff00', 24).style,
             left: vp.width / 2,
             position: 'absolute',
             top: headingY + 160,

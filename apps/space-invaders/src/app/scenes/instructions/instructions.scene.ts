@@ -1,5 +1,6 @@
 import { pixora } from 'pixora';
 
+import { createCenteredMonoTextStyle, createCenteredTextStyle } from '../../shared/styles';
 import { centeredBoxX } from '../scene-positioning';
 import { createBackground, createMenuButton } from '../../shared/ui';
 
@@ -19,93 +20,75 @@ export const instructionsScene = pixora.scene({
       children: [
         createBackground(vp.width, vp.height),
         pixora.text({
-          anchor: { x: 0.5, y: 0 },
+          ...createCenteredTextStyle('#00ffaa', 48, '900'),
           content: 'INSTRUCTIONS',
           style: {
-            color: '#00ffaa',
-            fontFamily: 'Orbitron, sans-serif',
-            fontSize: 48,
-            fontWeight: '900',
+            ...createCenteredTextStyle('#00ffaa', 48, '900').style,
             left: sectionX,
             position: 'absolute',
             top: titleY,
           },
         }),
         pixora.text({
-          anchor: { x: 0.5, y: 0 },
+          ...createCenteredTextStyle('#ff00aa', 24, '700'),
           content: 'CONTROLS',
           style: {
-            color: '#ff00aa',
-            fontFamily: 'Orbitron, sans-serif',
-            fontSize: 24,
-            fontWeight: '700',
+            ...createCenteredTextStyle('#ff00aa', 24, '700').style,
             left: sectionX,
             position: 'absolute',
             top: 170,
           },
         }),
         pixora.text({
-          anchor: { x: 0.5, y: 0 },
+          ...createCenteredMonoTextStyle('#ffffff', 16),
           content: 'LEFT / RIGHT or A / D - Move Ship\nSPACE - Fire\nP - Pause\nESC - Pause',
           style: {
             align: 'center',
-            color: '#ffffff',
-            fontFamily: 'JetBrains Mono, monospace',
-            fontSize: 16,
+            ...createCenteredMonoTextStyle('#ffffff', 16).style,
             left: sectionX,
             position: 'absolute',
             top: 210,
           },
         }),
         pixora.text({
-          anchor: { x: 0.5, y: 0 },
+          ...createCenteredTextStyle('#ff00aa', 24, '700'),
           content: 'POWER-UPS',
           style: {
-            color: '#ff00aa',
-            fontFamily: 'Orbitron, sans-serif',
-            fontSize: 24,
-            fontWeight: '700',
+            ...createCenteredTextStyle('#ff00aa', 24, '700').style,
             left: sectionX,
             position: 'absolute',
             top: 340,
           },
         }),
         pixora.text({
-          anchor: { x: 0.5, y: 0 },
+          ...createCenteredMonoTextStyle('#ffffff', 16),
           content:
             'SPEED BOOST - Move faster\nSHIELD - Temporary protection\nTRIPLE SHOT - Fire three bullets\nSMART BOMB - Clear a row',
           style: {
             align: 'center',
-            color: '#ffffff',
-            fontFamily: 'JetBrains Mono, monospace',
-            fontSize: 16,
+            ...createCenteredMonoTextStyle('#ffffff', 16).style,
             left: sectionX,
             position: 'absolute',
             top: 380,
           },
         }),
         pixora.text({
-          anchor: { x: 0.5, y: 0 },
+          ...createCenteredTextStyle('#ff00aa', 24, '700'),
           content: 'TIPS',
           style: {
-            color: '#ff00aa',
-            fontFamily: 'Orbitron, sans-serif',
-            fontSize: 24,
-            fontWeight: '700',
+            ...createCenteredTextStyle('#ff00aa', 24, '700').style,
             left: sectionX,
             position: 'absolute',
             top: 530,
           },
         }),
         pixora.text({
-          anchor: { x: 0.5, y: 0 },
+          ...createCenteredMonoTextStyle('#ffffff', 16),
           content:
             'Chain eliminations for score multipliers.\nDestroy waves quickly for bonus points.\nWatch for falling power-ups.\nEach level ramps up the pressure.',
           style: {
             align: 'center',
-            color: '#ffffff',
-            fontFamily: 'JetBrains Mono, monospace',
-            fontSize: 16,
+            ...createCenteredMonoTextStyle('#ffffff', 16).style,
             left: sectionX,
             position: 'absolute',
             top: 570,
