@@ -115,6 +115,7 @@ export class Scheduler {
     const viewport = tree.context.viewport.get();
 
     runLayout(tree.root.hostNode, viewport);
+    tree.context.app.renderer.layout.update(tree.context.app.stage as never);
   }
 
   schedulePostUpdate(callback: () => void): void {

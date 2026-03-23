@@ -6,7 +6,6 @@ import type { ApplicationContext } from '../app/types';
 import type { Disposable } from '../utils/disposable';
 import type { PixoraNode } from './types';
 
-
 type Cleanup = Disposable | (() => void) | void;
 
 export type IslandSetupContext = {
@@ -23,6 +22,7 @@ export type IslandOptions = {
 class IslandNode extends ContainerNode {
   constructor(options: IslandOptions) {
     super();
+    this.displayObject.layout = null;
 
     const cleanup = options.setup({ context: options.context, root: this });
 

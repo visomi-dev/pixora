@@ -1,5 +1,5 @@
 import type { Application } from 'pixi.js';
-import type { AssetManifest, AssetRegistry } from '../components/create-asset-registry';
+import type { AssetManifest, AssetRegistry } from '../assets/create-asset-registry';
 import type { EventBus } from '../events/create-event-bus';
 import type { SceneManager } from '../scenes/scene-manager';
 import type { ReadonlySignal } from '../state/signal';

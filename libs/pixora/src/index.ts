@@ -27,7 +27,6 @@ export { TextNode } from './components/text-node';
 export { applyLayout } from './layout/apply-layout';
 export { layout } from './layout/layout';
 export { Layout } from './layout/layout-node';
-export { flexEngine, FlexEngine } from './layout/flex-engine';
 
 export type {
   PixoraStyle,

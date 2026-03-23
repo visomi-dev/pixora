@@ -1,10 +1,12 @@
-import { describe, expect, it } from 'vitest';
+import { Assets, Texture } from 'pixi.js';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { AssetState, createAssetContext, clearSharedCache } from './asset-context';
 
 describe('asset-context', () => {
   afterEach(() => {
     clearSharedCache();
+    vi.restoreAllMocks();
   });
 
   describe('createAssetContext', () => {
@@ -66,6 +68,9 @@ describe('asset-context', () => {
     it('supports shared cache option', async () => {
       const context1 = createAssetContext({ sharedCache: true });
       const context2 = createAssetContext({ sharedCache: true });
+      const texture = Texture.EMPTY;
+
+      vi.spyOn(Assets, 'load').mockResolvedValue(texture as never);
 
       const manifest = {
         textures: {
@@ -79,6 +84,7 @@ describe('asset-context', () => {
       await context1.load('shared');
 
       expect(context1.isLoaded('shared')).toBe(true);
+      expect(Assets.load).toHaveBeenCalledWith('/assets/shared.png');
       expect(context1.getTexture('shared')).toBe(context2.getTexture('shared'));
     });
 

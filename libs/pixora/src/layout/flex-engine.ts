@@ -1,11 +1,15 @@
+import { normalizeLayoutStyle, resolveDimension, resolveNumberValue } from './normalize-style';
+
 import type { Container } from 'pixi.js';
-import type { LayoutStyles } from './layout-types';
 import type { ComputedLayout } from './computed-layout';
+import type { LayoutStyles, PositionSpecifier } from './layout-types';
+import type { BaseNode } from '../components/base-node';
 
 export type FlexNode = {
   style: LayoutStyles;
   computed: ComputedLayout;
   children: FlexNode[];
+  hostNode: BaseNode;
   target: Container;
   isDirty: boolean;
 };
@@ -73,7 +77,7 @@ export class FlexEngine {
     parentX: number,
     parentY: number,
   ): void {
-    const style = { ...DEFAULT_STYLE, ...node.style };
+    const style = normalizeLayoutStyle({ ...DEFAULT_STYLE, ...node.style });
     const isContainer = style.display === 'flex';
 
     if (!isContainer || style.position === 'absolute') {
@@ -88,11 +92,11 @@ export class FlexEngine {
     const paddingX = paddingLeft + paddingRight;
     const paddingY = paddingTop + paddingBottom;
 
-    const availableWidth = this.resolveDimension(style.width, parentWidth) ?? parentWidth - paddingX;
-    const availableHeight = this.resolveDimension(style.height, parentHeight) ?? parentHeight - paddingY;
+    const availableWidth = resolveDimension(style.width, parentWidth) ?? parentWidth - paddingX;
+    const availableHeight = resolveDimension(style.height, parentHeight) ?? parentHeight - paddingY;
 
     const children = node.children.filter((child) => {
-      const childStyle = { ...DEFAULT_STYLE, ...child.style };
+      const childStyle = normalizeLayoutStyle({ ...DEFAULT_STYLE, ...child.style });
       return childStyle.display !== 'none';
     });
 
@@ -114,7 +118,7 @@ export class FlexEngine {
     const lines = this.calculateFlexLines(children, mainSize, crossSize, gap, style.flexWrap);
 
     for (const line of lines) {
-      this.calculateLineLayout(line, style, isRow);
+      this.calculateLineLayout(line, style, isRow, mainSize, gap);
     }
 
     const totalMainSize = lines.reduce((sum, line) => {
@@ -137,23 +141,38 @@ export class FlexEngine {
     node.computed.height = isRow ? containerCrossSize : containerMainSize;
     node.computed.left = parentX;
     node.computed.top = parentY;
+    this.applyTransforms(node, style);
 
     const alignItems = style.alignItems ?? 'stretch';
+    const alignContent = style.alignContent ?? 'stretch';
     const isReverse = style.flexDirection === 'row-reverse' || style.flexDirection === 'column-reverse';
-    let lineCrossPos = isRow ? parentY + paddingTop : parentX + paddingLeft;
+    const containerInnerCrossSize = isRow ? containerCrossSize - paddingY : containerMainSize - paddingX;
     const containerInnerMainSize = isRow ? containerMainSize - paddingX : containerCrossSize - paddingY;
+    const lineCrossSizes = lines.map((line) => line.crossEnd - line.crossStart);
+    const totalLineCrossSize = lineCrossSizes.reduce((sum, size) => sum + size, 0);
+    const remainingCrossSpace = Math.max(0, containerInnerCrossSize - totalLineCrossSize);
+    const { lineOffsets, lineSizes } = this.calculateCrossAxisDistribution(
+      lines.length,
+      remainingCrossSpace,
+      lineCrossSizes,
+      alignContent,
+    );
+    const lineCrossBase = isRow ? parentY + paddingTop : parentX + paddingLeft;
+    let consumedCrossSize = 0;
 
-    for (const line of lines) {
+    for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) {
+      const line = lines[lineIndex];
       const lineMainSize = line.mainEnd - line.mainStart;
-      const lineCrossSize = line.crossEnd - line.crossStart;
+      const lineCrossSize = lineSizes[lineIndex];
       const remainingMainSpace = containerInnerMainSize - lineMainSize;
       const justifyOffsets = this.calculateJustifyOffsets(line.items.length, remainingMainSpace, style.justifyContent);
+      const lineCrossPos = lineCrossBase + consumedCrossSize + lineOffsets[lineIndex];
 
       let itemMainPos = isRow ? parentX + paddingLeft : parentY + paddingTop;
 
       for (let i = 0; i < line.items.length; i++) {
         const item = line.items[i];
-        const itemStyle = { ...DEFAULT_STYLE, ...item.style };
+        const itemStyle = normalizeLayoutStyle({ ...DEFAULT_STYLE, ...item.style });
         const alignSelf = itemStyle.alignSelf ?? alignItems;
 
         const mainPos = itemMainPos + justifyOffsets[i];
@@ -177,7 +196,7 @@ export class FlexEngine {
         itemMainPos += (isRow ? item.computed.width : item.computed.height) + gap;
       }
 
-      lineCrossPos += lineCrossSize;
+      consumedCrossSize += lineCrossSize;
     }
   }
 
@@ -193,7 +212,7 @@ export class FlexEngine {
     let currentMainSize = 0;
 
     for (const child of children) {
-      const childStyle = { ...DEFAULT_STYLE, ...child.style };
+      const childStyle = normalizeLayoutStyle({ ...DEFAULT_STYLE, ...child.style });
       const childMainSize = this.getChildMainSize(child, childStyle);
 
       if (flexWrap === 'nowrap') {
@@ -224,7 +243,7 @@ export class FlexEngine {
       line.mainStart = 0;
       line.mainEnd =
         line.items.reduce((sum, item) => {
-          const style = { ...DEFAULT_STYLE, ...item.style };
+          const style = normalizeLayoutStyle({ ...DEFAULT_STYLE, ...item.style });
           const size = this.getChildMainSize(item, style);
           return sum + size;
         }, 0) +
@@ -233,7 +252,7 @@ export class FlexEngine {
       line.crossStart = 0;
       line.crossEnd = Math.max(
         ...line.items.map((item) => {
-          const style = { ...DEFAULT_STYLE, ...item.style };
+          const style = normalizeLayoutStyle({ ...DEFAULT_STYLE, ...item.style });
           return this.getChildCrossSize(item, style);
         }),
       );
@@ -246,20 +265,49 @@ export class FlexEngine {
     line: FlexLine,
     containerStyle: LayoutStyles,
     isRow: boolean,
+    availableMainSize: number,
+    gap: number,
   ): void {
     const items = line.items;
     const alignItems = containerStyle.alignItems ?? 'stretch';
+    const itemMainSizes = items.map((item) => {
+      const itemStyle = normalizeLayoutStyle({ ...DEFAULT_STYLE, ...item.style });
 
-    for (const item of items) {
-      const itemStyle = { ...DEFAULT_STYLE, ...item.style };
-      const alignSelf = itemStyle.alignSelf ?? alignItems;
-
-      const itemMainSize = this.getChildMainSize(item, itemStyle);
-      const itemCrossSize = this.getChildCrossSize(item, itemStyle);
-
-      if (alignSelf === 'stretch') {
-        item.computed[isRow ? 'width' : 'height'] = line.crossEnd - line.crossStart;
+      return this.getChildMainSize(item, itemStyle);
+    });
+    const totalMainSize = itemMainSizes.reduce((sum, size) => sum + size, 0);
+    const totalGap = gap * Math.max(0, items.length - 1);
+    const remainingSpace = availableMainSize - totalMainSize - totalGap;
+    const flexGrowTotal = items.reduce((sum, item) => sum + this.getFlexGrow(item.style), 0);
+    const flexShrinkTotal = items.reduce(
+      (sum, item, index) => sum + this.getFlexShrink(item.style) * itemMainSizes[index],
+      0,
+    );
+    const resolvedMainSizes = itemMainSizes.map((baseSize, index) => {
+      if (remainingSpace > 0 && flexGrowTotal > 0) {
+        return baseSize + (remainingSpace * this.getFlexGrow(items[index].style)) / flexGrowTotal;
       }
+
+      if (remainingSpace < 0 && flexShrinkTotal > 0) {
+        const shrinkWeight = this.getFlexShrink(items[index].style) * baseSize;
+        return Math.max(0, baseSize + (remainingSpace * shrinkWeight) / flexShrinkTotal);
+      }
+
+      return baseSize;
+    });
+    const baseCrossSizes = items.map((item) => {
+      const itemStyle = normalizeLayoutStyle({ ...DEFAULT_STYLE, ...item.style });
+
+      return this.getChildCrossSize(item, itemStyle);
+    });
+    const lineCrossSize = baseCrossSizes.reduce((max, size) => Math.max(max, size), 0);
+
+    for (let index = 0; index < items.length; index++) {
+      const item = items[index];
+      const itemStyle = normalizeLayoutStyle({ ...DEFAULT_STYLE, ...item.style });
+      const alignSelf = itemStyle.alignSelf ?? alignItems;
+      const itemMainSize = resolvedMainSizes[index];
+      const itemCrossSize = alignSelf === 'stretch' ? lineCrossSize : baseCrossSizes[index];
 
       if (isRow) {
         item.computed.width = itemMainSize;
@@ -269,6 +317,9 @@ export class FlexEngine {
         item.computed.height = itemMainSize;
       }
     }
+
+    line.mainEnd = resolvedMainSizes.reduce((sum, size) => sum + size, 0) + totalGap;
+    line.crossEnd = lineCrossSize;
   }
 
   private calculateJustifyOffsets(
@@ -327,21 +378,22 @@ export class FlexEngine {
   }
 
   private getChildMainSize(child: FlexNode, style: LayoutStyles): number {
-    const isRow = style.flexDirection === 'row' || style.flexDirection === 'row-reverse';
     const flexBasis = style.flexBasis ?? 'auto';
 
     if (flexBasis !== 'auto') {
-      return typeof flexBasis === 'number' ? flexBasis : 0;
+      return typeof flexBasis === 'number'
+        ? flexBasis
+        : resolveNumberValue(flexBasis, this.getParentMainAxisSize(style));
     }
 
     if (style.width !== undefined && style.width !== 'auto') {
-      return typeof style.width === 'number' ? style.width : 0;
+      return resolveDimension(style.width, this.context.width) ?? child.computed.width ?? 0;
     }
     if (style.height !== undefined && style.height !== 'auto') {
-      return typeof style.height === 'number' ? style.height : 0;
+      return resolveDimension(style.height, this.context.height) ?? child.computed.height ?? 0;
     }
 
-    return child.computed[isRow ? 'width' : 'height'] ?? 0;
+    return child.computed.width || child.computed.height || 0;
   }
 
   private getChildCrossSize(child: FlexNode, style: LayoutStyles): number {
@@ -352,7 +404,9 @@ export class FlexEngine {
         ? style.height
         : (child.computed.height ?? 0);
     }
-    return style.width !== undefined && typeof style.width === 'number' ? style.width : (child.computed.width ?? 0);
+    return style.width !== undefined && style.width !== 'auto'
+      ? (resolveDimension(style.width, this.context.width) ?? child.computed.width ?? 0)
+      : (child.computed.width ?? 0);
   }
 
   private calculateAbsoluteLayout(
@@ -362,28 +416,28 @@ export class FlexEngine {
     parentX: number,
     parentY: number,
   ): void {
-    const style = { ...DEFAULT_STYLE, ...node.style };
+    const style = normalizeLayoutStyle({ ...DEFAULT_STYLE, ...node.style });
 
-    const width = this.resolveDimension(style.width, parentWidth) ?? node.computed.width ?? 0;
-    const height = this.resolveDimension(style.height, parentHeight) ?? node.computed.height ?? 0;
+    const width = resolveDimension(style.width, parentWidth) ?? node.computed.width ?? 0;
+    const height = resolveDimension(style.height, parentHeight) ?? node.computed.height ?? 0;
 
     let x = parentX;
     let y = parentY;
 
     if (style.left !== undefined) {
-      const resolved = this.resolveNumberValue(style.left, parentWidth);
+      const resolved = resolveNumberValue(style.left, parentWidth);
       x = parentX + resolved;
     }
     if (style.right !== undefined) {
-      const resolved = this.resolveNumberValue(style.right, parentWidth);
+      const resolved = resolveNumberValue(style.right, parentWidth);
       x = parentX + parentWidth - width - resolved;
     }
     if (style.top !== undefined) {
-      const resolved = this.resolveNumberValue(style.top, parentHeight);
+      const resolved = resolveNumberValue(style.top, parentHeight);
       y = parentY + resolved;
     }
     if (style.bottom !== undefined) {
-      const resolved = this.resolveNumberValue(style.bottom, parentHeight);
+      const resolved = resolveNumberValue(style.bottom, parentHeight);
       y = parentY + parentHeight - height - resolved;
     }
 
@@ -391,10 +445,11 @@ export class FlexEngine {
     node.computed.height = height;
     node.computed.left = x;
     node.computed.top = y;
+    this.applyTransforms(node, style);
   }
 
   private applyContainerSize(node: FlexNode, width: number, height: number): void {
-    const style = { ...DEFAULT_STYLE, ...node.style };
+    const style = normalizeLayoutStyle({ ...DEFAULT_STYLE, ...node.style });
 
     if (style.width === 'auto' || style.width === 'intrinsic') {
       const childrenWidth = node.children.reduce((sum, child) => sum + child.computed.width, 0);
@@ -406,29 +461,135 @@ export class FlexEngine {
     }
   }
 
-  private applyTransforms(node: FlexNode, _style: LayoutStyles): void {
+  private applyTransforms(node: FlexNode, style: LayoutStyles): void {
     const containerWidth = node.computed.width;
     const containerHeight = node.computed.height;
 
     if (containerWidth === 0 || containerHeight === 0) {
       return;
     }
+
+    const origin = this.resolveTransformOrigin(style.transformOrigin, containerWidth, containerHeight);
+    node.target.pivot.set(origin.x, origin.y);
+    node.computed.left += origin.x;
+    node.computed.top += origin.y;
   }
 
-  private resolveDimension(value: LayoutStyles['width'] | LayoutStyles['height'], parentSize: number): number | null {
-    if (value === undefined || value === 'auto' || value === 'intrinsic') {
-      return null;
-    }
-    return this.resolveNumberValue(value as string | number, parentSize);
+  private getFlexGrow(style: LayoutStyles): number {
+    const normalized = normalizeLayoutStyle({ ...DEFAULT_STYLE, ...style });
+
+    return normalized.flexGrow ?? 0;
   }
 
-  private resolveNumberValue(value: string | number | undefined, parentSize: number): number {
-    if (value === undefined) return 0;
-    if (typeof value === 'number') return value;
-    if (typeof value === 'string' && value.endsWith('%')) {
-      return (parseFloat(value) / 100) * parentSize;
+  private getFlexShrink(style: LayoutStyles): number {
+    const normalized = normalizeLayoutStyle({ ...DEFAULT_STYLE, ...style });
+
+    return normalized.flexShrink ?? 1;
+  }
+
+  private getParentMainAxisSize(style: LayoutStyles): number {
+    const isRow = style.flexDirection === 'row' || style.flexDirection === 'row-reverse';
+
+    return isRow ? this.context.width : this.context.height;
+  }
+
+  private calculateCrossAxisDistribution(
+    lineCount: number,
+    remainingSpace: number,
+    lineSizes: number[],
+    alignContent: LayoutStyles['alignContent'],
+  ): { lineOffsets: number[]; lineSizes: number[] } {
+    const offsets = new Array(lineCount).fill(0);
+    const stretchedLineSizes = [...lineSizes];
+
+    if (remainingSpace <= 0 || !alignContent || alignContent === 'flex-start') {
+      return { lineOffsets: offsets, lineSizes: stretchedLineSizes };
     }
-    return parseFloat(value) || 0;
+
+    switch (alignContent) {
+      case 'center': {
+        offsets.fill(remainingSpace / 2);
+        break;
+      }
+      case 'flex-end': {
+        offsets.fill(remainingSpace);
+        break;
+      }
+      case 'space-between': {
+        if (lineCount > 1) {
+          const gap = remainingSpace / (lineCount - 1);
+
+          for (let i = 0; i < lineCount; i++) {
+            offsets[i] = gap * i;
+          }
+        }
+        break;
+      }
+      case 'space-around': {
+        const gap = remainingSpace / lineCount;
+
+        for (let i = 0; i < lineCount; i++) {
+          offsets[i] = gap / 2 + gap * i;
+        }
+        break;
+      }
+      case 'space-evenly': {
+        const gap = remainingSpace / (lineCount + 1);
+
+        for (let i = 0; i < lineCount; i++) {
+          offsets[i] = gap * (i + 1);
+        }
+        break;
+      }
+      case 'stretch': {
+        const extra = remainingSpace / lineCount;
+
+        for (let i = 0; i < lineCount; i++) {
+          stretchedLineSizes[i] += extra;
+          offsets[i] = i === 0 ? 0 : offsets[i - 1] + stretchedLineSizes[i - 1] - lineSizes[i - 1];
+        }
+        break;
+      }
+    }
+
+    return { lineOffsets: offsets, lineSizes: stretchedLineSizes };
+  }
+
+  private resolveTransformOrigin(
+    value: PositionSpecifier | undefined,
+    width: number,
+    height: number,
+  ): { x: number; y: number } {
+    if (value === undefined) {
+      return { x: 0, y: 0 };
+    }
+
+    if (value === 'center') {
+      return { x: width / 2, y: height / 2 };
+    }
+
+    const parts = `${value}`.trim().split(/\s+/);
+    const [rawX, rawY = rawX] = parts;
+
+    return {
+      x: this.resolvePositionValue(rawX, width),
+      y: this.resolvePositionValue(rawY, height),
+    };
+  }
+
+  private resolvePositionValue(value: string, size: number): number {
+    switch (value) {
+      case 'left':
+      case 'top':
+        return 0;
+      case 'center':
+        return size / 2;
+      case 'right':
+      case 'bottom':
+        return size;
+      default:
+        return resolveNumberValue(value as `${number}%`, size);
+    }
   }
 }
 

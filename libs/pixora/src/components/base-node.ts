@@ -1,4 +1,5 @@
 import { setLayoutSpec, setLayoutStyles, markSubtreeLayoutDirty, getLayoutStyles } from '../runtime/layout-runtime';
+import { applyPixiLayout } from '../layout/translate-to-pixi-layout';
 
 import type { Container } from 'pixi.js';
 import type { Disposable } from '../utils/disposable';
@@ -9,8 +10,8 @@ export class BaseNode<TDisplayObject extends Container = Container> implements D
   protected readonly children = new Set<BaseNode>();
   protected readonly disposables = new Set<Disposable>();
   protected _layout: LayoutStyles | LayoutSpec | null = null;
-  private layoutWidth: number | null = null;
-  private layoutHeight: number | null = null;
+  protected layoutWidth: number | null = null;
+  protected layoutHeight: number | null = null;
 
   constructor(public readonly displayObject: TDisplayObject) {}
 
@@ -27,11 +28,14 @@ export class BaseNode<TDisplayObject extends Container = Container> implements D
 
     if (value && typeof value === 'object' && 'type' in value) {
       setLayoutSpec(this, value as LayoutSpec);
+      applyPixiLayout(this.displayObject, null);
     } else if (value && typeof value === 'object') {
       setLayoutStyles(this, value as LayoutStyles);
+      applyPixiLayout(this.displayObject, value as LayoutStyles);
     } else {
       setLayoutSpec(this, null);
       setLayoutStyles(this, null);
+      applyPixiLayout(this.displayObject, null);
     }
 
     markSubtreeLayoutDirty(this);

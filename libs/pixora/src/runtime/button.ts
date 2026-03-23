@@ -1,8 +1,10 @@
+import { ButtonContainer } from '@pixi/ui';
+import { Container, Sprite, Text, type TextStyleOptions } from 'pixi.js';
+
+import { BaseNode } from '../components/base-node';
 import { createTween } from '../animation/create-tween';
-import { SpriteNode } from '../components/sprite-node';
-import { TextNode } from '../components/text-node';
-import { bindInteractive, type ButtonState } from '../input/bind-interactive';
 import { effect, signal } from '../state/signal';
+import { applyPixiLayout } from '../layout/translate-to-pixi-layout';
 
 import { getCurrentApplicationContext } from './current-context';
 import { island } from './island';
@@ -21,12 +23,18 @@ type ButtonTextures = {
 
 type ButtonText = {
   content: string;
+  offset?: {
+    x?: number;
+    y?: number;
+  };
   style?: Pick<PixoraStyle, 'color' | 'fontFamily' | 'fontSize' | 'fontWeight'>;
 };
 
 type ButtonAnimationConfig = {
   durationMs?: number;
   easing?: 'ease-in' | 'ease-out' | 'ease-in-out' | 'linear';
+  hoverScale?: number;
+  pressedScale?: number;
 };
 
 export type ButtonProps = {
@@ -59,76 +67,109 @@ export function button(props: ButtonProps): ReturnType<typeof island> {
       const state = signal<ButtonState>(initialState);
       const width = resolveNumericDimension(props.style?.width, DEFAULT_WIDTH);
       const height = resolveNumericDimension(props.style?.height, DEFAULT_HEIGHT);
-      const label = new TextNode({
-        content: props.text.content,
-        style: resolveTextStyle(props.text.style, initialState),
+      const background = new Sprite(resolveTexture(props.textures, initialState));
+      const content = new Container();
+      const label = new Text({
+        resolution: 2,
+        style: buildTextStyle(resolveTextStyle(props.text.style, initialState)),
+        text: props.text.content,
       });
-      const background = new SpriteNode({
-        texture: resolveTexture(props.textures, initialState),
-        style: { height, width },
-      });
-
+      const view = new Container();
+      const widget = new ButtonContainer(view);
+      const widgetNode = new BaseNode(widget);
       let currentTween: { dispose: () => void } | null = null;
 
       root.displayObject.label = rootLabel;
-      background.displayObject.label = `${rootLabel}.Background`;
-      label.displayObject.label = `${rootLabel}.Text`;
+      widget.label = `${rootLabel}.Widget`;
+      background.label = `${rootLabel}.Background`;
+      content.label = `${rootLabel}.Content`;
+      label.label = `${rootLabel}.Text`;
 
       root.setLayoutSize(width, height);
-      background.setLayoutSize(width, height);
       root.layout = { ...resolveRootStyle(props.style, initialState), height, width };
       root.updateProps({ style: resolveRootStyle(props.style, initialState) });
 
-      label.displayObject.anchor.set(0.5);
-      label.setLayoutPosition(width / 2, height / 2);
+      applyPixiLayout(view, {
+        height,
+        width,
+      });
+      applyPixiLayout(content, {
+        height: '100%',
+        left: 0,
+        position: 'absolute',
+        top: 0,
+        width: '100%',
+      });
 
-      root.addChild(background);
-      root.addChild(label);
+      background.width = width;
+      background.height = height;
+      label.anchor.set(0.5);
+      positionLabel(label, width, height, props.text.offset);
+      view.addChild(background as never);
+      content.addChild(label as never);
+      view.addChild(content as never);
+      widget.enabled = !props.disabled;
+      root.addChild(widgetNode);
 
-      root.addDisposable(
-        bindInteractive(root.displayObject, {
-          enabled: !props.disabled,
-          onHoverChange(hovered) {
-            if (hovered) {
-              props.onPointerOver?.();
-            } else {
-              props.onPointerOut?.();
-            }
-          },
-          onPress() {
-            props.onPointerTap?.();
-          },
-          onPressEnd() {
-            props.onPointerUp?.();
-          },
-          onPressStart() {
-            props.onPointerDown?.();
-          },
-          onStateChange(interaction) {
-            state.set(resolveButtonState(interaction));
-          },
-        }),
-      );
+      widget.onHover.connect(() => {
+        state.set('hovered');
+        props.onPointerOver?.();
+      });
+      widget.onOut.connect(() => {
+        state.set('idle');
+        props.onPointerOut?.();
+      });
+      widget.onDown.connect(() => {
+        state.set('pressed');
+        props.onPointerDown?.();
+      });
+      widget.onUp.connect(() => {
+        state.set('idle');
+      });
+      widget.onUpOut.connect(() => {
+        state.set('idle');
+      });
+      widget.onPress.connect(() => {
+        state.set('idle');
+        props.onPointerTap?.();
+        props.onPointerUp?.();
+      });
 
       root.addDisposable(
         effect(() => {
           const currentState = state.get();
-          const nextScale = currentState === 'pressed' ? 0.98 : currentState === 'hovered' ? 1.01 : 1;
+          const nextScale = resolveButtonScale(props.animation, currentState);
 
           root.setLayoutSize(width, height);
-          background.setLayoutSize(width, height);
           root.layout = { ...resolveRootStyle(props.style, currentState), height, width };
           root.updateProps({ style: resolveRootStyle(props.style, currentState) });
-          background.updateProps({ texture: resolveTexture(props.textures, currentState) });
-          label.updateProps({ style: resolveTextStyle(props.text.style, currentState) });
+          root.displayObject.cursor = currentState === 'disabled' ? 'default' : (props.style?.cursor ?? 'pointer');
+          widget.cursor = currentState === 'disabled' ? 'default' : (props.style?.cursor ?? 'pointer');
+          applyPixiLayout(view, {
+            height,
+            width,
+          });
+          applyPixiLayout(content, {
+            height: '100%',
+            left: 0,
+            position: 'absolute',
+            top: 0,
+            width: '100%',
+          });
+          widget.enabled = currentState !== 'disabled';
+          background.texture = resolveTexture(props.textures, currentState);
+          background.width = width;
+          background.height = height;
+          label.style = buildTextStyle(resolveTextStyle(props.text.style, currentState));
+          positionLabel(label, width, height, props.text.offset);
 
           currentTween?.dispose();
           currentTween = createTween({
             durationMs: props.animation?.durationMs ?? 100,
             easing: props.animation?.easing ?? 'ease-out',
-            from: root.displayObject.scale.x,
+            from: widget.scale.x,
             onUpdate: (value) => {
-              root.displayObject.scale.set(value);
+              widget.scale.set(value);
             },
             to: nextScale,
           });
@@ -144,21 +185,7 @@ export function button(props: ButtonProps): ReturnType<typeof island> {
   });
 }
 
-function resolveButtonState(interaction: { disabled: boolean; hovered: boolean; pressed: boolean }): ButtonState {
-  if (interaction.disabled) {
-    return 'disabled';
-  }
-
-  if (interaction.pressed) {
-    return 'pressed';
-  }
-
-  if (interaction.hovered) {
-    return 'hovered';
-  }
-
-  return 'idle';
-}
+type ButtonState = 'disabled' | 'hovered' | 'idle' | 'pressed';
 
 function resolveTextStyle(
   style: ButtonText['style'],
@@ -172,6 +199,17 @@ function resolveTextStyle(
     fontSize: style?.fontSize ?? 28,
     fontWeight: style?.fontWeight ?? '700',
     opacity: state === 'disabled' ? 0.8 : 1,
+  };
+}
+
+function buildTextStyle(
+  style: Pick<PixoraStyle, 'color' | 'fontFamily' | 'fontSize' | 'fontWeight' | 'opacity'>,
+): TextStyleOptions {
+  return {
+    fill: style.color,
+    fontFamily: style.fontFamily,
+    fontSize: style.fontSize,
+    fontWeight: style.fontWeight as TextStyleOptions['fontWeight'] | undefined,
   };
 }
 
@@ -198,4 +236,20 @@ function resolveTexture(textures: ButtonTextures, state: ButtonState): ButtonTex
 
 function resolveNumericDimension(value: PixoraStyle['width'] | PixoraStyle['height'], fallback: number): number {
   return typeof value === 'number' ? value : fallback;
+}
+
+function positionLabel(label: Text, width: number, height: number, offset: ButtonText['offset'] | undefined): void {
+  label.x = width / 2 + (offset?.x ?? 0);
+  label.y = height / 2 + (offset?.y ?? 0);
+}
+
+function resolveButtonScale(animation: ButtonAnimationConfig | undefined, state: ButtonState): number {
+  switch (state) {
+    case 'hovered':
+      return animation?.hoverScale ?? 1.01;
+    case 'pressed':
+      return animation?.pressedScale ?? 1;
+    default:
+      return 1;
+  }
 }

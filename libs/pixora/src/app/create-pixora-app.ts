@@ -1,6 +1,9 @@
+import '@pixi/layout';
+import '@pixi/layout/devtools';
+
 import { Application, Assets } from 'pixi.js';
 
-import { createAssetRegistry, type FontAsset } from '../components/create-asset-registry';
+import { createAssetRegistry, type FontAsset } from '../assets/create-asset-registry';
 import { createEventBus } from '../events/create-event-bus';
 import { createSceneManager, type SceneManager } from '../scenes/scene-manager';
 import { createServiceRegistry, type ServiceRegistry } from '../services/create-service-registry';
@@ -102,8 +105,17 @@ export async function createPixoraApp(options: pixoraAppOptions): Promise<pixora
     autoStart: false,
     background: options.backgroundColor ?? 0x0f172a,
     height: viewport.height,
+    layout: {
+      layout: {
+        autoUpdate: true,
+        enableDebug: false,
+        debugModificationCount: 0,
+        throttle: 100,
+      },
+    },
     resolution: globalThis.devicePixelRatio ?? 1,
     width: viewport.width,
+    resizeTo: options.mount,
   });
 
   removeLoadingScreen(options.mount);
@@ -113,6 +125,7 @@ export async function createPixoraApp(options: pixoraAppOptions): Promise<pixora
     try {
       const { initDevtools } = await import('@pixi/devtools');
       initDevtools({ app });
+      void app.renderer.layout.enableDebug(true);
       devtoolsInitialized = true;
     } catch {
       console.warn('Failed to initialize PixiJS devtools. Make sure @pixi/devtools is installed.');

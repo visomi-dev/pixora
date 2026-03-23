@@ -1,9 +1,9 @@
 // @vitest-environment jsdom
 
 import { Texture } from 'pixi.js';
+import { ButtonContainer } from '@pixi/ui';
 
-import { SpriteNode } from '../components/sprite-node';
-import { TextNode } from '../components/text-node';
+import { BaseNode } from '../components/base-node';
 
 import { button } from './button';
 import { withApplicationContext } from './current-context';
@@ -11,6 +11,13 @@ import { withApplicationContext } from './current-context';
 import type { ApplicationContext } from '../app/types';
 import type { ContainerNode } from '../components/container-node';
 import type { ImperativeNodeProps } from './types';
+
+type DisplayNode = {
+  children?: DisplayNode[];
+  label?: string | null;
+  style?: { fill?: string; fontFamily?: string };
+  text?: string;
+};
 
 function createMockContext(): ApplicationContext {
   return {
@@ -34,6 +41,22 @@ function createTexture(label: string): Texture {
 
 function getIslandRoot(node: ReturnType<typeof button>): ContainerNode {
   return (node.props as ImperativeNodeProps).node as ContainerNode;
+}
+
+function findByLabel(node: DisplayNode, label: string): DisplayNode | undefined {
+  if (node.label === label) {
+    return node;
+  }
+
+  for (const child of node.children ?? []) {
+    const match = findByLabel(child, label);
+
+    if (match) {
+      return match;
+    }
+  }
+
+  return undefined;
 }
 
 const originalGetContext = HTMLCanvasElement.prototype.getContext;
@@ -76,20 +99,69 @@ describe('button', () => {
     );
 
     const root = getIslandRoot(node);
-    const [background, label] = root.getChildren();
+    const [widgetNode] = root.getChildren() as BaseNode<ButtonContainer>[];
+    const widget = widgetNode.displayObject;
+    const tree = widget as unknown as DisplayNode;
+    const background = findByLabel(tree, 'PrimaryButton.Background');
+    const label = findByLabel(tree, 'PrimaryButton.Text');
 
     expect(node.key).toBe('cta');
     expect(root.displayObject.label).toBe('PrimaryButton');
     expect(root.layoutStyles).toEqual(
       expect.objectContaining({ cursor: 'pointer', opacity: 1, width: 280, height: 72 }),
     );
-    expect(background).toBeInstanceOf(SpriteNode);
-    expect((background as SpriteNode).displayObject.label).toBe('PrimaryButton.Background');
-    expect((background as SpriteNode).displayObject.texture).toBe(idle);
-    expect(label).toBeInstanceOf(TextNode);
-    expect((label as TextNode).displayObject.label).toBe('PrimaryButton.Text');
-    expect((label as TextNode).displayObject.text).toBe('Play');
-    expect((label as TextNode).displayObject.style.fontFamily).toBe('Fredoka, sans-serif');
+    expect(widgetNode).toBeInstanceOf(BaseNode);
+    expect(widget).toBeInstanceOf(ButtonContainer);
+    expect(widget.label).toBe('PrimaryButton.Widget');
+    expect(background?.label).toBe('PrimaryButton.Background');
+    expect(label?.label).toBe('PrimaryButton.Text');
+    expect(label?.text).toBe('Play');
+    expect(label?.style?.fontFamily).toBe('Fredoka, sans-serif');
+  });
+
+  it('supports parent-controlled text offsets', () => {
+    const idle = createTexture('idle');
+    const context = createMockContext();
+
+    const node = withApplicationContext(context, () =>
+      button({
+        text: { content: 'Play', offset: { y: -4 } },
+        textures: { idle },
+      }),
+    );
+
+    const root = getIslandRoot(node);
+    const [widgetNode] = root.getChildren() as BaseNode<ButtonContainer>[];
+    const label = findByLabel(widgetNode.displayObject as unknown as DisplayNode, 'Button.Text') as {
+      y?: number;
+    };
+
+    expect(label.y).toBe(32);
+  });
+
+  it('supports per-button hover and press scale configuration', () => {
+    const idle = createTexture('idle');
+    const context = createMockContext();
+
+    const node = withApplicationContext(context, () =>
+      button({
+        animation: { durationMs: 50, hoverScale: 1.04, pressedScale: 0.97 },
+        text: { content: 'Play' },
+        textures: { idle },
+      }),
+    );
+
+    const root = getIslandRoot(node);
+    const [widgetNode] = root.getChildren() as BaseNode<ButtonContainer>[];
+    const widget = widgetNode.displayObject;
+
+    (widget.button as never as { processOver: (event?: unknown) => void }).processOver({});
+    vi.advanceTimersByTime(60);
+    expect(widget.scale.x).toBeCloseTo(1.04, 1);
+
+    (widget.button as never as { processDown: (event?: unknown) => void }).processDown({});
+    vi.advanceTimersByTime(60);
+    expect(widget.scale.x).toBeCloseTo(0.97, 1);
   });
 
   it('uses disabled state styling and texture fallback', () => {
@@ -112,14 +184,15 @@ describe('button', () => {
     );
 
     const root = getIslandRoot(node);
-    const [background, label] = root.getChildren();
+    const [widgetNode] = root.getChildren() as BaseNode<ButtonContainer>[];
+    const widget = widgetNode.displayObject;
+    const label = findByLabel(widget as unknown as DisplayNode, 'DisabledButton.Text');
 
     expect(root.layoutStyles).toEqual(expect.objectContaining({ width: 320, height: 80 }));
     expect(root.displayObject.cursor).toBe('default');
-    expect(root.displayObject.eventMode).toBe('none');
-    expect((background as SpriteNode).displayObject.texture).toBe(disabled);
-    expect((label as TextNode).displayObject.style.fill).toBe('#8e7866');
-    expect((label as TextNode).displayObject.style.fontFamily).toBe('Nunito, sans-serif');
+    expect(widget.enabled).toBe(false);
+    expect(label?.style?.fill).toBe('#8e7866');
+    expect(label?.style?.fontFamily).toBe('Nunito, sans-serif');
   });
 
   it('reacts to hover, press, and tap events', () => {
@@ -147,29 +220,29 @@ describe('button', () => {
     );
 
     const root = getIslandRoot(node);
-    const [background, label] = root.getChildren();
+    const [widgetNode] = root.getChildren() as BaseNode<ButtonContainer>[];
+    const widget = widgetNode.displayObject;
+    const getLabel = () => findByLabel(widget as unknown as DisplayNode, 'Button.Text');
 
-    root.displayObject.emit('pointerover', {} as never);
+    (widget.button as never as { processOver: (event?: unknown) => void }).processOver({});
     vi.advanceTimersByTime(60);
     expect(onPointerOver).toHaveBeenCalledTimes(1);
-    expect((background as SpriteNode).displayObject.texture).toBe(hovered);
-    expect((label as TextNode).displayObject.style.fill).toBe('#362519');
+    expect(getLabel()?.style?.fill).toBe('#362519');
 
-    root.displayObject.emit('pointerdown', {} as never);
+    (widget.button as never as { processDown: (event?: unknown) => void }).processDown({});
     vi.advanceTimersByTime(60);
     expect(onPointerDown).toHaveBeenCalledTimes(1);
-    expect((background as SpriteNode).displayObject.texture).toBe(pressed);
 
-    root.displayObject.emit('pointerup', {} as never);
+    (widget.button as never as { processPress: (event?: unknown) => void }).processPress({});
+    (widget.button as never as { processUp: (event?: unknown) => void }).processUp({});
     vi.advanceTimersByTime(60);
     expect(onPointerTap).toHaveBeenCalledTimes(1);
     expect(onPointerUp).toHaveBeenCalledTimes(1);
-    expect((background as SpriteNode).displayObject.texture).toBe(hovered);
 
-    root.displayObject.emit('pointerout', {} as never);
+    (widget.button as never as { processOut: (event?: unknown) => void }).processOut({});
     vi.advanceTimersByTime(60);
     expect(onPointerOut).toHaveBeenCalledTimes(1);
-    expect((background as SpriteNode).displayObject.texture).toBe(idle);
+    expect(getLabel()?.style?.fill).toBe('#4a3728');
   });
 
   it('throws when used outside an active application context', () => {

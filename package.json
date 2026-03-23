@@ -34,16 +34,19 @@
     "@fontsource/material-symbols-outlined": "^5.2.38",
     "@fontsource/space-grotesk": "^5.2.10",
     "@pixi/devtools": "^2.0.1",
+    "@pixi/layout": "^3.2.0",
+    "@pixi/ui": "^2.3.2",
     "axios": "^1.13.5",
     "dexie": "^4.3.0",
     "express": "^5.2.1",
     "highlight.js": "^11.11.1",
     "luxon": "^3.7.2",
-    "pixi.js": "^8.17.0",
+    "pixi.js": "^8.17.1",
     "primeicons": "^7.0.0",
     "rxjs": "~7.8.2",
     "three": "^0.183.1",
-    "uuid": "^13.0.0"
+    "uuid": "^13.0.0",
+    "yoga-layout": "^3.2.1"
   },
   "devDependencies": {
     "@analogjs/vite-plugin-angular": "2.2.3",

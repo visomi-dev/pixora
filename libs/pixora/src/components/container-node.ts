@@ -1,4 +1,4 @@
-import { Container, Graphics } from 'pixi.js';
+import { Container, Graphics, Rectangle } from 'pixi.js';
 
 import { BaseComponent } from './base-component';
 
@@ -13,6 +13,7 @@ export class ContainerNode extends BaseComponent<ContainerNodeOptions, Container
 
   constructor(options: ContainerNodeOptions = {}) {
     super(new Container(), options);
+    this.installSizeAccessors();
     this.displayObject.addChild(this.background);
     this.onPropsChanged();
   }
@@ -37,8 +38,27 @@ export class ContainerNode extends BaseComponent<ContainerNodeOptions, Container
     return this;
   }
 
-  protected override applyLayoutSize(_width: number, _height: number): void {
-    return;
+  protected override applyLayoutSize(width: number, height: number): void {
+    this.displayObject.boundsArea = new Rectangle(0, 0, width, height);
+    this.displayObject.hitArea = new Rectangle(0, 0, width, height);
+  }
+
+  private installSizeAccessors(): void {
+    Object.defineProperty(this.displayObject, 'width', {
+      configurable: true,
+      get: () => this.layoutWidth ?? this.displayObject.getLocalBounds().width,
+      set: (value: number) => {
+        this.setLayoutSize(value, this.getLayoutHeight());
+      },
+    });
+
+    Object.defineProperty(this.displayObject, 'height', {
+      configurable: true,
+      get: () => this.layoutHeight ?? this.displayObject.getLocalBounds().height,
+      set: (value: number) => {
+        this.setLayoutSize(this.getLayoutWidth(), value);
+      },
+    });
   }
 
   private redrawBackground(): void {
@@ -49,7 +69,7 @@ export class ContainerNode extends BaseComponent<ContainerNodeOptions, Container
 
     this.background.clear();
 
-    if (backgroundColor === undefined || width <= 0 || height <= 0) {
+    if (width <= 0 || height <= 0) {
       return;
     }
 
@@ -59,6 +79,8 @@ export class ContainerNode extends BaseComponent<ContainerNodeOptions, Container
       this.background.rect(0, 0, width, height);
     }
 
-    this.background.fill(backgroundColor);
+    this.background.fill(
+      backgroundColor === undefined ? { alpha: 0, color: 0xffffff } : { alpha: 1, color: backgroundColor },
+    );
   }
 }

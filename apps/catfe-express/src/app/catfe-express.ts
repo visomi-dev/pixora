@@ -3,7 +3,7 @@ import { pixora } from 'pixora';
 import fredoka from '../assets/fonts/Fredoka.ttf';
 import nunito from '../assets/fonts/Nunito.ttf';
 import baloo2 from '../assets/fonts/Baloo2.ttf';
-import buttonIdle from '../assets/textures/button-idle.png';
+import buttonDefault from '../assets/textures/button-default.png';
 import buttonPressed from '../assets/textures/button-pressed.png';
 
 import { mainMenuScene } from './scenes/main-menu-scene';
@@ -28,7 +28,7 @@ export async function mount(root: HTMLElement): Promise<void> {
     },
     mount: root,
     preload: [
-      { key: 'buttonIdle', src: buttonIdle },
+      { key: 'buttonDefault', src: buttonDefault },
       { key: 'buttonPressed', src: buttonPressed },
     ],
     scenes: [mainMenuScene],

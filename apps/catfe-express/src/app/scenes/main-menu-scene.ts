@@ -8,6 +8,7 @@ export const mainMenuScene = pixora.scene({
     return pixora.container({
       label: 'MainMenu',
       style: {
+        backgroundColor: 0xffb6c1,
         height: viewport.height,
         width: viewport.width,
         display: 'flex',
@@ -17,7 +18,7 @@ export const mainMenuScene = pixora.scene({
       },
       children: [
         pixora.text({
-          content: 'Catfe Express',
+          content: 'Catfé Express',
           label: 'MainMenuTitle',
           style: {
             color: '#4a3728',
@@ -27,11 +28,14 @@ export const mainMenuScene = pixora.scene({
           },
         }),
         pixora.button({
-          animation: { durationMs: 100 },
+          animation: { durationMs: 100, pressedScale: 1, hoverScale: 1 },
           key: 'play-button',
           label: 'PlayButton',
           text: {
             content: 'Play',
+            offset: {
+              y: -6,
+            },
             style: {
               color: '#4a3728',
               fontFamily: 'Fredoka, sans-serif',
@@ -46,7 +50,7 @@ export const mainMenuScene = pixora.scene({
           },
           textures: {
             hovered: pixora.texture('buttonPressed'),
-            idle: pixora.texture('buttonIdle'),
+            idle: pixora.texture('buttonDefault'),
             pressed: pixora.texture('buttonPressed'),
           },
         }),
