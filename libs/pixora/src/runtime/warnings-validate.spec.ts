@@ -27,8 +27,6 @@ describe('getWarningHandler', () => {
 
 describe('validateHostType', () => {
   it('returns true for valid host types', () => {
-    expect(validateHostType('box')).toBe(true);
-    expect(validateHostType('button')).toBe(true);
     expect(validateHostType('container')).toBe(true);
     expect(validateHostType('sprite')).toBe(true);
     expect(validateHostType('text')).toBe(true);
@@ -67,7 +65,7 @@ describe('validateKey', () => {
 
 describe('validateProps', () => {
   it('returns empty array for valid props', () => {
-    const result = validateProps({ x: 10, y: 20 }, 'container');
+    const result = validateProps({ key: 'root', style: { width: 10 } }, 'container');
     expect(result).toEqual([]);
   });
 
@@ -81,12 +79,12 @@ describe('validateProps', () => {
   });
 
   it('returns warnings for unknown props on container', () => {
-    const result = validateProps({ x: 10, unknownProp: true } as Record<string, unknown>, 'container');
+    const result = validateProps({ key: 'node', unknownProp: true } as Record<string, unknown>, 'container');
     expect(result).toContain('unknownProp');
   });
 
   it('returns warnings for unknown props on text', () => {
-    const result = validateProps({ text: 'hello', badProp: 1 } as Record<string, unknown>, 'text');
+    const result = validateProps({ content: 'hello', badProp: 1 } as Record<string, unknown>, 'text');
     expect(result).toContain('badProp');
     expect(result).not.toContain('text');
     expect(result).not.toContain('style');
@@ -97,21 +95,8 @@ describe('validateProps', () => {
     expect(result).toContain('unknown');
   });
 
-  it('returns warnings for unknown props on box', () => {
-    const result = validateProps({ width: 100, bad: true } as Record<string, unknown>, 'box');
-    expect(result).toContain('bad');
-    expect(result).not.toContain('width');
-    expect(result).not.toContain('height');
-  });
-
-  it('returns warnings for unknown props on button', () => {
-    const result = validateProps({ label: 'Click', nope: true } as Record<string, unknown>, 'button');
-    expect(result).toContain('nope');
-    expect(result).not.toContain('label');
-  });
-
   it('returns warnings for unknown props on unknown type', () => {
-    const result = validateProps({ x: 10, unknown: true } as Record<string, unknown>, 'unknown-type');
+    const result = validateProps({ key: 'node', unknown: true } as Record<string, unknown>, 'unknown-type');
     expect(result).toContain('unknown');
   });
 });

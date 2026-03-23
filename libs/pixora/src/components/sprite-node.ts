@@ -1,32 +1,36 @@
 import { Sprite, Texture } from 'pixi.js';
 
-import { BaseNode } from './base-node';
+import { BaseComponent } from './base-component';
+
+import type { PixoraStyle } from '../layout/layout-types';
 
 export type SpriteNodeOptions = {
-  alpha?: number;
+  asset?: string;
+  style?: PixoraStyle;
   texture?: Texture;
-  x?: number;
-  y?: number;
 };
 
-export class SpriteNode extends BaseNode<Sprite> {
+export class SpriteNode extends BaseComponent<SpriteNodeOptions, Sprite> {
   constructor(options: SpriteNodeOptions = {}) {
-    super(new Sprite(options.texture ?? Texture.EMPTY));
+    super(new Sprite(resolveTexture(options)), options);
+    this.onPropsChanged();
   }
 
-  updateProps(next: Partial<SpriteNodeOptions>): this {
-    if (next.texture !== undefined) {
-      this.displayObject.texture = next.texture;
-    }
-    if (next.alpha !== undefined) {
-      this.displayObject.alpha = next.alpha;
-    }
-    if (next.x !== undefined) {
-      this.displayObject.x = next.x;
-    }
-    if (next.y !== undefined) {
-      this.displayObject.y = next.y;
-    }
-    return this;
+  protected override onPropsChanged(): void {
+    this.displayObject.texture = resolveTexture(this.props);
+    this.displayObject.alpha = this.props.style?.opacity ?? 1;
+    this.displayObject.visible = this.props.style?.visible ?? true;
   }
+}
+
+function resolveTexture(options: SpriteNodeOptions): Texture {
+  if (options.texture) {
+    return options.texture;
+  }
+
+  if (options.asset) {
+    return Texture.from(options.asset);
+  }
+
+  return Texture.EMPTY;
 }

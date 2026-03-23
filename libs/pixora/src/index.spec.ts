@@ -2,7 +2,7 @@ import { createEventBus } from './events/create-event-bus';
 import { layout } from './layout/layout';
 import { createStore, signal } from './state/signal';
 
-import { box, button, container, imperative, isPixoraNode, mountTree, sprite, text, unmountTree } from './index';
+import { button, container, imperative, isPixoraNode, mountTree, sprite, text, unmountTree } from './index';
 
 describe('pixora phase 1 scaffold', () => {
   it('updates signals synchronously', () => {
@@ -45,11 +45,10 @@ describe('pixora phase 1 scaffold', () => {
 
 describe('pixora phase 10 — declarative runtime exports', () => {
   it('exports all node factory functions', () => {
+    expect(typeof button).toBe('function');
     expect(typeof container).toBe('function');
     expect(typeof text).toBe('function');
     expect(typeof sprite).toBe('function');
-    expect(typeof box).toBe('function');
-    expect(typeof button).toBe('function');
   });
 
   it('exports imperative bridge', () => {
@@ -63,7 +62,7 @@ describe('pixora phase 10 — declarative runtime exports', () => {
 
   it('exports type guard', () => {
     expect(typeof isPixoraNode).toBe('function');
-    expect(isPixoraNode(container())).toBe(true);
+    expect(isPixoraNode(container({}))).toBe(true);
     expect(isPixoraNode('not a node')).toBe(false);
   });
 });

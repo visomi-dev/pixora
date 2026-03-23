@@ -7,7 +7,7 @@ import { createServiceRegistry, type ServiceRegistry } from '../services/create-
 
 import { createViewportManager } from './create-viewport-manager';
 
-import type { ApplicationContext, pixoraApp, pixoraAppOptions } from './types';
+import type { ApplicationContext, LoadingScreenConfig, pixoraApp, pixoraAppOptions, PreloadAsset } from './types';
 
 let devtoolsInitialized = false;
 
@@ -31,10 +31,56 @@ async function loadFonts(fonts?: readonly FontAsset[]): Promise<void> {
   );
 }
 
+function showLoadingScreen(mount: HTMLElement, config: LoadingScreenConfig, width: number, height: number): void {
+  const bgColor = config.backgroundColor ?? 0x0f172a;
+  const txtColor = config.textColor ?? 0xffffff;
+  const text = config.text ?? 'Loading...';
+
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  mount.appendChild(canvas);
+
+  const ctx = canvas.getContext('2d');
+  if (ctx) {
+    ctx.fillStyle = `#${bgColor.toString(16).padStart(6, '0')}`;
+    ctx.fillRect(0, 0, width, height);
+
+    ctx.fillStyle = `#${txtColor.toString(16).padStart(6, '0')}`;
+    ctx.font = 'bold 24px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(text, width / 2, height / 2);
+  }
+}
+
+function removeLoadingScreen(mount: HTMLElement): void {
+  const canvas = mount.querySelector('canvas');
+  if (canvas) {
+    canvas.remove();
+  }
+}
+
+async function preloadAssets(assets: readonly PreloadAsset[]): Promise<void> {
+  if (!assets || assets.length === 0) {
+    return;
+  }
+
+  const entries = assets.map((asset) => ({
+    alias: asset.key,
+    src: asset.src,
+  }));
+
+  try {
+    await Assets.load(entries);
+  } catch (err) {
+    console.warn(`[pixora] Failed to preload some assets:`, err);
+  }
+}
+
 export async function createPixoraApp(options: pixoraAppOptions): Promise<pixoraApp> {
   validateOptions(options);
 
-  const app = new Application();
   const viewportManager = createViewportManager({
     height: options.height,
     mount: options.mount,
@@ -42,13 +88,25 @@ export async function createPixoraApp(options: pixoraAppOptions): Promise<pixora
   });
   const viewport = viewportManager.viewport.get();
 
+  if (options.loadingScreen) {
+    showLoadingScreen(options.mount, options.loadingScreen, viewport.width, viewport.height);
+  }
+
+  await preloadAssets(options.preload ?? []);
+
+  const app = new Application();
+
   await app.init({
+    antialias: true,
+    autoDensity: true,
     autoStart: false,
     background: options.backgroundColor ?? 0x0f172a,
     height: viewport.height,
+    resolution: globalThis.devicePixelRatio ?? 1,
     width: viewport.width,
   });
 
+  removeLoadingScreen(options.mount);
   options.mount.replaceChildren(app.canvas);
 
   if (options.devtools && !devtoolsInitialized) {

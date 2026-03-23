@@ -23,6 +23,17 @@ export type ApplicationContext = {
   viewport: ReadonlySignal<Viewport>;
 };
 
+export type PreloadAsset = {
+  key: string;
+  src: string;
+};
+
+export type LoadingScreenConfig = {
+  backgroundColor?: number;
+  text?: string;
+  textColor?: number;
+};
+
 export type pixoraAppOptions = {
   mount: HTMLElement;
   width?: number;
@@ -33,6 +44,8 @@ export type pixoraAppOptions = {
   initialScene: SceneKey;
   services?: readonly ServiceDescriptor[];
   assets?: AssetManifest;
+  preload?: readonly PreloadAsset[];
+  loadingScreen?: LoadingScreenConfig;
   devtools?: boolean;
 };
 

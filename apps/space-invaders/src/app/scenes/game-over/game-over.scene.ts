@@ -1,7 +1,7 @@
 import { pixora } from 'pixora';
 
 import { centeredBoxX } from '../scene-positioning';
-
+import { createBackground, createMenuButton } from '../../shared/ui';
 
 export const gameOverScene = pixora.scene({
   key: 'game-over',
@@ -20,56 +20,73 @@ export const gameOverScene = pixora.scene({
       // localStorage not available
     }
 
-    return pixora.container(
-      { x: 0, y: 0 },
-      pixora.box({ backgroundColor: 0x0a0a1a, height: vp.height, width: vp.width, x: 0, y: 0 }),
-      pixora.text({
-        anchor: { x: 0.5, y: 0 },
-        color: '#ff4444',
-        font: 'Orbitron, sans-serif',
-        size: 72,
-        text: 'GAME OVER',
-        weight: '900',
-        x: vp.width / 2,
-        y: headingY,
-      }),
-      pixora.text({
-        anchor: { x: 0.5, y: 0 },
-        color: '#ffffff',
-        font: 'Orbitron, sans-serif',
-        size: 32,
-        text: 'SCORE: 0',
-        x: vp.width / 2,
-        y: headingY + 110,
-      }),
-      pixora.text({
-        anchor: { x: 0.5, y: 0 },
-        color: '#ffff00',
-        font: 'Orbitron, sans-serif',
-        size: 24,
-        style: { align: 'center' },
-        text: highScoreText,
-        x: vp.width / 2,
-        y: headingY + 160,
-      }),
-      pixora.button({
-        backgroundColor: 0x00ffaa,
-        height: 56,
-        label: 'PLAY AGAIN',
-        onPointerTap: () => void context.scenes.goTo('game'),
-        width: 280,
-        x: menuX,
-        y: headingY + 240,
-      }),
-      pixora.button({
-        backgroundColor: 0x666688,
-        height: 48,
-        label: 'MAIN MENU',
-        onPointerTap: () => void context.scenes.goTo('main-menu'),
-        width: 280,
-        x: menuX,
-        y: headingY + 320,
-      }),
-    );
+    return pixora.container({
+      style: {
+        height: vp.height,
+        position: 'relative',
+        width: vp.width,
+      },
+      children: [
+        createBackground(vp.width, vp.height),
+        pixora.text({
+          anchor: { x: 0.5, y: 0 },
+          content: 'GAME OVER',
+          style: {
+            color: '#ff4444',
+            fontFamily: 'Orbitron, sans-serif',
+            fontSize: 72,
+            fontWeight: '900',
+            left: vp.width / 2,
+            position: 'absolute',
+            top: headingY,
+          },
+        }),
+        pixora.text({
+          anchor: { x: 0.5, y: 0 },
+          content: 'SCORE: 0',
+          style: {
+            color: '#ffffff',
+            fontFamily: 'Orbitron, sans-serif',
+            fontSize: 32,
+            left: vp.width / 2,
+            position: 'absolute',
+            top: headingY + 110,
+          },
+        }),
+        pixora.text({
+          anchor: { x: 0.5, y: 0 },
+          content: highScoreText,
+          style: {
+            align: 'center',
+            color: '#ffff00',
+            fontFamily: 'Orbitron, sans-serif',
+            fontSize: 24,
+            left: vp.width / 2,
+            position: 'absolute',
+            top: headingY + 160,
+          },
+        }),
+        createMenuButton({
+          backgroundColor: 0x00ffaa,
+          height: 56,
+          key: 'play-again',
+          label: 'PLAY AGAIN',
+          left: menuX,
+          onPointerTap: () => void context.scenes.goTo('game'),
+          top: headingY + 240,
+          width: 280,
+        }),
+        createMenuButton({
+          backgroundColor: 0x666688,
+          height: 48,
+          key: 'main-menu',
+          label: 'MAIN MENU',
+          left: menuX,
+          onPointerTap: () => void context.scenes.goTo('main-menu'),
+          top: headingY + 320,
+          width: 280,
+        }),
+      ],
+    });
   },
 });

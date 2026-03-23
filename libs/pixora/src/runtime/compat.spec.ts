@@ -14,7 +14,7 @@ describe('imperative', () => {
   });
 
   it('stores the original node in props', () => {
-    const node = new TextNode({ text: 'test' });
+    const node = new TextNode({ content: 'test' });
     const result = imperative(node);
     const props = result.props as { node: typeof node };
 

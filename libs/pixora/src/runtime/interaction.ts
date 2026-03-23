@@ -30,6 +30,8 @@ type InteractiveBinding = {
 const activeBindings = new WeakMap<Container, InteractiveBinding>();
 
 export function bindInteractive(target: Container, config: InteractiveConfig): Disposable {
+  activeBindings.get(target)?.dispose();
+
   const state: { current: InteractiveState } = { current: config.disabled ? 'disabled' : 'idle' };
 
   const updateState = (newState: InteractiveState): void => {

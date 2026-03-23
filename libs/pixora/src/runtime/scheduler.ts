@@ -1,7 +1,7 @@
-
 import { InvalidationFlag } from './lifecycle';
 import { runLayout } from './layout-runtime';
 import { updateTree } from './reconcile';
+import { withApplicationContext } from './current-context';
 
 import type { MountedTree } from './mounted-node';
 import type { ApplicationContext } from '../app/types';
@@ -102,7 +102,7 @@ export class Scheduler {
 
   private processUpdate(update: ScheduledUpdate): void {
     if (update.visualDirty) {
-      const newTree = update.renderFn(update.context);
+      const newTree = withApplicationContext(update.context, () => update.renderFn(update.context));
       updateTree(update.mountedTree, newTree);
     }
 

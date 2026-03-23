@@ -1,7 +1,7 @@
 import { pixora } from 'pixora';
 
 import { centeredBoxX } from '../scene-positioning';
-
+import { createBackground, createMenuButton } from '../../shared/ui';
 
 export const mainMenuScene = pixora.scene({
   key: 'main-menu',
@@ -21,57 +21,74 @@ export const mainMenuScene = pixora.scene({
       // localStorage not available
     }
 
-    return pixora.container(
-      { x: 0, y: 0 },
-      pixora.box({ backgroundColor: 0x0a0a1a, height: vp.height, width: vp.width, x: 0, y: 0 }),
-      pixora.text({
-        anchor: { x: 0.5, y: 0 },
-        color: '#00ffaa',
-        font: 'Orbitron, sans-serif',
-        size: 72,
-        text: 'SPACE',
-        weight: '900',
-        x: vp.width / 2,
-        y: titleY,
-      }),
-      pixora.text({
-        anchor: { x: 0.5, y: 0 },
-        color: '#ff00aa',
-        font: 'Orbitron, sans-serif',
-        size: 48,
-        text: 'INVADERS',
-        weight: '700',
-        x: vp.width / 2,
-        y: titleY + 76,
-      }),
-      pixora.button({
-        backgroundColor: 0x00ffaa,
-        height: 56,
-        label: 'START GAME',
-        onPointerTap: () => void context.scenes.goTo('game'),
-        width: 280,
-        x: menuX,
-        y: menuY,
-      }),
-      pixora.button({
-        backgroundColor: 0x333366,
-        height: 48,
-        label: 'INSTRUCTIONS',
-        onPointerTap: () => void context.scenes.goTo('instructions'),
-        width: 280,
-        x: menuX,
-        y: menuY + 80,
-      }),
-      pixora.text({
-        anchor: { x: 0.5, y: 0 },
-        text: highScoreText,
-        color: '#666688',
-        size: 14,
-        font: 'JetBrains Mono, monospace',
-        style: { align: 'center' },
-        x: vp.width / 2,
-        y: vp.height - 36,
-      }),
-    );
+    return pixora.container({
+      style: {
+        height: vp.height,
+        position: 'relative',
+        width: vp.width,
+      },
+      children: [
+        createBackground(vp.width, vp.height),
+        pixora.text({
+          anchor: { x: 0.5, y: 0 },
+          content: 'SPACE',
+          style: {
+            color: '#00ffaa',
+            fontFamily: 'Orbitron, sans-serif',
+            fontSize: 72,
+            fontWeight: '900',
+            left: vp.width / 2,
+            position: 'absolute',
+            top: titleY,
+          },
+        }),
+        pixora.text({
+          anchor: { x: 0.5, y: 0 },
+          content: 'INVADERS',
+          style: {
+            color: '#ff00aa',
+            fontFamily: 'Orbitron, sans-serif',
+            fontSize: 48,
+            fontWeight: '700',
+            left: vp.width / 2,
+            position: 'absolute',
+            top: titleY + 76,
+          },
+        }),
+        createMenuButton({
+          backgroundColor: 0x00ffaa,
+          height: 56,
+          key: 'start-game',
+          label: 'START GAME',
+          left: menuX,
+          onPointerTap: () => void context.scenes.goTo('game'),
+          top: menuY,
+          width: 280,
+        }),
+        createMenuButton({
+          backgroundColor: 0x333366,
+          height: 48,
+          key: 'instructions',
+          label: 'INSTRUCTIONS',
+          left: menuX,
+          onPointerTap: () => void context.scenes.goTo('instructions'),
+          top: menuY + 80,
+          width: 280,
+        }),
+        pixora.text({
+          anchor: { x: 0.5, y: 0 },
+          content: highScoreText,
+          style: {
+            align: 'center',
+            color: '#666688',
+            fontFamily: 'JetBrains Mono, monospace',
+            fontSize: 14,
+            left: vp.width / 2,
+            position: 'absolute',
+            top: vp.height - 36,
+          },
+        }),
+      ],
+    });
   },
 });

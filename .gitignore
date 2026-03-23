@@ -24,3 +24,7 @@ apps/docs/static/examples/
 debug/*.png
 debug/*.log
 debug/*.md
+
+issues/*.png
+issues/*.log
+issues/*.md

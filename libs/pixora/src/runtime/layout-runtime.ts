@@ -1,6 +1,7 @@
 import { applyLayout } from '../layout/apply-layout';
+import { flexEngine, type FlexNode } from '../layout/flex-engine';
 
-import type { Container } from 'pixi.js';
+import type { ComputedLayout } from '../layout/computed-layout';
 import type { Viewport } from '../app/types';
 import type { BaseNode } from '../components/base-node';
 import type { LayoutSpec } from '../layout/layout';
@@ -107,7 +108,6 @@ export function isLayoutDirty(hostNode: BaseNode): boolean {
 }
 
 export function measureNode(hostNode: BaseNode): { width: number; height: number } {
-  const displayObject = hostNode.displayObject;
   const children = hostNode.getChildren?.() ?? [];
 
   let contentWidth = 0;
@@ -124,8 +124,8 @@ export function measureNode(hostNode: BaseNode): { width: number; height: number
   }
 
   return {
-    width: Math.max(displayObject.width, contentWidth),
-    height: Math.max(displayObject.height, contentHeight),
+    width: Math.max(hostNode.getLayoutWidth(), contentWidth),
+    height: Math.max(hostNode.getLayoutHeight(), contentHeight),
   };
 }
 
@@ -133,8 +133,8 @@ function getChildBounds(child: BaseNode): { height: number; width: number; x: nu
   const displayObject = child.displayObject;
 
   return {
-    height: displayObject.height,
-    width: displayObject.width,
+    height: child.getLayoutHeight(),
+    width: child.getLayoutWidth(),
     x: displayObject.x,
     y: displayObject.y,
   };
@@ -169,15 +169,13 @@ function applyLayoutRecursive(
   if (node.layoutSpec) {
     applyLayout(node.hostNode, node.layoutSpec, parentBounds, viewport);
 
-    const displayObject = node.hostNode.displayObject;
-    node.measuredWidth = displayObject.width;
-    node.measuredHeight = displayObject.height;
+    node.measuredWidth = node.hostNode.getLayoutWidth();
+    node.measuredHeight = node.hostNode.getLayoutHeight();
   } else if (node.layoutStyles) {
     applyNewLayout(node.hostNode, node.layoutStyles, parentBounds, viewport);
 
-    const displayObject = node.hostNode.displayObject;
-    node.measuredWidth = displayObject.width;
-    node.measuredHeight = displayObject.height;
+    node.measuredWidth = node.hostNode.getLayoutWidth();
+    node.measuredHeight = node.hostNode.getLayoutHeight();
   } else {
     const measured = measureNode(node.hostNode);
     node.measuredWidth = node.parent ? measured.width : Math.max(parentBounds.width, measured.width);
@@ -195,8 +193,8 @@ function applyLayoutRecursive(
       const childBounds = {
         height: node.measuredHeight,
         width: node.measuredWidth,
-        x: 0,
-        y: 0,
+        x: node.hostNode.displayObject.x,
+        y: node.hostNode.displayObject.y,
       };
 
       applyLayoutRecursive(childLayoutNode, childBounds, viewport);
@@ -224,18 +222,54 @@ function applyNewLayout(
   parentBounds: { height: number; width: number; x: number; y: number },
   _viewport: Viewport,
 ): void {
-  const displayObject = hostNode.displayObject;
   const children = hostNode.getChildren?.() ?? [];
   const isContainer = styles.display === 'flex';
+  const resolvedWidth = resolveDimension(styles.width, parentBounds.width) ?? hostNode.getLayoutWidth();
+  const resolvedHeight = resolveDimension(styles.height, parentBounds.height) ?? hostNode.getLayoutHeight();
+
+  hostNode.setLayoutSize(resolvedWidth, resolvedHeight);
+
+  let xPos = parentBounds.x;
+  let yPos = parentBounds.y;
+
+  if (styles.position === 'absolute') {
+    if (styles.left !== undefined) {
+      xPos = parentBounds.x + resolveNumberValue(styles.left, parentBounds.width);
+    } else if (styles.right !== undefined) {
+      xPos = parentBounds.x + parentBounds.width - resolvedWidth - resolveNumberValue(styles.right, parentBounds.width);
+    }
+
+    if (styles.top !== undefined) {
+      yPos = parentBounds.y + resolveNumberValue(styles.top, parentBounds.height);
+    } else if (styles.bottom !== undefined) {
+      yPos =
+        parentBounds.y + parentBounds.height - resolvedHeight - resolveNumberValue(styles.bottom, parentBounds.height);
+    }
+  }
+
+  hostNode.setLayoutPosition(xPos, yPos);
 
   if (!isContainer) {
     return;
   }
 
+  const visibleChildren = children.filter((child) => child.displayObject.visible);
+
+  if (visibleChildren.length > 0) {
+    applyFlexLayout(hostNode, styles, parentBounds, xPos, yPos, visibleChildren);
+  }
+}
+
+function applyFlexLayout(
+  hostNode: BaseNode,
+  styles: LayoutStyles,
+  parentBounds: { height: number; width: number; x: number; y: number },
+  containerX: number,
+  containerY: number,
+  children: BaseNode[],
+): void {
   const isRow = styles.flexDirection === 'row' || styles.flexDirection === 'row-reverse';
   const justifyContent = styles.justifyContent ?? 'flex-start';
-  const alignItems = styles.alignItems ?? 'stretch';
-  const gap = styles.gap ?? 0;
 
   const paddingLeft = typeof styles.paddingLeft === 'number' ? styles.paddingLeft : 0;
   const paddingRight = typeof styles.paddingRight === 'number' ? styles.paddingRight : 0;
@@ -245,111 +279,148 @@ function applyNewLayout(
   const paddingX = paddingLeft + paddingRight;
   const paddingY = paddingTop + paddingBottom;
 
-  const availableWidth = resolveDimension(styles.width, parentBounds.width) ?? parentBounds.width - paddingX;
-  const availableHeight = resolveDimension(styles.height, parentBounds.height) ?? parentBounds.height - paddingY;
+  const resolvedWidth = resolveDimension(styles.width, parentBounds.width) ?? parentBounds.width;
+  const resolvedHeight = resolveDimension(styles.height, parentBounds.height) ?? parentBounds.height;
+  const availableWidth = resolvedWidth - paddingX;
+  const availableHeight = resolvedHeight - paddingY;
 
-  if (isRow) {
-    displayObject.width = availableWidth;
-    displayObject.height = availableHeight;
-  } else {
-    displayObject.width = availableWidth;
-    displayObject.height = availableHeight;
+  const flexNodes = buildFlexNodeTree(hostNode, children, styles);
+  const flexRoot: FlexNode = {
+    style: styles,
+    computed: {
+      left: containerX,
+      right: 0,
+      top: containerY,
+      bottom: 0,
+      width: resolvedWidth,
+      height: resolvedHeight,
+    },
+    children: flexNodes,
+    target: hostNode.displayObject,
+    isDirty: true,
+  };
+
+  flexEngine.setRoot(flexRoot);
+  flexEngine.setContext({
+    width: resolvedWidth,
+    height: resolvedHeight,
+    x: containerX + paddingLeft,
+    y: containerY + paddingTop,
+  });
+
+  const savedComputedWidth = flexRoot.computed.width;
+  const savedComputedHeight = flexRoot.computed.height;
+
+  flexEngine.calculateLayout();
+
+  flexRoot.computed.width = savedComputedWidth;
+  flexRoot.computed.height = savedComputedHeight;
+
+  hostNode.setLayoutSize(resolvedWidth, resolvedHeight);
+
+  for (const flexNode of flexNodes) {
+    const targetNode = flexNode.target as unknown as BaseNode;
+    targetNode.setLayoutPosition(flexNode.computed.left, flexNode.computed.top);
+    targetNode.setLayoutSize(flexNode.computed.width, flexNode.computed.height);
   }
 
-  let currentX = parentBounds.x + paddingLeft;
-  let currentY = parentBounds.y + paddingTop;
+  if (justifyContent !== 'flex-start') {
+    const totalChildSize = flexNodes.reduce((sum, fn) => {
+      return sum + (isRow ? fn.computed.width : fn.computed.height);
+    }, 0);
+    const remainingSpace = (isRow ? availableWidth : availableHeight) - totalChildSize;
 
-  const visibleChildren = children.filter((child) => child.displayObject.visible);
+    if (remainingSpace > 0) {
+      let offset = 0;
+      switch (justifyContent) {
+        case 'center':
+          offset = remainingSpace / 2;
+          break;
+        case 'flex-end':
+          offset = remainingSpace;
+          break;
+        case 'space-between':
+          if (flexNodes.length > 1) {
+            offset = 0;
+          } else {
+            offset = remainingSpace / 2;
+          }
+          break;
+        case 'space-around':
+          offset = remainingSpace / (flexNodes.length * 2);
+          break;
+        case 'space-evenly':
+          offset = remainingSpace / (flexNodes.length + 1);
+          break;
+      }
 
-  for (let i = 0; i < visibleChildren.length; i++) {
-    const child = visibleChildren[i];
-    const childDisplayObject = child.displayObject;
+      if (offset > 0) {
+        for (const flexNode of flexNodes) {
+          const targetNode = flexNode.target as unknown as BaseNode;
+          if (isRow) {
+            targetNode.setLayoutPosition(flexNode.computed.left + offset, flexNode.computed.top);
+          } else {
+            targetNode.setLayoutPosition(flexNode.computed.left, flexNode.computed.top + offset);
+          }
+        }
+      }
+    }
+  }
+}
 
-    const childStyle = getLayoutStyles(child);
-    const flexGrow = childStyle?.flexGrow ?? 0;
-    const flexShrink = childStyle?.flexShrink ?? 1;
+function buildFlexNodeTree(parentNode: BaseNode, children: BaseNode[], containerStyles: LayoutStyles): FlexNode[] {
+  const isRow = containerStyles.flexDirection === 'row' || containerStyles.flexDirection === 'row-reverse';
+  const flexNodes: FlexNode[] = [];
 
-    let childWidth = childDisplayObject.width;
-    let childHeight = childDisplayObject.height;
+  for (const child of children) {
+    const childStyles = getLayoutStyles(child) ?? {};
+    const computed: ComputedLayout = {
+      left: 0,
+      right: 0,
+      top: 0,
+      bottom: 0,
+      width: child.getLayoutWidth() || 0,
+      height: child.getLayoutHeight() || 0,
+    };
 
-    if (flexGrow > 0 || flexShrink > 0) {
-      const availableSpace = isRow ? availableWidth : availableHeight;
-      const totalChildSize = visibleChildren.reduce((sum, c) => {
-        return sum + (isRow ? c.displayObject.width : c.displayObject.height);
-      }, 0);
-      const remainingSpace = availableSpace - paddingX - totalChildSize - gap * (visibleChildren.length - 1);
-
-      if (remainingSpace > 0 && flexGrow > 0) {
-        const growAmount =
-          (remainingSpace * flexGrow) / visibleChildren.reduce((s, c) => s + (getLayoutStyles(c)?.flexGrow ?? 0), 0);
+    const childFlexBasis = childStyles.flexBasis;
+    if (childFlexBasis !== undefined && childFlexBasis !== 'auto') {
+      if (typeof childFlexBasis === 'number') {
         if (isRow) {
-          childWidth += growAmount;
+          computed.width = childFlexBasis;
         } else {
-          childHeight += growAmount;
+          computed.height = childFlexBasis;
         }
       }
     }
 
-    let xPos = currentX;
-    let yPos = currentY;
-
-    const alignSelf = childStyle?.alignSelf ?? alignItems;
-
-    if (alignSelf === 'center') {
-      if (isRow) {
-        yPos += (availableHeight - paddingY - childHeight) / 2;
-      } else {
-        xPos += (availableWidth - paddingX - childWidth) / 2;
+    const childWidth = childStyles.width;
+    const childHeight = childStyles.height;
+    if (childWidth !== undefined && childWidth !== 'auto' && childWidth !== 'intrinsic') {
+      const resolved = resolveDimension(childWidth, parentNode.getLayoutWidth());
+      if (resolved !== null) {
+        computed.width = resolved;
       }
-    } else if (alignSelf === 'flex-end') {
-      if (isRow) {
-        yPos += availableHeight - paddingY - childHeight;
-      } else {
-        xPos += availableWidth - paddingX - childWidth;
+    }
+    if (childHeight !== undefined && childHeight !== 'auto' && childHeight !== 'intrinsic') {
+      const resolved = resolveDimension(childHeight, parentNode.getLayoutHeight());
+      if (resolved !== null) {
+        computed.height = resolved;
       }
     }
 
-    childDisplayObject.x = xPos;
-    childDisplayObject.y = yPos;
+    const childFlexNode: FlexNode = {
+      style: childStyles,
+      computed,
+      children: [],
+      target: child.displayObject,
+      isDirty: false,
+    };
 
-    if (isRow) {
-      currentX += childWidth + gap;
-    } else {
-      currentY += childHeight + gap;
-    }
+    flexNodes.push(childFlexNode);
   }
 
-  applyJustifyContent(
-    displayObject,
-    visibleChildren,
-    justifyContent,
-    isRow,
-    availableWidth - paddingX,
-    availableHeight - paddingY,
-  );
-
-  if (styles.position === 'absolute') {
-    if (styles.left !== undefined) {
-      displayObject.x = parentBounds.x + resolveNumberValue(styles.left, parentBounds.width);
-    }
-    if (styles.top !== undefined) {
-      displayObject.y = parentBounds.y + resolveNumberValue(styles.top, parentBounds.height);
-    }
-    if (styles.right !== undefined) {
-      displayObject.x =
-        parentBounds.x +
-        parentBounds.width -
-        displayObject.width -
-        resolveNumberValue(styles.right, parentBounds.width);
-    }
-    if (styles.bottom !== undefined) {
-      displayObject.y =
-        parentBounds.y +
-        parentBounds.height -
-        displayObject.height -
-        resolveNumberValue(styles.bottom, parentBounds.height);
-    }
-  }
+  return flexNodes;
 }
 
 function resolveDimension(
@@ -369,63 +440,6 @@ function resolveNumberValue(value: string | number | undefined, parentSize: numb
     return (parseFloat(value) / 100) * parentSize;
   }
   return parseFloat(value) || 0;
-}
-
-function applyJustifyContent(
-  _container: Container,
-  children: BaseNode[],
-  justifyContent: LayoutStyles['justifyContent'],
-  isRow: boolean,
-  availableWidth: number,
-  availableHeight: number,
-): void {
-  if (!justifyContent || justifyContent === 'flex-start') {
-    return;
-  }
-
-  const totalChildSize = children.reduce((sum, child) => {
-    return isRow ? sum + child.displayObject.width : sum + child.displayObject.height;
-  }, 0);
-
-  const remainingSpace = (isRow ? availableWidth : availableHeight) - totalChildSize;
-
-  if (remainingSpace <= 0) {
-    return;
-  }
-
-  let offset = 0;
-
-  switch (justifyContent) {
-    case 'center':
-      offset = remainingSpace / 2;
-      break;
-    case 'flex-end':
-      offset = remainingSpace;
-      break;
-    case 'space-between':
-      if (children.length > 1) {
-        offset = 0;
-      } else {
-        offset = remainingSpace / 2;
-      }
-      break;
-    case 'space-around':
-      offset = remainingSpace / (children.length * 2);
-      break;
-    case 'space-evenly':
-      offset = remainingSpace / (children.length + 1);
-      break;
-  }
-
-  if (offset > 0) {
-    for (const child of children) {
-      if (isRow) {
-        child.displayObject.x += offset;
-      } else {
-        child.displayObject.y += offset;
-      }
-    }
-  }
 }
 
 export function removeLayoutNode(hostNode: BaseNode): void {

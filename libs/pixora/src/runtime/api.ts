@@ -1,3 +1,5 @@
+import { Texture } from 'pixi.js';
+
 import { applyLayout } from '../layout/apply-layout';
 import {
   layout,
@@ -11,19 +13,8 @@ import {
   type StackLayoutSpec,
 } from '../layout/layout';
 
-
-import {
-  box,
-  button,
-  container,
-  keyedBox,
-  keyedContainer,
-  keyedSprite,
-  keyedText,
-  scrollBox,
-  sprite,
-  text,
-} from './create-node';
+import { button, type ButtonProps } from './button';
+import { container, sprite, text } from './create-node';
 import { imperative } from './compat';
 import { island, type IslandOptions, type IslandSetupContext } from './island';
 import { registerComponent } from './components';
@@ -42,13 +33,9 @@ import { updateTree } from './reconcile';
 import {
   isPixoraNode,
   type PixoraNode,
-  BoxNodeProps,
-  ButtonNodeProps,
   ContainerNodeProps,
-  PixoraChild,
   PixoraComponent,
   PixoraComponentProps,
-  ScrollBoxNodeProps,
   SpriteNodeProps,
   TextNodeProps,
 } from './types';
@@ -60,7 +47,9 @@ import type { ApplicationContext } from '../app/types';
 
 export { pixora };
 export { isPixoraNode };
-export { box, button, container, keyedBox, keyedContainer, keyedSprite, keyedText, scrollBox, sprite, text };
+export { button };
+export { container, sprite, text };
+export { Texture } from 'pixi.js';
 export { imperative };
 export { island };
 export { mountTree, unmountTree };
@@ -132,52 +121,29 @@ export type {
   PercentLayoutSpec,
   StackLayoutSpec,
 };
-export type {
-  PixoraNode,
-  ContainerNodeProps,
-  TextNodeProps,
-  SpriteNodeProps,
-  BoxNodeProps,
-  ButtonNodeProps,
-  ScrollBoxNodeProps,
-  PixoraChild,
-};
+export type { ButtonProps, PixoraNode, ContainerNodeProps, TextNodeProps, SpriteNodeProps };
 export type { IslandOptions, IslandSetupContext };
 
 export const api = {
-  container(props?: ContainerNodeProps, ...children: PixoraChild[]) {
-    return container(props, ...children);
+  button(props: ButtonProps) {
+    return button(props);
+  },
+
+  container(props?: ContainerNodeProps) {
+    return container(props);
   },
 
   text(props: TextNodeProps) {
     return text(props);
   },
 
+  texture(src: string): Texture {
+    return Texture.from(src);
+  },
+
   sprite(props?: SpriteNodeProps) {
     return sprite(props);
   },
-
-  box(props?: BoxNodeProps, ...children: PixoraChild[]) {
-    return box(props, ...children);
-  },
-
-  keyedBox,
-
-  button(props: ButtonNodeProps) {
-    return button(props);
-  },
-
-  scrollBox(props?: ScrollBoxNodeProps, ...children: PixoraChild[]) {
-    return scrollBox(props, ...children);
-  },
-
-  keyedContainer(key: string | number, props?: ContainerNodeProps, ...children: PixoraChild[]) {
-    return keyedContainer(key, props, ...children);
-  },
-
-  keyedSprite,
-
-  keyedText,
 
   component<Props extends PixoraComponentProps>(
     renderFn: PixoraComponent<Props>,

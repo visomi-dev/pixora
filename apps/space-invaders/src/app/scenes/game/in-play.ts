@@ -1,4 +1,4 @@
-import { Box, ContainerNode, effect, pixora } from 'pixora';
+import { ContainerNode, effect, pixora } from 'pixora';
 
 import { bulletsSignal, enemiesSignal, enemyBulletsSignal, playerSignal, powerUpsSignal } from './game-state';
 import { getEnemyBulletColor, getEnemyColor, getPowerUpColor } from './game.types';
@@ -31,11 +31,11 @@ export function inPlay(context: ApplicationContext): PixoraNode {
       root.addChild(enemyLayer);
       root.addChild(powerUpLayer);
 
-      let playerNode: Box | null = null;
-      const bulletNodes = new Map<number, Box>();
-      const enemyBulletNodes = new Map<number, Box>();
-      const enemyNodes = new Map<number, Box>();
-      const powerUpNodes = new Map<number, Box>();
+      let playerNode: ContainerNode | null = null;
+      const bulletNodes = new Map<number, ContainerNode>();
+      const enemyBulletNodes = new Map<number, ContainerNode>();
+      const enemyNodes = new Map<number, ContainerNode>();
+      const powerUpNodes = new Map<number, ContainerNode>();
 
       root.addDisposable(
         effect(() => {
@@ -52,7 +52,7 @@ export function inPlay(context: ApplicationContext): PixoraNode {
           }
 
           if (!playerNode) {
-            playerNode = new Box();
+            playerNode = new ContainerNode();
             playerLayer.addChild(playerNode);
           }
 
@@ -108,18 +108,18 @@ function assertUniqueIds(items: readonly { id: number }[], collectionName: strin
 }
 
 function syncBox(
-  node: Box,
+  node: ContainerNode,
   item: { height: number; width: number; x: number; y: number },
   backgroundColor: number,
 ): void {
-  node.updateProps({ backgroundColor, height: item.height, width: item.width });
-  node.displayObject.x = item.x;
-  node.displayObject.y = item.y;
+  node.updateProps({ style: { backgroundColor } });
+  node.setLayoutSize(item.width, item.height);
+  node.setLayoutPosition(item.x, item.y);
 }
 
 function syncCollection<T extends GameObject | PowerUp>(
   items: readonly T[],
-  nodes: Map<number, Box>,
+  nodes: Map<number, ContainerNode>,
   layer: ContainerNode,
   collectionName: string,
   getColor: (item: T) => number,
@@ -134,7 +134,7 @@ function syncCollection<T extends GameObject | PowerUp>(
     let node = nodes.get(item.id);
 
     if (!node) {
-      node = new Box();
+      node = new ContainerNode();
       nodes.set(item.id, node);
       layer.addChild(node);
     }

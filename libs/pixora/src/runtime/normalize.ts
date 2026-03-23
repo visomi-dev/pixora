@@ -53,7 +53,7 @@ function createTextNode(text: string): PixoraNode<'text'> {
   return Object.freeze({
     children: Object.freeze([]),
     key: undefined,
-    props: Object.freeze({ text }),
+    props: Object.freeze({ content: text }),
     type: 'text' as const,
   });
 }

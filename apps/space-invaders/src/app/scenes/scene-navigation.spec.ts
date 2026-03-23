@@ -1,11 +1,10 @@
-import { isPixoraNode, type ApplicationContext, type ButtonNodeProps, type PixoraNode, type Viewport } from 'pixora';
+import { isPixoraNode, type ApplicationContext, type ContainerNodeProps, type PixoraNode, type Viewport } from 'pixora';
 
 import { gameOverScene } from './game-over/game-over.scene';
 import { gameScene } from './game/game.scene';
 import { instructionsScene } from './instructions/instructions.scene';
 import { mainMenuScene } from './main-menu/main-menu.scene';
 import { victoryScene } from './victory/victory.scene';
-
 
 function createContext() {
   const goTo = vi.fn();
@@ -45,15 +44,26 @@ function visitChild(child: unknown, visitor: (node: PixoraNode) => void): void {
   }
 }
 
-function getButton(tree: PixoraNode, label: string): ButtonNodeProps {
-  let buttonProps: ButtonNodeProps | undefined;
+function getButton(tree: PixoraNode, label: string): ContainerNodeProps {
+  let buttonProps: ContainerNodeProps | undefined;
 
   visitNode(tree, (node) => {
-    if (node.type === 'button') {
-      const buttonNode = node as PixoraNode<'button'>;
-      if (buttonNode.props.label === label) {
-        buttonProps = buttonNode.props;
+    if (node.type !== 'container') {
+      return;
+    }
+
+    const containerNode = node as PixoraNode<'container'>;
+
+    const hasLabel = containerNode.children.some((child) => {
+      if (!isPixoraNode(child) || child.type !== 'text') {
+        return false;
       }
+
+      return (child as PixoraNode<'text'>).props.content === label;
+    });
+
+    if (hasLabel && containerNode.props.onPointerTap) {
+      buttonProps = containerNode.props;
     }
   });
 
@@ -67,7 +77,7 @@ function getTextContent(tree: PixoraNode): string[] {
 
   visitNode(tree, (node) => {
     if (node.type === 'text') {
-      textContent.push((node as PixoraNode<'text'>).props.text);
+      textContent.push((node as PixoraNode<'text'>).props.content);
     }
   });
 

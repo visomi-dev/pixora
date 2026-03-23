@@ -7,7 +7,6 @@ import type { ApplicationContext } from '../app/types';
 import type { BaseNode } from '../components/base-node';
 import type { MountedNode, MountedTree } from './mounted-node';
 
-
 // ---------------------------------------------------------------------------
 // Public API
 // ---------------------------------------------------------------------------
@@ -60,9 +59,7 @@ function mountNode(definition: PixoraNode, parentMounted: MountedNode | null, re
   const descriptor = registry[hostType];
 
   if (!descriptor) {
-    throw new Error(
-      `Unknown host type: "${String(definition.type)}". Valid types: container, text, sprite, box, button.`,
-    );
+    throw new Error(`Unknown host type: "${String(definition.type)}". Valid types: container, text, sprite.`);
   }
 
   // The type is guaranteed correct by the HostType ↔ HostPropsMap relationship,

@@ -1,4 +1,4 @@
-export { createPixoraApp } from './app/create-pixyn-app';
+export { createPixoraApp } from './app/create-pixora-app';
 
 export type { ApplicationContext, pixoraApp, pixoraAppOptions, Viewport } from './app/types';
 
@@ -19,11 +19,8 @@ export type { EventBus, EventMap } from './events/create-event-bus';
 
 export { BaseComponent } from './components/base-component';
 export { BaseNode } from './components/base-node';
-export { Box } from './components/box';
-export { Button } from './components/button';
 export { ContainerNode } from './components/container-node';
 export { InteractiveComponent } from './components/interactive-component';
-export { ScrollBox } from './components/scroll-box';
 export { SpriteNode } from './components/sprite-node';
 export { TextNode } from './components/text-node';
 
@@ -33,7 +30,7 @@ export { Layout } from './layout/layout-node';
 export { flexEngine, FlexEngine } from './layout/flex-engine';
 
 export type {
-  LayoutStyles,
+  PixoraStyle,
   FlexItemStyle,
   FlexContainerStyle,
   JustifyContent,
@@ -117,31 +114,19 @@ export type {
 export { isPixoraNode } from './runtime/types';
 
 export type {
-  BoxNodeProps,
-  ButtonNodeProps,
   ContainerNodeProps,
   HostPropsMap,
   HostType,
-  PixoraChild,
   PixoraChildren,
   PixoraNode,
-  ScrollBoxNodeProps,
   SpriteNodeProps,
   TextNodeProps,
 } from './runtime/types';
 
-export {
-  box,
-  button,
-  container,
-  keyedBox,
-  keyedContainer,
-  keyedSprite,
-  keyedText,
-  scrollBox,
-  sprite,
-  text,
-} from './runtime/create-node';
+export { button } from './runtime/button';
+export type { ButtonProps } from './runtime/button';
+
+export { container, sprite, text } from './runtime/create-node';
 
 export { imperative } from './runtime/compat';
 export { island } from './runtime/island';

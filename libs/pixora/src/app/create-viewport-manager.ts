@@ -45,8 +45,19 @@ export function createViewportManager(options: CreateViewportManagerOptions): Vi
 
 function readViewport(mount: HTMLElement, fallbackWidth?: number, fallbackHeight?: number): Viewport {
   const bounds = mount.getBoundingClientRect();
-  const width = Math.max(1, Math.floor(fallbackWidth ?? mount.clientWidth ?? bounds.width ?? 1280));
-  const height = Math.max(1, Math.floor(fallbackHeight ?? mount.clientHeight ?? bounds.height ?? 720));
+  const computedWidth = fallbackWidth ?? mount.clientWidth ?? bounds.width;
+  const computedHeight = fallbackHeight ?? mount.clientHeight ?? bounds.height;
+
+  if (computedWidth === 0 || computedHeight === 0) {
+    console.warn(
+      `[pixora] Mount element has no dimensions (${computedWidth}x${computedHeight}). ` +
+        `Ensure the element has CSS dimensions (e.g., #game { width: 100%; height: 100%; }). ` +
+        `Using fallback resolution (1280x720).`,
+    );
+  }
+
+  const width = Math.max(1, Math.floor(computedWidth ?? 1280));
+  const height = Math.max(1, Math.floor(computedHeight ?? 720));
 
   return {
     aspectRatio: width / height,

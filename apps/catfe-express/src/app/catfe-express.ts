@@ -1,12 +1,14 @@
 import { pixora } from 'pixora';
 
-import fredoka from '../assets/fonts/Fredoka.ttf'; // buttons, titles, main ui
-import nunito from '../assets/fonts/Nunito.ttf'; // secondary texts
-import baloo2 from '../assets/fonts/Baloo2.ttf'; // numbers, money, score
+import fredoka from '../assets/fonts/Fredoka.ttf';
+import nunito from '../assets/fonts/Nunito.ttf';
+import baloo2 from '../assets/fonts/Baloo2.ttf';
+import buttonIdle from '../assets/textures/button-idle.png';
+import buttonPressed from '../assets/textures/button-pressed.png';
 
 import { mainMenuScene } from './scenes/main-menu-scene';
 
-async function mount(root: HTMLElement): Promise<void> {
+export async function mount(root: HTMLElement): Promise<void> {
   await pixora({
     assets: {
       fonts: [
@@ -19,7 +21,16 @@ async function mount(root: HTMLElement): Promise<void> {
     backgroundColor: 0xffb6c1,
     devtools: import.meta.env?.DEV ?? import.meta.env?.MODE === 'development',
     initialScene: 'main-menu',
+    loadingScreen: {
+      backgroundColor: 0xffb6c1,
+      text: 'Loading Catfé Express...',
+      textColor: 0x4a3728,
+    },
     mount: root,
+    preload: [
+      { key: 'buttonIdle', src: buttonIdle },
+      { key: 'buttonPressed', src: buttonPressed },
+    ],
     scenes: [mainMenuScene],
   });
 }
