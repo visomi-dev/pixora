@@ -65,4 +65,4 @@ jobs:
       - name: Version bump
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: pnpm nx release --skip-publish --yes
+        run: pnpm nx release --skip-publish
