@@ -1,6 +1,5 @@
 import type { Application } from 'pixi.js';
-
-import type { AssetManifest, AssetRegistry } from '../components/create-asset-registry';
+import type { AssetManifest, AssetRegistry } from '../assets/create-asset-registry';
 import type { EventBus } from '../events/create-event-bus';
 import type { SceneManager } from '../scenes/scene-manager';
 import type { ReadonlySignal } from '../state/signal';
@@ -24,6 +23,17 @@ export type ApplicationContext = {
   viewport: ReadonlySignal<Viewport>;
 };
 
+export type PreloadAsset = {
+  key: string;
+  src: string;
+};
+
+export type LoadingScreenConfig = {
+  backgroundColor?: number;
+  text?: string;
+  textColor?: number;
+};
+
 export type pixoraAppOptions = {
   mount: HTMLElement;
   width?: number;
@@ -34,6 +44,8 @@ export type pixoraAppOptions = {
   initialScene: SceneKey;
   services?: readonly ServiceDescriptor[];
   assets?: AssetManifest;
+  preload?: readonly PreloadAsset[];
+  loadingScreen?: LoadingScreenConfig;
   devtools?: boolean;
 };
 

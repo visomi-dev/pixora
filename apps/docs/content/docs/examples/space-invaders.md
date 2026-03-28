@@ -129,7 +129,7 @@ The gameplay scene follows Pixora's recommended shell-plus-island split:
   </span>
 </div>
 
-<a class="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700 no-underline transition-colors hover:bg-slate-200 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300 dark:hover:bg-slate-800" href="https://github.com/visomi-dev/pixora/tree/v0.7.0/apps/space-invaders" target="_blank" rel="noopener">
+<a class="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700 no-underline transition-colors hover:bg-slate-200 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300 dark:hover:bg-slate-800" href="https://github.com/visomi-dev/pixora/tree/v0.7.4/apps/space-invaders" target="_blank" rel="noopener">
   <span class="material-symbols-outlined text-sm">code</span>
   View full source code
 </a>

@@ -1,7 +1,8 @@
 import { effect, type ReadonlySignal } from '../state/signal';
 
-import type { MountedNode, MountedTree } from './mounted-node';
 import { updateTree } from './reconcile';
+
+import type { MountedNode, MountedTree } from './mounted-node';
 import type { AnyPixoraComponent } from './types';
 
 export type ReactiveContext = {

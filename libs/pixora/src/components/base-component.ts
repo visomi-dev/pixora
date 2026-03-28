@@ -1,6 +1,7 @@
+import { BaseNode } from './base-node';
+
 import type { Container } from 'pixi.js';
 
-import { BaseNode } from './base-node';
 
 export class BaseComponent<
   Props extends object,

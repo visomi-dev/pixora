@@ -1,6 +1,6 @@
-import type { Container, FederatedPointerEvent } from 'pixi.js';
-
 import { signal } from '../state/signal';
+
+import type { Container, FederatedPointerEvent } from 'pixi.js';
 import type { ReadonlySignal } from '../state/signal';
 
 export type GestureType =

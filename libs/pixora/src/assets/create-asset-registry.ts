@@ -1,4 +1,6 @@
-import { Texture } from 'pixi.js';
+import { loadTextureAsset } from './load-texture-asset';
+
+import type { Texture } from 'pixi.js';
 
 export type AssetKey = string;
 
@@ -28,7 +30,7 @@ export function createAssetRegistry(): AssetRegistry {
   const textureSources = new Map<AssetKey, string>();
   const spritesheetSources = new Map<AssetKey, string>();
   const bundles = new Map<string, readonly AssetKey[]>();
-  const loaded = new Set<AssetKey>();
+  const loadedTextures = new Map<AssetKey, Texture>();
 
   return {
     getTexture(key) {
@@ -36,24 +38,38 @@ export function createAssetRegistry(): AssetRegistry {
         throw new Error(`Unknown asset key: ${key}`);
       }
 
-      if (!loaded.has(key)) {
+      const texture = loadedTextures.get(key);
+
+      if (!texture) {
         throw new Error(`Asset key "${key}" has not been loaded yet.`);
       }
 
-      return Texture.EMPTY;
+      return texture;
     },
     has(key) {
       return textureSources.has(key) || spritesheetSources.has(key);
     },
     isLoaded(key) {
-      return loaded.has(key);
+      return loadedTextures.has(key);
     },
     async load(key) {
       if (!this.has(key)) {
         throw new Error(`Unknown asset key: ${key}`);
       }
 
-      loaded.add(key);
+      if (loadedTextures.has(key)) {
+        return;
+      }
+
+      const source = textureSources.get(key) ?? spritesheetSources.get(key);
+
+      if (!source) {
+        throw new Error(`Unknown asset source for key: ${key}`);
+      }
+
+      const texture = await loadTextureAsset(source);
+
+      loadedTextures.set(key, texture);
     },
     async loadBundle(name) {
       const bundle = bundles.get(name);

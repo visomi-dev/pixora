@@ -1,5 +1,4 @@
 import type { Container } from 'pixi.js';
-
 import type { ComputedLayout, ComputedPixiLayout } from './computed-layout';
 import type { LayoutStyles } from './layout-types';
 

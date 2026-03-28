@@ -1,6 +1,7 @@
+import { createServiceRegistry, createServiceToken } from './create-service-registry';
+
 import type { ApplicationContext } from '../app/types';
 
-import { createServiceRegistry, createServiceToken } from './create-service-registry';
 
 function createMockContext(): ApplicationContext {
   return {

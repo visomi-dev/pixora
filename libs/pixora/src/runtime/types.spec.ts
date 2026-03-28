@@ -35,6 +35,6 @@ describe('isPixoraNode', () => {
   });
 
   it('returns true for an object with all required fields', () => {
-    expect(isPixoraNode({ type: 'text', props: { text: 'hi' }, children: [] })).toBe(true);
+    expect(isPixoraNode({ type: 'text', props: { content: 'hi' }, children: [] })).toBe(true);
   });
 });

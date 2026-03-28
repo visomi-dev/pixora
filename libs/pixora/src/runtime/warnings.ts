@@ -79,12 +79,12 @@ export function warnMissingRequiredProp(hostType: string, propName: string): voi
 export function warnUnknownHostType(type: string): void {
   warn({
     code: WarningCode.UNKNOWN_HOST_TYPE,
-    message: `Unknown host type "${type}". Valid types are: box, button, container, sprite, text`,
+    message: `Unknown host type "${type}". Valid types are: container, sprite, text`,
     payload: { type },
   });
 }
 
-const VALID_HOST_TYPES = new Set(['box', 'button', 'container', 'sprite', 'text']);
+const VALID_HOST_TYPES = new Set(['container', 'sprite', 'text']);
 
 export function validateHostType(type: unknown): boolean {
   return typeof type === 'string' && VALID_HOST_TYPES.has(type);
@@ -113,32 +113,25 @@ export function validateProps(props: unknown, hostType: string): string[] {
 }
 
 function getValidPropsForType(hostType: string): Set<string> {
-  const baseProps = new Set(['x', 'y', 'alpha', 'scale', 'visible']);
+  const baseProps = new Set([
+    'children',
+    'key',
+    'label',
+    'onPointerDown',
+    'onPointerOut',
+    'onPointerOver',
+    'onPointerTap',
+    'onPointerUp',
+    'style',
+  ]);
 
   switch (hostType) {
     case 'container':
       return baseProps;
     case 'text':
-      return new Set([...baseProps, 'text', 'style']);
+      return new Set([...baseProps, 'anchor', 'content']);
     case 'sprite':
-      return new Set([...baseProps, 'texture', 'asset']);
-    case 'box':
-      return new Set([...baseProps, 'width', 'height', 'backgroundColor', 'radius']);
-    case 'button':
-      return new Set([
-        ...baseProps,
-        'width',
-        'height',
-        'backgroundColor',
-        'radius',
-        'label',
-        'disabled',
-        'onPointerDown',
-        'onPointerOut',
-        'onPointerOver',
-        'onPointerTap',
-        'onPointerUp',
-      ]);
+      return new Set([...baseProps, 'anchor', 'asset', 'texture']);
     default:
       return baseProps;
   }

@@ -1,9 +1,10 @@
-import type { ApplicationContext } from '../app/types';
 import { ContainerNode } from '../components/container-node';
 
 import { island } from './island';
-import type { IslandSetupContext } from './island';
 import { IMPERATIVE_MARKER } from './types';
+
+import type { IslandSetupContext } from './island';
+import type { ApplicationContext } from '../app/types';
 
 function createMockContext(): ApplicationContext {
   return {

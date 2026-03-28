@@ -101,12 +101,12 @@ describe('warnings', () => {
       const handler = vi.fn();
       setWarningHandler(handler);
 
-      warnInvalidProp('box', 'unknownProp');
+      warnInvalidProp('container', 'unknownProp');
 
       expect(handler).toHaveBeenCalledWith({
         code: WarningCode.INVALID_PROP,
         message: expect.stringContaining('unknownProp'),
-        payload: { hostType: 'box', propName: 'unknownProp' },
+        payload: { hostType: 'container', propName: 'unknownProp' },
       });
     });
   });
@@ -116,12 +116,12 @@ describe('warnings', () => {
       const handler = vi.fn();
       setWarningHandler(handler);
 
-      warnMissingRequiredProp('button', 'label');
+      warnMissingRequiredProp('text', 'content');
 
       expect(handler).toHaveBeenCalledWith({
         code: WarningCode.MISSING_REQUIRED_PROP,
-        message: expect.stringContaining('label'),
-        payload: { hostType: 'button', propName: 'label' },
+        message: expect.stringContaining('content'),
+        payload: { hostType: 'text', propName: 'content' },
       });
     });
   });

@@ -1,9 +1,10 @@
-import type { ApplicationContext } from '../app/types';
-
 import { InvalidationFlag } from './lifecycle';
-import type { MountedTree } from './mounted-node';
 import { runLayout } from './layout-runtime';
 import { updateTree } from './reconcile';
+import { withApplicationContext } from './current-context';
+
+import type { MountedTree } from './mounted-node';
+import type { ApplicationContext } from '../app/types';
 import type { PixoraNode } from './types';
 
 export type SchedulerTask = {
@@ -101,7 +102,7 @@ export class Scheduler {
 
   private processUpdate(update: ScheduledUpdate): void {
     if (update.visualDirty) {
-      const newTree = update.renderFn(update.context);
+      const newTree = withApplicationContext(update.context, () => update.renderFn(update.context));
       updateTree(update.mountedTree, newTree);
     }
 
@@ -114,6 +115,7 @@ export class Scheduler {
     const viewport = tree.context.viewport.get();
 
     runLayout(tree.root.hostNode, viewport);
+    tree.context.app.renderer.layout.update(tree.context.app.stage as never);
   }
 
   schedulePostUpdate(callback: () => void): void {

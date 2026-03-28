@@ -1,5 +1,4 @@
 import type { Container, FederatedPointerEvent } from 'pixi.js';
-
 import type { Disposable } from '../utils/disposable';
 
 export type ButtonState = 'disabled' | 'hovered' | 'idle' | 'pressed';

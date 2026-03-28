@@ -1,6 +1,5 @@
 import type { ApplicationContext } from '../app/types';
 import type { BaseNode } from '../components/base-node';
-
 import type { PixoraNode } from './types';
 import type { ReactiveContext } from './reactive';
 

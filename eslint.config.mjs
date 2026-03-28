@@ -82,7 +82,13 @@ export default [
       ],
       '@typescript-eslint/no-non-null-assertion': 'off',
 
-      'import-x/order': ['error', { 'newlines-between': 'always' }],
+      'import-x/order': [
+        'error',
+        {
+          'newlines-between': 'always',
+          groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index', 'object', 'type'],
+        },
+      ],
       'import-x/no-named-as-default': ['off'],
       'import-x/no-unresolved': ['error', { ignore: ['pixora'] }],
 

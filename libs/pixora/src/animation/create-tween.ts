@@ -13,6 +13,7 @@ export type TweenOptions = {
 export type TransitionOptions = {
   delayMs?: number;
   durationMs: number;
+  easing?: 'ease-in' | 'ease-out' | 'ease-in-out' | 'linear';
   from?: number;
   onComplete?: () => void;
   onUpdate: (value: number) => void;
@@ -78,6 +79,7 @@ export function createTransition(options: TransitionOptions): Tween {
   return createTween({
     delayMs: options.delayMs,
     durationMs: options.durationMs,
+    easing: options.easing,
     from: options.from ?? 0,
     onComplete: options.onComplete,
     onUpdate: options.onUpdate,

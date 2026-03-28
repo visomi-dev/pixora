@@ -1,9 +1,9 @@
-import type { BaseNode } from '../components/base-node';
-
 import { createHostTypeRegistry, type HostTypeRegistry } from './host-types';
-import type { MountedNode, MountedTree } from './mounted-node';
 import { normalizeChildren } from './normalize';
 import { IMPERATIVE_MARKER, type HostType, type PixoraNode } from './types';
+
+import type { MountedNode, MountedTree } from './mounted-node';
+import type { BaseNode } from '../components/base-node';
 
 export type ReconcileResult = {
   mounted: MountedNode;
@@ -85,6 +85,8 @@ function reconcileImperativeNode(
 function replaceNode(oldNode: MountedNode, newDefinition: PixoraNode, registry: HostTypeRegistry): ReconcileResult {
   const parent = oldNode.parent;
   const displayParent = oldNode.hostNode.displayObject.parent;
+  const oldDisplayObject = oldNode.hostNode.displayObject;
+  const oldIndex = displayParent && parent ? parent.hostNode.displayObject.getChildIndex(oldDisplayObject) : -1;
 
   unmountNode(oldNode);
 
@@ -98,13 +100,9 @@ function replaceNode(oldNode: MountedNode, newDefinition: PixoraNode, registry: 
 
   if (displayParent && parent) {
     const parentBaseNode = parent.hostNode;
-    const oldDisplayObject = oldNode.hostNode.displayObject;
     const newDisplayObject = newMounted.hostNode.displayObject;
 
-    const oldIndex = parentBaseNode.displayObject.getChildIndex(oldDisplayObject);
-
     if (oldIndex !== -1) {
-      parentBaseNode.displayObject.removeChildAt(oldIndex);
       parentBaseNode.displayObject.addChildAt(newDisplayObject, oldIndex);
     } else {
       parentBaseNode.displayObject.addChild(newDisplayObject);
@@ -272,9 +270,7 @@ function mountNode(definition: PixoraNode, parentMounted: MountedNode | null, re
   const descriptor = registry[hostType];
 
   if (!descriptor) {
-    throw new Error(
-      `Unknown host type: "${String(definition.type)}". Valid types: container, text, sprite, box, button.`,
-    );
+    throw new Error(`Unknown host type: "${String(definition.type)}". Valid types: container, text, sprite.`);
   }
 
   const hostNode = (descriptor.create as (props: unknown) => BaseNode)(definition.props);

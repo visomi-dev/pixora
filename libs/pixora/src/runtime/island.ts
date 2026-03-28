@@ -1,9 +1,10 @@
-import type { ApplicationContext } from '../app/types';
 import { ContainerNode } from '../components/container-node';
-import type { Disposable } from '../utils/disposable';
 
-import type { PixoraNode } from './types';
 import { IMPERATIVE_MARKER } from './types';
+
+import type { ApplicationContext } from '../app/types';
+import type { Disposable } from '../utils/disposable';
+import type { PixoraNode } from './types';
 
 type Cleanup = Disposable | (() => void) | void;
 
@@ -21,6 +22,7 @@ export type IslandOptions = {
 class IslandNode extends ContainerNode {
   constructor(options: IslandOptions) {
     super();
+    this.displayObject.layout = null;
 
     const cleanup = options.setup({ context: options.context, root: this });
 

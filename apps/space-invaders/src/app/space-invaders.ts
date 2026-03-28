@@ -1,3 +1,5 @@
+import { pixora } from 'pixora';
+
 import orbiton from '../assets/Orbitron[wght].ttf';
 import jetBrainsMono from '../assets/JetBrainsMono[wght].ttf';
 
@@ -7,8 +9,6 @@ import { instructionsScene } from './scenes/instructions/instructions.scene';
 import { gameOverScene } from './scenes/game-over/game-over.scene';
 import { victoryScene } from './scenes/victory/victory.scene';
 import { gameScene } from './scenes/game/game.scene';
-
-import { pixora } from 'pixora';
 
 async function mount(root: HTMLElement): Promise<void> {
   const stageHost = root.querySelector<HTMLElement>('[data-stage-host]');

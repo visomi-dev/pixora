@@ -1,5 +1,6 @@
-import type { PixoraChild, PixoraNode } from './types';
 import { isPixoraNode } from './types';
+
+import type { PixoraChild, PixoraNode } from './types';
 
 /**
  * Normalizes a flexible children input into a flat array of `PixoraNode` objects.
@@ -52,7 +53,7 @@ function createTextNode(text: string): PixoraNode<'text'> {
   return Object.freeze({
     children: Object.freeze([]),
     key: undefined,
-    props: Object.freeze({ text }),
+    props: Object.freeze({ content: text }),
     type: 'text' as const,
   });
 }

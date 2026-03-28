@@ -1,6 +1,7 @@
+import { IMPERATIVE_MARKER, type ImperativeNodeProps, type PixoraNode } from './types';
+
 import type { BaseNode } from '../components/base-node';
 
-import { IMPERATIVE_MARKER, type ImperativeNodeProps, type PixoraNode } from './types';
 
 /**
  * Wraps an existing imperative `BaseNode` instance as a leaf in a declarative

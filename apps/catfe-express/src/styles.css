@@ -1,0 +1,23 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #ffb6c1;
+}
+
+body {
+  color: #4a3728;
+  font-family: 'Nunito', sans-serif;
+}
+
+#game {
+  width: 100%;
+  height: 100dvh;
+  min-height: 100dvh;
+}

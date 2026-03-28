@@ -45,150 +45,134 @@ export type ObjectFit = 'fill' | 'contain' | 'cover' | 'none' | 'scale-down';
 
 export type Direction = 'ltr' | 'rtl';
 
-export type LayoutStyles = {
+export type PixoraStyle = {
+  align?: 'left' | 'center' | 'right' | 'justify';
   alignContent?: AlignContent;
   alignItems?: AlignItems;
   alignSelf?: AlignSelf;
   aspectRatio?: number;
-
+  backgroundColor?: number | string;
+  borderWidth?: number;
+  borderRadius?: number;
   bottom?: NumberValue;
-  left?: NumberValue;
-  right?: NumberValue;
-  top?: NumberValue;
-  start?: NumberValue;
-  end?: NumberValue;
-
   boxSizing?: BoxSizing;
+  color?: string;
+  columnGap?: number;
+  cursor?: string;
   direction?: Direction;
   display?: Display;
-
+  end?: NumberValue;
   flex?: number;
   flexBasis?: NumberValue | 'auto';
   flexDirection?: FlexDirection;
   flexGrow?: number;
   flexShrink?: number;
   flexWrap?: FlexWrap;
-
-  rowGap?: number;
-  columnGap?: number;
+  fontFamily?: string;
+  fontSize?: number;
+  fontWeight?: string;
   gap?: number;
-
-  justifyContent?: JustifyContent;
-
-  margin?: NumberValue | 'auto';
-  marginBottom?: NumberValue | 'auto';
-  marginEnd?: NumberValue | 'auto';
-  marginLeft?: NumberValue | 'auto';
-  marginRight?: NumberValue | 'auto';
-  marginStart?: NumberValue | 'auto';
-  marginTop?: NumberValue | 'auto';
-  marginInline?: NumberValue | 'auto';
-  marginBlock?: NumberValue | 'auto';
-
-  width?: NumberValue | 'auto' | 'intrinsic';
   height?: NumberValue | 'auto' | 'intrinsic';
-  maxWidth?: NumberValue;
-  maxHeight?: NumberValue;
-  minWidth?: NumberValue;
-  minHeight?: NumberValue;
-
-  overflow?: Overflow;
-
-  padding?: NumberValue;
-  paddingBottom?: NumberValue;
-  paddingEnd?: NumberValue;
-  paddingLeft?: NumberValue;
-  paddingRight?: NumberValue;
-  paddingStart?: NumberValue;
-  paddingTop?: NumberValue;
-  paddingInline?: NumberValue;
-  paddingBlock?: NumberValue;
-
   inset?: NumberValue;
   insetBlock?: NumberValue;
   insetInline?: NumberValue;
-
-  position?: Position;
-
-  borderRadius?: number;
-  borderWidth?: number;
-  borderTopWidth?: number;
-  borderRightWidth?: number;
-  borderBottomWidth?: number;
-  borderLeftWidth?: number;
-
-  backgroundColor?: number | string;
-
-  transformOrigin?: PositionSpecifier;
-  objectFit?: ObjectFit;
-  objectPosition?: PositionSpecifier;
-
-  isLeaf?: boolean;
-  applySizeDirectly?: boolean;
-
-  debug?: boolean;
-  debugHeat?: boolean;
-  debugDrawMargin?: boolean;
-  debugDrawPadding?: boolean;
-  debugDrawBorder?: boolean;
-  debugDrawFlex?: boolean;
-  debugDrawContent?: boolean;
-};
-
-export type FlexItemStyle = {
-  alignSelf?: AlignSelf;
-  flexGrow?: number;
-  flexShrink?: number;
-  flexBasis?: NumberValue | 'auto';
-  marginTop?: NumberValue | 'auto';
+  justifyContent?: JustifyContent;
+  left?: NumberValue;
+  margin?: NumberValue | 'auto';
+  marginBlock?: NumberValue | 'auto';
   marginBottom?: NumberValue | 'auto';
+  marginEnd?: NumberValue | 'auto';
+  marginInline?: NumberValue | 'auto';
   marginLeft?: NumberValue | 'auto';
   marginRight?: NumberValue | 'auto';
   marginStart?: NumberValue | 'auto';
-  marginEnd?: NumberValue | 'auto';
-  margin?: NumberValue | 'auto';
-  width?: NumberValue | 'auto' | 'intrinsic';
-  height?: NumberValue | 'auto' | 'intrinsic';
-  minWidth?: NumberValue;
-  minHeight?: NumberValue;
-  maxWidth?: NumberValue;
+  marginTop?: NumberValue | 'auto';
   maxHeight?: NumberValue;
-  position?: Position;
-  top?: NumberValue;
-  bottom?: NumberValue;
-  left?: NumberValue;
-  right?: NumberValue;
-};
-
-export type FlexContainerStyle = {
-  alignContent?: AlignContent;
-  alignItems?: AlignItems;
-  direction?: Direction;
-  display?: Display;
-  flexDirection?: FlexDirection;
-  flexWrap?: FlexWrap;
-  justifyContent?: JustifyContent;
-  rowGap?: number;
-  columnGap?: number;
-  gap?: number;
-  width?: NumberValue | 'auto' | 'intrinsic';
-  height?: NumberValue | 'auto' | 'intrinsic';
   maxWidth?: NumberValue;
-  maxHeight?: NumberValue;
-  minWidth?: NumberValue;
   minHeight?: NumberValue;
+  minWidth?: NumberValue;
+  objectFit?: ObjectFit;
+  objectPosition?: PositionSpecifier;
+  opacity?: number;
+  overflow?: Overflow;
   padding?: NumberValue;
-  paddingTop?: NumberValue;
+  paddingBlock?: NumberValue;
   paddingBottom?: NumberValue;
+  paddingEnd?: NumberValue;
+  paddingInline?: NumberValue;
   paddingLeft?: NumberValue;
   paddingRight?: NumberValue;
   paddingStart?: NumberValue;
-  paddingEnd?: NumberValue;
-  paddingInline?: NumberValue;
-  paddingBlock?: NumberValue;
-  margin?: NumberValue | 'auto';
-  marginTop?: NumberValue | 'auto';
-  marginBottom?: NumberValue | 'auto';
-  boxSizing?: BoxSizing;
-  overflow?: Overflow;
+  paddingTop?: NumberValue;
+  position?: Position;
+  right?: NumberValue;
+  rowGap?: number;
+  start?: NumberValue;
+  top?: NumberValue;
+  transformOrigin?: PositionSpecifier;
+  isLeaf?: boolean;
+  visible?: boolean;
+  width?: NumberValue | 'auto' | 'intrinsic';
 };
+
+export type LayoutStyles = PixoraStyle;
+
+export type FlexItemStyle = Pick<
+  PixoraStyle,
+  | 'alignSelf'
+  | 'bottom'
+  | 'flexBasis'
+  | 'flexGrow'
+  | 'flexShrink'
+  | 'height'
+  | 'left'
+  | 'margin'
+  | 'marginBottom'
+  | 'marginEnd'
+  | 'marginLeft'
+  | 'marginRight'
+  | 'marginStart'
+  | 'marginTop'
+  | 'maxHeight'
+  | 'maxWidth'
+  | 'minHeight'
+  | 'minWidth'
+  | 'position'
+  | 'right'
+  | 'top'
+  | 'width'
+>;
+
+export type FlexContainerStyle = Pick<
+  PixoraStyle,
+  | 'alignContent'
+  | 'alignItems'
+  | 'boxSizing'
+  | 'columnGap'
+  | 'direction'
+  | 'display'
+  | 'flexDirection'
+  | 'flexWrap'
+  | 'gap'
+  | 'height'
+  | 'justifyContent'
+  | 'margin'
+  | 'marginBottom'
+  | 'marginTop'
+  | 'maxHeight'
+  | 'maxWidth'
+  | 'minHeight'
+  | 'minWidth'
+  | 'overflow'
+  | 'padding'
+  | 'paddingBlock'
+  | 'paddingBottom'
+  | 'paddingEnd'
+  | 'paddingInline'
+  | 'paddingLeft'
+  | 'paddingRight'
+  | 'paddingStart'
+  | 'paddingTop'
+  | 'rowGap'
+  | 'width'
+>;

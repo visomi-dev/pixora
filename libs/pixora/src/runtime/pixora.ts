@@ -1,30 +1,24 @@
-import type { AssetManifest } from '../assets/create-asset-registry';
-import { createPixoraApp } from '../app/create-pixyn-app';
-import type { ApplicationContext, pixoraApp, Viewport } from '../app/types';
+import { Texture } from 'pixi.js';
+
+import { createPixoraApp } from '../app/create-pixora-app';
 import { Scene } from '../scenes/types';
-import type { SceneDefinition, SceneKey } from '../scenes/types';
-import type { ServiceDescriptor } from '../services/create-service-registry';
 import { effect } from '../state/signal';
-import type { Disposable } from '../utils/disposable';
 
 import { createScheduler, type Scheduler } from './scheduler';
+import { button } from './button';
+import { withApplicationContext } from './current-context';
 import { island } from './island';
-import type { MountedTree } from './mounted-node';
 import { mountTree, unmountTree } from './renderer';
 import { updateTree } from './reconcile';
+import { container, sprite, text } from './create-node';
+
 import type { PixoraComponent, PixoraComponentProps, PixoraNode } from './types';
-import {
-  box,
-  button,
-  container,
-  keyedBox,
-  keyedContainer,
-  keyedSprite,
-  keyedText,
-  scrollBox,
-  sprite,
-  text,
-} from './create-node';
+import type { MountedTree } from './mounted-node';
+import type { Disposable } from '../utils/disposable';
+import type { ServiceDescriptor } from '../services/create-service-registry';
+import type { SceneDefinition, SceneKey } from '../scenes/types';
+import type { ApplicationContext, pixoraApp, Viewport } from '../app/types';
+import type { AssetManifest } from '../assets/create-asset-registry';
 
 // ---------------------------------------------------------------------------
 // Public types
@@ -54,7 +48,13 @@ export type PixoraAppOptions = {
   devtools?: boolean;
   height?: number;
   initialScene: string;
+  loadingScreen?: {
+    backgroundColor?: number;
+    text?: string;
+    textColor?: number;
+  };
   mount: HTMLElement;
+  preload?: readonly { key: string; src: string }[];
   scenes: readonly PixoraScene[];
   services?: readonly ServiceDescriptor[];
   width?: number;
@@ -72,24 +72,12 @@ export type PixoraRuntime = pixoraApp & {
 // ---------------------------------------------------------------------------
 
 export type PixoraComponentAPI = {
-  /** Creates a box node */
-  box: typeof box;
-  /** Creates a button node */
+  /** Creates a composed button node */
   button: typeof button;
   /** Creates a container node */
   container: typeof container;
   /** Creates a managed island node */
   island: typeof island;
-  /** Creates a keyed box node */
-  keyedBox: typeof keyedBox;
-  /** Creates a keyed container node */
-  keyedContainer: typeof keyedContainer;
-  /** Creates a keyed sprite node */
-  keyedSprite: typeof keyedSprite;
-  /** Creates a keyed text node */
-  keyedText: typeof keyedText;
-  /** Creates a scroll box node */
-  scrollBox: typeof scrollBox;
   /** Creates a scene definition */
   scene: (
     sceneDef:
@@ -104,31 +92,20 @@ export type PixoraComponentAPI = {
 
 export type PixoraFn = {
   (options: PixoraAppOptions): Promise<PixoraRuntime>;
-  box: typeof box;
   button: typeof button;
   component<Props extends PixoraComponentProps>(renderFn: PixoraComponent<Props>): PixoraComponent<Props>;
   container: typeof container;
   island: typeof island;
-  keyedBox: typeof keyedBox;
-  keyedContainer: typeof keyedContainer;
-  keyedSprite: typeof keyedSprite;
-  keyedText: typeof keyedText;
-  scrollBox: typeof scrollBox;
   scene: PixoraComponentAPI['scene'];
   sprite: typeof sprite;
   text: typeof text;
+  texture: (src: string) => Texture;
 };
 
 const componentAPI: PixoraComponentAPI = {
-  box,
   button,
   container,
   island,
-  keyedBox,
-  keyedContainer,
-  keyedSprite,
-  keyedText,
-  scrollBox,
   scene(
     sceneDef:
       | { key: string; render: (context: ApplicationContext) => PixoraNode; updateMode?: 'frame' | 'reactive' }
@@ -188,7 +165,9 @@ async function createPixoraAppInstance(options: PixoraAppOptions): Promise<Pixor
     devtools: options.devtools,
     height: options.height,
     initialScene: options.initialScene as SceneKey,
+    loadingScreen: options.loadingScreen,
     mount: options.mount,
+    preload: options.preload,
     scenes: [...imperativeSceneDefinitions, ...declarativeSceneDefinitions],
     services: options.services,
     width: options.width,
@@ -226,14 +205,19 @@ async function createPixoraAppInstance(options: PixoraAppOptions): Promise<Pixor
  * const app = pixora({
  *   mount: document.getElementById('app')!,
  *   initialScene: 'main',
- *   scenes: [{ key: 'main', render: () => pixora.container() }]
+ *   scenes: [{ key: 'main', render: () => pixora.container({}) }]
  * });
  * ```
  *
  * @example
  * ```ts
- * const myContainer = pixora.container({ width: 100 }, pixora.text({ text: 'Hello' }));
- * const myButton = pixora.button({ label: 'Click', onPointerTap: () => {} });
+ * const myContainer = pixora.container({ style: { width: 100 }, children: [pixora.text({ content: 'Hello' })] });
+ * const myButton = pixora.button({
+ *   label: 'PrimaryButton',
+ *   onPointerTap: () => {},
+ *   text: { content: 'Play' },
+ *   textures: { idle: pixora.texture('button-idle') },
+ * });
  * const myScene = pixora.scene({ key: 'main', render: () => ... });
  * ```
  *
@@ -241,9 +225,7 @@ async function createPixoraAppInstance(options: PixoraAppOptions): Promise<Pixor
  * ```ts
  * // Create a component/render function
  * const MyComponent = pixora.component((ctx) => {
- *   return pixora.container({},
- *     pixora.text({ text: 'Hello' })
- *   );
+ *   return pixora.container({ children: [pixora.text({ content: 'Hello' })] });
  * });
  *
  * // Use in scene
@@ -254,23 +236,18 @@ const pixora: PixoraFn = async function (options: PixoraAppOptions): Promise<Pix
   return createPixoraAppInstance(options);
 };
 
-pixora.box = box;
-pixora.button = button;
 pixora.component = function <Props extends PixoraComponentProps>(
   renderFn: PixoraComponent<Props>,
 ): PixoraComponent<Props> {
   return renderFn;
 };
+pixora.button = button;
 pixora.container = container;
 pixora.island = island;
-pixora.keyedBox = keyedBox;
-pixora.keyedContainer = keyedContainer;
-pixora.keyedSprite = keyedSprite;
-pixora.keyedText = keyedText;
-pixora.scrollBox = scrollBox;
 pixora.scene = componentAPI.scene;
 pixora.sprite = sprite;
 pixora.text = text;
+pixora.texture = (src: string) => Texture.from(src);
 
 export { pixora };
 
@@ -301,7 +278,7 @@ class DeclarativeSceneAdapter extends Scene {
 
   override mount(): void {
     const context = this.getContext();
-    const tree = this.renderFn(context);
+    const tree = withApplicationContext(context, () => this.renderFn(context));
 
     this.mountedTree = mountTree(tree, this.root, context);
     this.mountedTrees.set(this.key, this.mountedTree);
@@ -312,7 +289,10 @@ class DeclarativeSceneAdapter extends Scene {
           return;
         }
 
-        updateTree(this.mountedTree, this.renderFn(context));
+        updateTree(
+          this.mountedTree,
+          withApplicationContext(context, () => this.renderFn(context)),
+        );
       });
     }
   }

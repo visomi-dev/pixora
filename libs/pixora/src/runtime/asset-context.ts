@@ -1,6 +1,9 @@
-import type { ReadonlySignal, Signal } from '../state/signal';
+import { loadTextureAsset } from '../assets/load-texture-asset';
 import { signal } from '../state/signal';
+
+import type { Texture } from 'pixi.js';
 import type { FontAsset } from '../assets/create-asset-registry';
+import type { ReadonlySignal, Signal } from '../state/signal';
 
 export enum AssetState {
   Idle = 'idle',
@@ -23,7 +26,7 @@ export type AssetContextOptions = {
 export type AssetContext = {
   getState(key: string): AssetState;
   getProgress(key: string): number;
-  getTexture(key: string): unknown;
+  getTexture(key: string): Texture | undefined;
   has(key: string): boolean;
   isLoaded(key: string): boolean;
   isLoading(key: string): boolean;
@@ -41,12 +44,12 @@ export type AssetManifest = {
   textures?: Record<string, string>;
 };
 
-const globalSharedCache = new Map<string, unknown>();
+const globalSharedCache = new Map<string, Texture>();
 
 export function createAssetContext(options: AssetContextOptions = {}): AssetContext {
   const { sharedCache = false } = options;
 
-  const cache = sharedCache ? globalSharedCache : new Map<string, unknown>();
+  const cache = sharedCache ? globalSharedCache : new Map<string, Texture>();
   const manifestTextures = new Map<string, string>();
   const manifestSpritesheets = new Map<string, string>();
   const bundles = new Map<string, string[]>();
@@ -86,7 +89,7 @@ export function createAssetContext(options: AssetContextOptions = {}): AssetCont
       return assetProgress.get(key)?.get() ?? 0;
     },
 
-    getTexture(key: string): unknown {
+    getTexture(key: string): Texture | undefined {
       return cache.get(key);
     },
 
@@ -125,7 +128,7 @@ export function createAssetContext(options: AssetContextOptions = {}): AssetCont
         try {
           progress.set(0.5);
 
-          const texture = await loadTexture(source);
+          const texture = await loadTextureAsset(source);
 
           cache.set(key, texture);
 
@@ -179,14 +182,6 @@ export function createAssetContext(options: AssetContextOptions = {}): AssetCont
       return getOrCreateState(key).asReadonly();
     },
   };
-}
-
-async function loadTexture(source: string): Promise<unknown> {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({ source, loaded: true });
-    }, 10);
-  });
 }
 
 export function clearSharedCache(): void {

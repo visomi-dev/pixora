@@ -6,6 +6,14 @@
       "type": "chrome",
       "request": "launch",
       "url": "http://localhost:4200/",
+      "runtimeArgs": ["--auto-open-devtools-for-tabs"],
+      "webRoot": "${workspaceFolder}/apps/catfe-express"
+    },
+    {
+      "name": "Launch Chrome against 4201",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:4201/",
       "runtimeArgs": ["--auto-open-devtools-for-tabs"]
     },
     {
