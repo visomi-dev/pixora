@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { Texture } from 'pixi.js';
+import { Sprite, Texture } from 'pixi.js';
 import { ButtonContainer } from '@pixi/ui';
 
 import { BaseNode } from '../components/base-node';
@@ -139,6 +139,38 @@ describe('button', () => {
     expect(label.y).toBe(32);
   });
 
+  it('supports background-color buttons without sprite textures', () => {
+    const context = createMockContext();
+
+    const node = withApplicationContext(context, () =>
+      button({
+        backgroundColor: {
+          hovered: 0x336699,
+          idle: 0x224466,
+          pressed: 0x112233,
+        },
+        label: 'ColorButton',
+        text: { content: 'Launch' },
+      }),
+    );
+
+    const root = getIslandRoot(node);
+    const [widgetNode] = root.getChildren() as BaseNode<ButtonContainer>[];
+    const widget = widgetNode.displayObject;
+    const background = findByLabel(widget as unknown as DisplayNode, 'ColorButton.Background') as Sprite;
+
+    expect(background.texture).toBe(Texture.WHITE);
+    expect(background.tint).toBe(0x224466);
+
+    (widget.button as never as { processOver: (event?: unknown) => void }).processOver({});
+    vi.advanceTimersByTime(60);
+    expect(background.tint).toBe(0x336699);
+
+    (widget.button as never as { processDown: (event?: unknown) => void }).processDown({});
+    vi.advanceTimersByTime(60);
+    expect(background.tint).toBe(0x112233);
+  });
+
   it('supports per-button hover and press scale configuration', () => {
     const idle = createTexture('idle');
     const context = createMockContext();
@@ -248,9 +280,9 @@ describe('button', () => {
   it('throws when used outside an active application context', () => {
     expect(() =>
       button({
+        backgroundColor: 0x224466,
         text: { content: 'Invalid' },
         onPointerTap: vi.fn(),
-        textures: { idle: createTexture('idle') },
       }),
     ).toThrow('Pixora composed components can only be created while rendering a scene or reactive subtree.');
   });

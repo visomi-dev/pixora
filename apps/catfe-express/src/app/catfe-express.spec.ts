@@ -44,7 +44,7 @@ describe('catfe-express bootstrap', () => {
           textColor: 0x4a3728,
         },
         mount: document.querySelector('#game'),
-        preload: [expect.objectContaining({ key: 'buttonIdle' }), expect.objectContaining({ key: 'buttonPressed' })],
+        preload: [expect.objectContaining({ key: 'buttonDefault' }), expect.objectContaining({ key: 'buttonPressed' })],
         scenes: [mainMenuScene],
       }),
     );

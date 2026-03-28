@@ -1,20 +1,19 @@
 import { pixora } from 'pixora';
 
-import { createCenteredMonoTextStyle, createCenteredTextStyle } from '../../shared/styles';
-import { centeredBoxX } from '../scene-positioning';
-import { createBackground, createMenuButton } from '../../shared/ui';
+import { getSceneMetrics } from '../../shared/layout';
+import { createMenuButtonProps } from '../../shared/ui';
 
 export const mainMenuScene = pixora.scene({
   key: 'main-menu',
   render: (context) => {
-    const vp = context.viewport.get();
-    const titleY = Math.max(72, vp.height * 0.14);
-    const menuY = Math.max(260, vp.height * 0.45);
-    const menuX = centeredBoxX(vp.width, 280);
+    const viewport = context.viewport.get();
+    const metrics = getSceneMetrics(viewport);
 
     let highScoreText = 'GALACTIC DEFENSE v2.0';
+
     try {
       const saved = localStorage.getItem('spaceInvadersHighScore');
+
       if (saved) {
         highScoreText = `GALACTIC DEFENSE v2.0 | HIGH SCORE: ${parseInt(saved, 10).toLocaleString()}`;
       }
@@ -24,62 +23,127 @@ export const mainMenuScene = pixora.scene({
 
     return pixora.container({
       style: {
-        height: vp.height,
-        position: 'relative',
-        width: vp.width,
+        alignItems: 'center',
+        backgroundColor: 0x0a0a1a,
+        display: 'flex',
+        flexDirection: 'column',
+        height: viewport.height,
+        padding: metrics.padding,
+        position: 'absolute',
+        rowGap: metrics.gap,
+        top: 0,
+        left: 0,
+        width: viewport.width,
       },
       children: [
-        createBackground(vp.width, vp.height),
-        pixora.text({
-          ...createCenteredTextStyle('#00ffaa', 72, '900'),
-          content: 'SPACE',
+        pixora.container({
           style: {
-            ...createCenteredTextStyle('#00ffaa', 72, '900').style,
-            left: vp.width / 2,
-            position: 'absolute',
-            top: titleY,
+            alignItems: 'center',
+            display: 'flex',
+            flexDirection: 'column',
+            flexGrow: 1,
+            gap: metrics.gap,
+            justifyContent: 'center',
+            width: metrics.contentWidth,
           },
+          children: [
+            pixora.container({
+              style: {
+                alignItems: 'center',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: Math.max(6, metrics.gap / 2),
+                width: metrics.contentWidth,
+              },
+              children: [
+                pixora.text({
+                  content: 'SPACE',
+                  style: {
+                    align: 'center',
+                    color: '#00ffaa',
+                    fontFamily: 'Orbitron, sans-serif',
+                    fontSize: metrics.titleSize,
+                    fontWeight: '900',
+                  },
+                }),
+                pixora.text({
+                  content: 'INVADERS',
+                  style: {
+                    align: 'center',
+                    color: '#ff00aa',
+                    fontFamily: 'Orbitron, sans-serif',
+                    fontSize: Math.max(28, Math.round(metrics.titleSize * 0.65)),
+                    fontWeight: '700',
+                  },
+                }),
+                pixora.text({
+                  content: metrics.isCompact
+                    ? 'Swipe into formation. Tap the controls to survive the next wave.'
+                    : 'Pilot the last defense wing. Use keyboard or touch controls to repel the invasion.',
+                  style: {
+                    align: 'center',
+                    color: '#8ea5c6',
+                    fontFamily: 'JetBrains Mono, monospace',
+                    fontSize: metrics.bodySize,
+                  },
+                }),
+              ],
+            }),
+            pixora.container({
+              style: {
+                alignItems: 'center',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: Math.max(10, metrics.gap - 4),
+                width: metrics.buttonWidth,
+              },
+              children: [
+                pixora.button(
+                  createMenuButtonProps({
+                    backgroundColor: 0x00ffaa,
+                    height: metrics.buttonHeight,
+                    key: 'start-game',
+                    label: 'START GAME',
+                    labelSize: metrics.bodySize + 4,
+                    onPointerTap: () => void context.scenes.goTo('game'),
+                    width: metrics.buttonWidth,
+                  }),
+                ),
+                pixora.button(
+                  createMenuButtonProps({
+                    backgroundColor: 0x333366,
+                    height: Math.max(46, metrics.buttonHeight - 6),
+                    key: 'instructions',
+                    label: 'INSTRUCTIONS',
+                    labelColor: '#f4f7fb',
+                    labelSize: metrics.bodySize + 1,
+                    onPointerTap: () => void context.scenes.goTo('instructions'),
+                    width: metrics.buttonWidth,
+                  }),
+                ),
+              ],
+            }),
+          ],
         }),
-        pixora.text({
-          ...createCenteredTextStyle('#ff00aa', 48, '700'),
-          content: 'INVADERS',
+        pixora.container({
           style: {
-            ...createCenteredTextStyle('#ff00aa', 48, '700').style,
-            left: vp.width / 2,
-            position: 'absolute',
-            top: titleY + 76,
+            alignItems: 'center',
+            display: 'flex',
+            justifyContent: 'center',
+            marginTop: 'auto',
+            width: viewport.width - metrics.padding * 2,
           },
-        }),
-        createMenuButton({
-          backgroundColor: 0x00ffaa,
-          height: 56,
-          key: 'start-game',
-          label: 'START GAME',
-          left: menuX,
-          onPointerTap: () => void context.scenes.goTo('game'),
-          top: menuY,
-          width: 280,
-        }),
-        createMenuButton({
-          backgroundColor: 0x333366,
-          height: 48,
-          key: 'instructions',
-          label: 'INSTRUCTIONS',
-          left: menuX,
-          onPointerTap: () => void context.scenes.goTo('instructions'),
-          top: menuY + 80,
-          width: 280,
-        }),
-        pixora.text({
-          ...createCenteredMonoTextStyle('#666688', 14),
-          content: highScoreText,
-          style: {
-            align: 'center',
-            ...createCenteredMonoTextStyle('#666688', 14).style,
-            left: vp.width / 2,
-            position: 'absolute',
-            top: vp.height - 36,
-          },
+          children: [
+            pixora.text({
+              content: highScoreText,
+              style: {
+                align: 'center',
+                color: '#666688',
+                fontFamily: 'JetBrains Mono, monospace',
+                fontSize: Math.max(14, metrics.bodySize - 2),
+              },
+            }),
+          ],
         }),
       ],
     });

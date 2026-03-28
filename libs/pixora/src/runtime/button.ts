@@ -1,5 +1,5 @@
 import { ButtonContainer } from '@pixi/ui';
-import { Container, Sprite, Text, type TextStyleOptions } from 'pixi.js';
+import { Container, Sprite, Text, Texture, type TextStyleOptions } from 'pixi.js';
 
 import { BaseNode } from '../components/base-node';
 import { createTween } from '../animation/create-tween';
@@ -21,6 +21,15 @@ type ButtonTextures = {
   pressed?: ButtonTexture;
 };
 
+type ButtonBackgroundColor =
+  | number
+  | {
+      disabled?: number;
+      hovered?: number;
+      idle: number;
+      pressed?: number;
+    };
+
 type ButtonText = {
   content: string;
   offset?: {
@@ -39,6 +48,7 @@ type ButtonAnimationConfig = {
 
 export type ButtonProps = {
   animation?: ButtonAnimationConfig;
+  backgroundColor?: ButtonBackgroundColor;
   disabled?: boolean;
   key?: string | number;
   label?: string;
@@ -49,7 +59,7 @@ export type ButtonProps = {
   onPointerUp?: () => void;
   style?: PixoraStyle;
   text: ButtonText;
-  textures: ButtonTextures;
+  textures?: ButtonTextures;
 };
 
 const DEFAULT_HEIGHT = 72;
@@ -67,7 +77,7 @@ export function button(props: ButtonProps): ReturnType<typeof island> {
       const state = signal<ButtonState>(initialState);
       const width = resolveNumericDimension(props.style?.width, DEFAULT_WIDTH);
       const height = resolveNumericDimension(props.style?.height, DEFAULT_HEIGHT);
-      const background = new Sprite(resolveTexture(props.textures, initialState));
+      const background = new Sprite(resolveTexture(props, initialState));
       const content = new Container();
       const label = new Text({
         resolution: 2,
@@ -157,7 +167,8 @@ export function button(props: ButtonProps): ReturnType<typeof island> {
             width: '100%',
           });
           widget.enabled = currentState !== 'disabled';
-          background.texture = resolveTexture(props.textures, currentState);
+          background.texture = resolveTexture(props, currentState);
+          background.tint = resolveBackgroundTint(props.backgroundColor, currentState);
           background.width = width;
           background.height = height;
           label.style = buildTextStyle(resolveTextStyle(props.text.style, currentState));
@@ -181,6 +192,8 @@ export function button(props: ButtonProps): ReturnType<typeof island> {
           currentTween?.dispose();
         },
       });
+
+      background.tint = resolveBackgroundTint(props.backgroundColor, initialState);
     },
   });
 }
@@ -221,7 +234,13 @@ function resolveRootStyle(style: PixoraStyle | undefined, state: ButtonState): P
   };
 }
 
-function resolveTexture(textures: ButtonTextures, state: ButtonState): ButtonTexture {
+function resolveTexture(props: ButtonProps, state: ButtonState): ButtonTexture {
+  if (!props.textures) {
+    return Texture.WHITE;
+  }
+
+  const textures = props.textures;
+
   switch (state) {
     case 'disabled':
       return textures.disabled ?? textures.idle;
@@ -232,6 +251,27 @@ function resolveTexture(textures: ButtonTextures, state: ButtonState): ButtonTex
     default:
       return textures.idle;
   }
+}
+
+function resolveBackgroundTint(backgroundColor: ButtonProps['backgroundColor'], state: ButtonState): number {
+  if (typeof backgroundColor === 'number') {
+    return backgroundColor;
+  }
+
+  if (backgroundColor) {
+    switch (state) {
+      case 'disabled':
+        return backgroundColor.disabled ?? backgroundColor.idle;
+      case 'hovered':
+        return backgroundColor.hovered ?? backgroundColor.pressed ?? backgroundColor.idle;
+      case 'pressed':
+        return backgroundColor.pressed ?? backgroundColor.hovered ?? backgroundColor.idle;
+      default:
+        return backgroundColor.idle;
+    }
+  }
+
+  return 0xffffff;
 }
 
 function resolveNumericDimension(value: PixoraStyle['width'] | PixoraStyle['height'], fallback: number): number {

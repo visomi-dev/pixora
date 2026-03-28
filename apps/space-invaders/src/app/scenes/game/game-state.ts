@@ -28,6 +28,9 @@ export const enemyDropAmountSignal = signal(0);
 export const enemySpeedSignal = signal(0.8);
 export const lastShotSignal = signal(0);
 export const initializedSignal = signal(false);
+export const touchMoveDirectionSignal = signal(0);
+export const touchFirePressedSignal = signal(false);
+export const touchControlsActiveSignal = signal(false);
 
 let gameId = 0;
 
@@ -40,6 +43,23 @@ export function syncViewport(width: number, height: number): void {
   viewportHeightSignal.set(height);
 }
 
+export function setTouchMoveDirection(direction: number): void {
+  touchMoveDirectionSignal.set(direction);
+}
+
+export function setTouchFirePressed(pressed: boolean): void {
+  touchFirePressedSignal.set(pressed);
+}
+
+export function setTouchControlsActive(active: boolean): void {
+  touchControlsActiveSignal.set(active);
+}
+
+export function resetTouchControls(): void {
+  touchMoveDirectionSignal.set(0);
+  touchFirePressedSignal.set(false);
+}
+
 export function initGame(): void {
   const width = viewportWidthSignal.get();
   const height = viewportHeightSignal.get();
@@ -47,7 +67,7 @@ export function initGame(): void {
   playerSignal.set({
     id: ++gameId,
     x: width / 2 - 20,
-    y: height - 80,
+    y: getPlayerBaselineY(height),
     width: 40,
     height: 30,
     vx: 0,
@@ -82,6 +102,8 @@ export function updateGame(deltaMs: number, context: ApplicationContext, keyboar
   const player = playerSignal.get();
   const width = viewportWidthSignal.get();
   const height = viewportHeightSignal.get();
+  const touchDirection = touchMoveDirectionSignal.get();
+  const touchFirePressed = touchFirePressedSignal.get();
 
   if (keysPressed['KeyP'] || keysPressed['Escape']) {
     pausedSignal.set(true);
@@ -93,18 +115,23 @@ export function updateGame(deltaMs: number, context: ApplicationContext, keyboar
 
   if (player) {
     const speed = hasSpeedBoostSignal.get() ? 0.72 : 0.4;
+    const moveLeft = keys[Keys.ArrowLeft] || keys['KeyA'] || touchDirection < -0.2;
+    const moveRight = keys[Keys.ArrowRight] || keys['KeyD'] || touchDirection > 0.2;
 
-    if (keys[Keys.ArrowLeft] || keys['KeyA']) {
+    if (moveLeft) {
       player.x = Math.max(0, player.x - speed * deltaMs);
     }
 
-    if (keys[Keys.ArrowRight] || keys['KeyD']) {
+    if (moveRight) {
       player.x = Math.min(width - player.width, player.x + speed * deltaMs);
     }
 
     playerSignal.set({ ...player });
 
-    if (keysPressed[Keys.Space] && Date.now() - lastShotSignal.get() > (hasTripleShotSignal.get() ? 150 : 250)) {
+    if (
+      (keysPressed[Keys.Space] || touchFirePressed) &&
+      Date.now() - lastShotSignal.get() > (hasTripleShotSignal.get() ? 150 : 250)
+    ) {
       const bullets = [...bulletsSignal.get()];
       const bullet = createGameObject(4, 12);
       bullet.x = player.x + player.width / 2 - 2;
@@ -170,6 +197,7 @@ export function resetGame(): void {
   tripleShotTimerSignal.set(0);
   speedTimerSignal.set(0);
   lastShotSignal.set(0);
+  resetTouchControls();
   initGame();
 }
 
@@ -418,9 +446,13 @@ function loseLife(): void {
 
   if (player) {
     player.x = viewportWidthSignal.get() / 2 - 20;
-    player.y = viewportHeightSignal.get() - 80;
+    player.y = getPlayerBaselineY(viewportHeightSignal.get());
     playerSignal.set({ ...player });
   }
 
   enemyBulletsSignal.set([]);
+}
+
+function getPlayerBaselineY(viewportHeight: number): number {
+  return viewportHeight - (touchControlsActiveSignal.get() ? 160 : 80);
 }

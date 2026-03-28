@@ -108,11 +108,21 @@ export function measureNode(hostNode: BaseNode): { height: number; width: number
       continue;
     }
 
-    width = Math.max(width, child.displayObject.x + child.getLayoutWidth());
-    height = Math.max(height, child.displayObject.y + child.getLayoutHeight());
+    width = Math.max(width, readDisplayPosition(child.displayObject, 'x') + child.getLayoutWidth());
+    height = Math.max(height, readDisplayPosition(child.displayObject, 'y') + child.getLayoutHeight());
   }
 
   return { height, width };
+}
+
+function readDisplayPosition(displayObject: { x: number; y: number }, axis: 'x' | 'y'): number {
+  try {
+    const value = displayObject[axis];
+
+    return Number.isFinite(value) ? value : 0;
+  } catch {
+    return 0;
+  }
 }
 
 export function runLayout(
@@ -154,8 +164,8 @@ function applyLayoutRecursive(
   const childBounds = {
     height: node.measuredHeight,
     width: node.measuredWidth,
-    x: node.hostNode.displayObject.x,
-    y: node.hostNode.displayObject.y,
+    x: readDisplayPosition(node.hostNode.displayObject, 'x'),
+    y: readDisplayPosition(node.hostNode.displayObject, 'y'),
   };
 
   for (const child of node.hostNode.getChildren?.() ?? []) {

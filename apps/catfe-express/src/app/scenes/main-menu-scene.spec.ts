@@ -1,5 +1,7 @@
 import { pixora } from 'pixora';
 
+import { getMenuMetrics } from '../layout';
+
 import { mainMenuScene } from './main-menu-scene';
 
 import type { ApplicationContext, PixoraNode, Viewport } from 'pixora';
@@ -39,6 +41,7 @@ describe('mainMenuScene', () => {
     });
 
     const tree = mainMenuScene.render(createContext(viewport));
+    const metrics = getMenuMetrics(viewport);
 
     expect(mainMenuScene.key).toBe('main-menu');
     expect(tree.type).toBe('container');
@@ -49,28 +52,40 @@ describe('mainMenuScene', () => {
         flexDirection: 'column',
         height: 720,
         justifyContent: 'center',
+        padding: metrics.padding,
         width: 1280,
       }),
     );
 
     const children = tree.children as PixoraNode[];
 
-    expect(children).toHaveLength(3);
-    expect((children[0] as PixoraNode<'text'>).props.content).toBe('Catfe Express');
-    expect((children[1] as PixoraNode<'text'>).props.content).toBe(
+    expect(children).toHaveLength(2);
+    expect((children[0] as PixoraNode<'container'>).props.style).toEqual(
+      expect.objectContaining({
+        backgroundColor: 0xffeef4,
+        display: 'flex',
+        flexDirection: 'column',
+        maxWidth: metrics.contentWidth,
+      }),
+    );
+
+    const introChildren = (children[0] as PixoraNode<'container'>).children as PixoraNode[];
+
+    expect((introChildren[0] as PixoraNode<'text'>).props.content).toBe('Catfe Express');
+    expect((introChildren[1] as PixoraNode<'text'>).props.content).toBe(
       'A cozy train ride full of cats, coffee, and tiny decisions.',
     );
 
     expect(textureSpy).toHaveBeenCalledWith('buttonPressed');
-    expect(textureSpy).toHaveBeenCalledWith('buttonIdle');
+    expect(textureSpy).toHaveBeenCalledWith('buttonDefault');
     expect(buttonSpy).toHaveBeenCalledTimes(1);
     expect(buttonSpy).toHaveBeenNthCalledWith(
       1,
       expect.objectContaining({
-        animation: { durationMs: 100 },
+        animation: { durationMs: 100, hoverScale: 1, pressedScale: 1 },
         key: 'play-button',
         label: 'PlayButton',
-        style: expect.objectContaining({ width: 280, height: 72 }),
+        style: expect.objectContaining({ width: metrics.buttonWidth, height: metrics.buttonHeight }),
         text: expect.objectContaining({ content: 'Play' }),
       }),
     );
@@ -91,6 +106,7 @@ describe('mainMenuScene', () => {
     );
 
     const tree = mainMenuScene.render(createContext(viewport));
+    const metrics = getMenuMetrics(viewport);
 
     expect((tree as PixoraNode<'container'>).props.style).toEqual(
       expect.objectContaining({
@@ -102,7 +118,9 @@ describe('mainMenuScene', () => {
 
     expect(buttonSpy).toHaveBeenNthCalledWith(
       1,
-      expect.objectContaining({ style: expect.objectContaining({ width: 280, height: 72 }) }),
+      expect.objectContaining({
+        style: expect.objectContaining({ width: metrics.buttonWidth, height: metrics.buttonHeight }),
+      }),
     );
   });
 });

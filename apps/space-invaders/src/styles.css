@@ -3,12 +3,18 @@
   padding: 0;
   box-sizing: border-box;
 }
+
 html,
 body {
   width: 100%;
   height: 100%;
   overflow: hidden;
   background: #0a0a1a;
+}
+
+body {
+  color: #f4f7fb;
+  font-family: 'Orbitron', sans-serif;
 }
 
 #space-invaders-root {
@@ -20,23 +26,29 @@ body {
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 100%;
+  height: 100dvh;
+  min-height: 100dvh;
   background: #0a0a1a;
 }
 
 .game-header {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 24px;
-  background: rgba(0, 0, 0, 0.6);
+  gap: 8px 14px;
+  padding: max(10px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) 10px
+    max(12px, env(safe-area-inset-left));
+  background: rgba(4, 8, 20, 0.86);
   border-bottom: 1px solid rgba(0, 255, 170, 0.2);
+  backdrop-filter: blur(14px);
 }
 
 .status-item {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  min-width: 68px;
 }
 
 .status-label {
@@ -55,6 +67,29 @@ body {
 
 .stage-host {
   flex: 1;
+  min-height: 0;
   width: 100%;
   overflow: hidden;
+}
+
+@media (max-width: 720px) {
+  .game-header {
+    justify-content: center;
+    gap: 6px 10px;
+    padding-bottom: 8px;
+  }
+
+  .status-item {
+    align-items: center;
+    min-width: 0;
+  }
+
+  .status-label {
+    font-size: 9px;
+    letter-spacing: 0.8px;
+  }
+
+  .status-item strong {
+    font-size: 12px;
+  }
 }

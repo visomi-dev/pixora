@@ -1,4 +1,11 @@
-import { isPixoraNode, type ApplicationContext, type ContainerNodeProps, type PixoraNode, type Viewport } from 'pixora';
+import {
+  isPixoraNode,
+  pixora,
+  type ApplicationContext,
+  type ContainerNodeProps,
+  type PixoraNode,
+  type Viewport,
+} from 'pixora';
 
 import { gameOverScene } from './game-over/game-over.scene';
 import { gameScene } from './game/game.scene';
@@ -87,6 +94,19 @@ function getTextContent(tree: PixoraNode): string[] {
 describe('space invaders scene navigation', () => {
   beforeEach(() => {
     localStorage.clear();
+    vi.spyOn(pixora, 'button').mockImplementation((props) => {
+      return pixora.container({
+        key: props.key,
+        label: props.label,
+        onPointerTap: props.onPointerTap,
+        style: props.style,
+        children: [pixora.text({ content: props.text.content })],
+      }) as unknown as ReturnType<typeof pixora.button>;
+    });
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
   it('routes from the main menu to gameplay and instructions', () => {
